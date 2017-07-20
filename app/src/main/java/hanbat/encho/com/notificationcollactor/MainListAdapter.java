@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBinding;
 
@@ -23,6 +22,10 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainVi
         this.items = items;
     }
 
+    public void setList(ArrayList<NotificationObject> items) {
+        this.items = items;
+    }
+
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_item, parent, false);
@@ -33,6 +36,12 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainVi
     public void onBindViewHolder(MainViewHolder holder, int position) {
         NotificationObject obj = items.get(position);
         holder.binding.setNoti(obj);
+        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override

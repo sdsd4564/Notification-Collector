@@ -29,7 +29,9 @@ public class DBhelper extends SQLiteOpenHelper {
                 "title TEXT , " +
                 "text TEXT," +
                 "subtext TEXT," +
-                "smallicon INTEGER ) ";
+                "smallicon INTEGER," +
+                "posttime INTEGER," +
+                "packagename TEXT ) ";
 
         db.execSQL(sb);
 
@@ -46,17 +48,19 @@ public class DBhelper extends SQLiteOpenHelper {
     public void addNotification(NotificationObject object) {
         SQLiteDatabase db = getWritableDatabase();
         String sb = "INSERT INTO tempp " +
-                "(title, text, subtext, smallicon) " +
-                "VALUES (?, ?, ?, ?)";
+                "(title, text, subtext, smallicon, posttime, packagename) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         db.execSQL(sb, new Object[]{
                 object.getTitle(),
                 object.getText(),
                 object.getSubText(),
-                object.getSmallIcon()
+                object.getSmallIcon(),
+                object.getPostTime(),
+                object.getPackageName()
         });
 
-        Toast.makeText(mContext, "INSERT 완료", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, object.getPackageName() + " INSERT !", Toast.LENGTH_SHORT).show();
     }
 
     public ArrayList<NotificationObject> getAllNotifications() {
@@ -74,6 +78,8 @@ public class DBhelper extends SQLiteOpenHelper {
             obj.setText(cursor.getString(1));
             obj.setSubText(cursor.getString(2));
             obj.setSmallIcon(cursor.getInt(3));
+            obj.setPostTime(cursor.getLong(4));
+            obj.setPackageName(cursor.getString(5));
 
             list.add(obj);
         }

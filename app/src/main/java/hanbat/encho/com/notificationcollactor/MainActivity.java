@@ -7,6 +7,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mainBinding.setMain(this);
 
         if (!isPermissionAllowed()) {
             Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_SHORT).show();
@@ -31,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
         db = new DBhelper(this, "NC", null, 1);
 
-        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
         ArrayList<NotificationObject> items = db.getAllNotifications();
@@ -40,11 +42,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.w("hanlog", mAdapter.getItemCount() + "");
+    public void onRefreshTouched(View view) {
+        mAdapter.setList(db.getAllNotifications());
         mAdapter.notifyDataSetChanged();
+        Log.w("hanlog", mAdapter.getItemCount() + "");
     }
 
     private boolean isPermissionAllowed() {

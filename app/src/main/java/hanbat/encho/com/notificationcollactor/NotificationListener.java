@@ -7,8 +7,6 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-
 /**
  * Created by USER on 2017-07-19.
  */
@@ -30,13 +28,16 @@ public class NotificationListener extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
         Notification mNotification = sbn.getNotification();
         Bundle extras = mNotification.extras;
+
         String title = extras.getString(Notification.EXTRA_TITLE);
         int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);
         CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT);
         CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
         Bitmap largeIcon = extras.getParcelable(Notification.EXTRA_LARGE_ICON);
+        long postTime = sbn.getPostTime();
+        String packageName = sbn.getPackageName();
 
-        NotificationObject obj = new NotificationObject(title, smallIcon, largeIcon, text, subText);
+        NotificationObject obj = new NotificationObject(title, smallIcon, text, subText, postTime, packageName);
         db.addNotification(obj);
     }
 

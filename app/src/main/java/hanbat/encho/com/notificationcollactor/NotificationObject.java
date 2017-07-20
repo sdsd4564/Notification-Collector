@@ -1,7 +1,5 @@
 package hanbat.encho.com.notificationcollactor;
 
-import android.graphics.Bitmap;
-
 /**
  * Created by Encho on 2017-07-19.
  */
@@ -11,16 +9,20 @@ public class NotificationObject {
     private int smallIcon;
     private CharSequence text;
     private CharSequence subText;
+    private long postTime;
+    private String packageName;
 
     public NotificationObject() {
 
     }
 
-    public NotificationObject(String title, int smallIcon, Bitmap largeIcon, CharSequence text, CharSequence subText) {
+    public NotificationObject(String title, int smallIcon, CharSequence text, CharSequence subText, long postTime, String packageName) {
         this.title = title;
         this.smallIcon = smallIcon;
         this.text = text;
         this.subText = subText;
+        this.postTime = postTime;
+        this.packageName = packageName;
     }
 
     public String getTitle() {
@@ -53,5 +55,21 @@ public class NotificationObject {
 
     public void setSubText(CharSequence subText) {
         this.subText = subText;
+    }
+
+    public long getPostTime() {
+        return postTime;
+    }
+
+    public void setPostTime(long postTime) {
+        this.postTime = postTime;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 }
