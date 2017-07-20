@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="noti"
+            type="hanbat.encho.com.notificationcollactor.NotificationObject" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:text="@{noti.title}"
+                android:background="#ffaaaa"
+                android:layout_weight="3" />
+
+            <TextView
+                android:id="@+id/tvText"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:text="@{noti.text}"
+                android:background="#aaffaa"
+                android:layout_weight="2" />
+
+            <TextView
+                android:id="@+id/tvSubText"
+                android:background="#aaaaff"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:text="@{noti.subText}"
+                android:layout_weight="2" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</layout>

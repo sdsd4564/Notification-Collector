@@ -12,6 +12,10 @@ public class NotificationObject {
     private CharSequence text;
     private CharSequence subText;
 
+    public NotificationObject() {
+
+    }
+
     public NotificationObject(String title, int smallIcon, Bitmap largeIcon, CharSequence text, CharSequence subText) {
         this.title = title;
         this.smallIcon = smallIcon;
