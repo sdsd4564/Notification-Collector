@@ -1,10 +1,13 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.app.Notification;
+import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 /**
@@ -24,6 +27,8 @@ public class NotificationListener extends NotificationListenerService {
         Toast.makeText(Application.getAppContext(), "리스너 생성 완료!", Toast.LENGTH_SHORT).show();
     }
 
+
+
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         Notification mNotification = sbn.getNotification();
@@ -33,11 +38,12 @@ public class NotificationListener extends NotificationListenerService {
         int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);
         CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT);
         CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
-        Bitmap largeIcon = extras.getParcelable(Notification.EXTRA_LARGE_ICON);
+        Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
+        Toast.makeText(mNotificationListenerService, extras.get(Notification.EXTRA_TITLE) + "사진 존재 !", Toast.LENGTH_SHORT).show();
         long postTime = sbn.getPostTime();
         String packageName = sbn.getPackageName();
 
-        NotificationObject obj = new NotificationObject(title, smallIcon, text, subText, postTime, packageName);
+        NotificationObject obj = new NotificationObject(title, smallIcon, largeIcon, text, subText, postTime, packageName);
         db.addNotification(obj);
     }
 

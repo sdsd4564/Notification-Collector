@@ -4,7 +4,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -30,9 +35,11 @@ public class DBhelper extends SQLiteOpenHelper {
                 "text TEXT," +
                 "subtext TEXT," +
                 "smallicon INTEGER," +
+                "largeicon BLOB," +
                 "posttime INTEGER," +
                 "packagename TEXT ) ";
 
+        db.execSQL("DROP TABLE IF EXISTS tempp");
         db.execSQL(sb);
 
         Toast.makeText(mContext, "데이터베이스 생성 완료", Toast.LENGTH_SHORT).show();
@@ -48,19 +55,35 @@ public class DBhelper extends SQLiteOpenHelper {
     public void addNotification(NotificationObject object) {
         SQLiteDatabase db = getWritableDatabase();
         String sb = "INSERT INTO tempp " +
-                "(title, text, subtext, smallicon, posttime, packagename) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+                "(title, text, subtext, smallicon, largeicon, posttime, packagename) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        db.execSQL(sb, new Object[]{
-                object.getTitle(),
-                object.getText(),
-                object.getSubText(),
-                object.getSmallIcon(),
-                object.getPostTime(),
-                object.getPackageName()
-        });
+        SQLiteStatement st = db.compileStatement(sb);
+        st.bindString(1, object.getTitle() == null ? "No Title" : object.getTitle());
+        st.bindString(2, String.valueOf(object.getText()));
+        st.bindString(3, String.valueOf(object.getSubText() == null ? "No Sub-Text" : object.getSubText()));
+        st.bindLong(4, object.getSmallIcon());
+        Drawable d = mContext.getResources().getDrawable(R.mipmap.ic_launcher);
+        st.bindBlob(5, object.getLargeIcon() == null ? getByteArrayFromBitmap(((BitmapDrawable) d).getBitmap()) : getByteArrayFromBitmap(object.getLargeIcon()));
+        st.bindLong(6, object.getPostTime());
+        st.bindString(7, object.getPackageName());
+//        db.execSQL(sb, new Object[]{
+//                object.getTitle(),
+//                object.getText(),
+//                object.getSubText(),
+//                object.getSmallIcon(),
+//                object.getPostTime(),
+//                object.getPackageName()
+//        });
+        st.execute();
 
         Toast.makeText(mContext, object.getPackageName() + " INSERT !", Toast.LENGTH_SHORT).show();
+    }
+    public ArrayList<NotificationObject> dropAllNotifications() {
+        String query = "DELETE FROM tempp";
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(query);
+        return getAllNotifications();
     }
 
     public ArrayList<NotificationObject> getAllNotifications() {
@@ -73,13 +96,19 @@ public class DBhelper extends SQLiteOpenHelper {
         NotificationObject obj;
 
         while (cursor.moveToNext()) {
+            Log.w("HanLOG check blob", cursor.getBlob(4) == null ? "No Photo" : "Has Photo");
+            byte[] largeIcon = cursor.getBlob(4);
+
+
             obj = new NotificationObject();
             obj.setTitle(cursor.getString(0));
             obj.setText(cursor.getString(1));
             obj.setSubText(cursor.getString(2));
             obj.setSmallIcon(cursor.getInt(3));
-            obj.setPostTime(cursor.getLong(4));
-            obj.setPackageName(cursor.getString(5));
+
+            obj.setLargeIcon(getImage(largeIcon));
+            obj.setPostTime(cursor.getLong(5));
+            obj.setPackageName(cursor.getString(6));
 
             list.add(obj);
         }
@@ -91,8 +120,12 @@ public class DBhelper extends SQLiteOpenHelper {
 
     private byte[] getByteArrayFromBitmap(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
 
         return stream.toByteArray();
+    }
+
+    private Bitmap getImage(byte[] ba) {
+        return BitmapFactory.decodeByteArray(ba, 0, ba.length);
     }
 }

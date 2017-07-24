@@ -1,5 +1,9 @@
 package hanbat.encho.com.notificationcollactor;
 
+import android.databinding.BindingAdapter;
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+
 /**
  * Created by Encho on 2017-07-19.
  */
@@ -7,22 +11,33 @@ package hanbat.encho.com.notificationcollactor;
 public class NotificationObject {
     private String title;
     private int smallIcon;
+    private Bitmap largeIcon;
     private CharSequence text;
     private CharSequence subText;
     private long postTime;
     private String packageName;
 
-    public NotificationObject() {
 
+
+    public NotificationObject() {
     }
 
-    public NotificationObject(String title, int smallIcon, CharSequence text, CharSequence subText, long postTime, String packageName) {
+    public NotificationObject(String title, int smallIcon, Bitmap largeIcon, CharSequence text, CharSequence subText, long postTime, String packageName) {
         this.title = title;
         this.smallIcon = smallIcon;
+        this.largeIcon = largeIcon;
         this.text = text;
         this.subText = subText;
         this.postTime = postTime;
         this.packageName = packageName;
+    }
+
+    public Bitmap getLargeIcon() {
+        return largeIcon;
+    }
+
+    public void setLargeIcon(Bitmap largeIcon) {
+        this.largeIcon = largeIcon;
     }
 
     public String getTitle() {
@@ -72,4 +87,5 @@ public class NotificationObject {
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
+
 }

@@ -1,9 +1,13 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.util.ArraySet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -11,6 +15,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
@@ -26,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.setMain(this);
+
+        Set<PackageInfo> selectedApp = new ArraySet<>();
+        //todo 앱 실행시 걸러낼 어플
+
 
         if (!isPermissionAllowed()) {
             Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_SHORT).show();
@@ -45,7 +54,27 @@ public class MainActivity extends AppCompatActivity {
     public void onRefreshTouched(View view) {
         mAdapter.setList(db.getAllNotifications());
         mAdapter.notifyDataSetChanged();
-        Log.w("hanlog", mAdapter.getItemCount() + "");
+        Log.w("hanlog list size", mAdapter.getItemCount() + "");
+    }
+
+    public void onDeleteTouched(View view) {
+        mAdapter.setList(db.dropAllNotifications());
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private ArrayList<ApplicationInfo> getPackageList() {
+        final PackageManager pm = Application.getAppContext().getPackageManager();
+        ArrayList<ApplicationInfo> data = new ArrayList<>();
+        List<ApplicationInfo> packs = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+
+        for (ApplicationInfo appInfo : packs) {
+            Intent intent = getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
+            if (intent != null) {
+                data.add(appInfo);
+            }
+        }
+
+        return data;
     }
 
     private boolean isPermissionAllowed() {
