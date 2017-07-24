@@ -36,12 +36,6 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainVi
     public void onBindViewHolder(MainViewHolder holder, int position) {
         NotificationObject obj = items.get(position);
         holder.binding.setNoti(obj);
-        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
     }
 
     @Override
