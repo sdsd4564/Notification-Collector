@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         //todo 앱 실행시 걸러낼 어플
 
 
+
+
         if (!isPermissionAllowed()) {
             Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_SHORT).show();
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
@@ -51,10 +53,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 123 && resultCode == RESULT_OK) {
+
+        }
+    }
+
     public void onRefreshTouched(View view) {
         mAdapter.setList(db.getAllNotifications());
         mAdapter.notifyDataSetChanged();
         Log.w("hanlog list size", mAdapter.getItemCount() + "");
+            Intent toDialog = new Intent(this, AppInfoDialog.class);
+            ArrayList<ApplicationInfo> apps = getPackageList();
+            toDialog.putParcelableArrayListExtra("apps", apps);
+            startActivityForResult(toDialog, 123);
     }
 
     public void onDeleteTouched(View view) {
