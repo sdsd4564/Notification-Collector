@@ -1,8 +1,10 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 /**
@@ -22,8 +24,7 @@ public class Application extends android.app.Application{
         return mContext;
     }
 
-    @BindingAdapter({"imageBitmap"})
-    public static void loadImage(ImageView iv, Bitmap b) {
-        iv.setImageBitmap(b);
-    }
+
+
+
 }

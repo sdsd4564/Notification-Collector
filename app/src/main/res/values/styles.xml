@@ -8,4 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="dialog_light" parent="@android:style/Theme.Dialog">
+        <item name="@android:background">@android:color/background_light</item>
+    </style>
 </resources>

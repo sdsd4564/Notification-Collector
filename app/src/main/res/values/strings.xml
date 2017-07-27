@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Notification Collactor</string>
     <string name="permission_check_message">알림 관리를 허용해주셔야 원활한 사용이 가능합니다</string>
+    <string name="confirm">확인</string>
 </resources>

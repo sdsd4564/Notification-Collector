@@ -17,7 +17,10 @@ public class NotificationObject {
     private long postTime;
     private String packageName;
 
-
+    @BindingAdapter({"imageBitmap"})
+    public static void loadImage(ImageView iv, Bitmap b) {
+        iv.setImageBitmap(b);
+    }
 
     public NotificationObject() {
     }

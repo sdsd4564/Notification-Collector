@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="hanbat.encho.com.notificationcollactor">
 
     <application
@@ -17,14 +18,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".NotificationListener"
+        <service
+            android:name=".NotificationListener"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService"/>
+                <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <activity android:name=".AppInfoDialog"
-            android:theme="@android:style/Theme.Dialog"/>
+        <activity
+            android:name=".AppInfoDialog"
+            android:theme="@style/dialog_light"/>
     </application>
 
 </manifest>

@@ -39,7 +39,6 @@ public class NotificationListener extends NotificationListenerService {
         CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT);
         CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
         Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
-        Toast.makeText(mNotificationListenerService, extras.get(Notification.EXTRA_TITLE) + "사진 존재 !", Toast.LENGTH_SHORT).show();
         long postTime = sbn.getPostTime();
         String packageName = sbn.getPackageName();
 
@@ -49,6 +48,5 @@ public class NotificationListener extends NotificationListenerService {
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        Toast.makeText(this, sbn.getPackageName(), Toast.LENGTH_SHORT).show();
     }
 }

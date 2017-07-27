@@ -77,7 +77,6 @@ public class DBhelper extends SQLiteOpenHelper {
 //        });
         st.execute();
 
-        Toast.makeText(mContext, object.getPackageName() + " INSERT !", Toast.LENGTH_SHORT).show();
     }
     public ArrayList<NotificationObject> dropAllNotifications() {
         String query = "DELETE FROM tempp";

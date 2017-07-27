@@ -1,9 +1,7 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
@@ -15,7 +13,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
@@ -32,10 +29,9 @@ public class MainActivity extends AppCompatActivity {
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.setMain(this);
 
+
         Set<PackageInfo> selectedApp = new ArraySet<>();
         //todo 앱 실행시 걸러낼 어플
-
-
 
 
         if (!isPermissionAllowed()) {
@@ -57,8 +53,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 123 && resultCode == RESULT_OK) {
-
+        if (requestCode == 123) {
+            if (resultCode == RESULT_OK) {
+                int size = data.getParcelableArrayListExtra("apps").size();
+                Toast.makeText(this, size + "", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -66,10 +65,8 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.setList(db.getAllNotifications());
         mAdapter.notifyDataSetChanged();
         Log.w("hanlog list size", mAdapter.getItemCount() + "");
-            Intent toDialog = new Intent(this, AppInfoDialog.class);
-            ArrayList<ApplicationInfo> apps = getPackageList();
-            toDialog.putParcelableArrayListExtra("apps", apps);
-            startActivityForResult(toDialog, 123);
+        Intent toDialog = new Intent(this, AppInfoDialog.class);
+        startActivityForResult(toDialog, 123);
     }
 
     public void onDeleteTouched(View view) {
@@ -77,20 +74,6 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
     }
 
-    private ArrayList<ApplicationInfo> getPackageList() {
-        final PackageManager pm = Application.getAppContext().getPackageManager();
-        ArrayList<ApplicationInfo> data = new ArrayList<>();
-        List<ApplicationInfo> packs = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-
-        for (ApplicationInfo appInfo : packs) {
-            Intent intent = getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
-            if (intent != null) {
-                data.add(appInfo);
-            }
-        }
-
-        return data;
-    }
 
     private boolean isPermissionAllowed() {
         Set<String> notiListerSet = NotificationManagerCompat.getEnabledListenerPackages(this);
