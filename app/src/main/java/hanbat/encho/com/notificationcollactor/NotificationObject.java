@@ -1,7 +1,11 @@
 package hanbat.encho.com.notificationcollactor;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 /**
@@ -12,6 +16,7 @@ public class NotificationObject {
     private String title;
     private int smallIcon;
     private Bitmap largeIcon;
+    private Drawable icon;
     private CharSequence text;
     private CharSequence subText;
     private long postTime;
@@ -91,4 +96,11 @@ public class NotificationObject {
         this.packageName = packageName;
     }
 
+    public Drawable getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Drawable icon) {
+        this.icon = icon;
+    }
 }

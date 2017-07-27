@@ -1,6 +1,7 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.app.Notification;
+import android.content.pm.PackageManager;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -28,12 +29,10 @@ public class NotificationListener extends NotificationListenerService {
     }
 
 
-
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         Notification mNotification = sbn.getNotification();
         Bundle extras = mNotification.extras;
-
         String title = extras.getString(Notification.EXTRA_TITLE);
         int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);
         CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT);
@@ -43,7 +42,13 @@ public class NotificationListener extends NotificationListenerService {
         String packageName = sbn.getPackageName();
 
         NotificationObject obj = new NotificationObject(title, smallIcon, largeIcon, text, subText, postTime, packageName);
+        try {
+            obj.setIcon(getPackageManager().getResourcesForApplication(sbn.getPackageName()).getDrawable(extras.getInt(Notification.EXTRA_SMALL_ICON)));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
         db.addNotification(obj);
+        Toast.makeText(mNotificationListenerService, sbn.getPackageName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

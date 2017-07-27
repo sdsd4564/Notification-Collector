@@ -20,7 +20,9 @@
             android:id="@+id/ivIcon"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            app:imageBitmap="@{noti.largeIcon}" />
+            android:src="@{noti.icon}"
+             />
+        <!--app:imageBitmap="@{noti.largeIcon}"-->
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -64,7 +64,6 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
         for (AppInfo app : items) {
             if (app.isSelected()) {
                 confirmedApps.add(app);
-                Toast.makeText(mContext, "ghahahah", Toast.LENGTH_SHORT).show();
             }
         }
         intent.putParcelableArrayListExtra("apps", confirmedApps);
