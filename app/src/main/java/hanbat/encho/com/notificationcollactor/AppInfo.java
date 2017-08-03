@@ -1,6 +1,7 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageItemInfo;
 import android.databinding.BindingAdapter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 public class AppInfo extends ApplicationInfo {
     private Drawable icon;
     private String name;
+    private String packageName;
     private boolean isSelected = false;
 
     @BindingAdapter({"iconImage"})
@@ -26,9 +28,10 @@ public class AppInfo extends ApplicationInfo {
         super(orig);
     }
 
-    public AppInfo(Drawable icon, String name) {
+    public AppInfo(Drawable icon, String name, String packageName) {
         this.icon = icon;
         this.name = name;
+        this.packageName = packageName;
     }
 
     public Drawable getIcon() {
@@ -53,6 +56,14 @@ public class AppInfo extends ApplicationInfo {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     public void onAppClicked(View view) {

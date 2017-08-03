@@ -48,7 +48,7 @@ public class NotificationListener extends NotificationListenerService {
             e.printStackTrace();
         }
         db.addNotification(obj);
-        Toast.makeText(mNotificationListenerService, sbn.getPackageName(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(mNotificationListenerService, sbn.getPackageName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

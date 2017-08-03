@@ -1,11 +1,10 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
+import android.content.pm.ApplicationInfo;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.util.ArraySet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -30,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
         mainBinding.setMain(this);
 
 
-        Set<PackageInfo> selectedApp = new ArraySet<>();
+//        Set<PackageInfo> selectedApp = new ArraySet<>();
+        ArrayList<String> selectedApps = new PreferenceManager().getStringArrayPref(this, "Packages");
+        Toast.makeText(this, selectedApps.isEmpty() ? "0" : selectedApps.size() + "", Toast.LENGTH_SHORT).show();
         //todo 앱 실행시 걸러낼 어플
 
 
@@ -55,8 +56,21 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 123) {
             if (resultCode == RESULT_OK) {
-                int size = data.getParcelableArrayListExtra("apps").size();
-                Toast.makeText(this, size + "", Toast.LENGTH_SHORT).show();
+                if (data.getParcelableArrayListExtra("apps").get(0) instanceof ApplicationInfo) {
+                    Log.d("hanlog item check", "어플리케이션 인포");
+                } else if (data.getParcelableArrayListExtra("apps").get(0) instanceof AppInfo) {
+                    Log.w("hanlog item check : ", "앱 인포");
+                }
+//                ArrayList<AppInfo> selectedApps = data.getParcelableArrayListExtra("apps");
+//                int size = selectedApps.size();
+//                Toast.makeText(this, size + "", Toast.LENGTH_SHORT).show();
+//                Log.d("hanlog item check", selectedApps.get(0).getName());
+//                PreferenceManager manager = new PreferenceManager();
+//                ArrayList<String> selectedAppNames = new ArrayList<>();
+//                for (AppInfo app : selectedApps) {
+//                    selectedAppNames.add(app.getPackageName());
+//                }
+//                manager.setStringArrayPref(this, "Packages", selectedAppNames);
             }
         }
     }
@@ -64,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
     public void onRefreshTouched(View view) {
         mAdapter.setList(db.getAllNotifications());
         mAdapter.notifyDataSetChanged();
-        Log.w("hanlog list size", mAdapter.getItemCount() + "");
         Intent toDialog = new Intent(this, AppInfoDialog.class);
         startActivityForResult(toDialog, 123);
     }
