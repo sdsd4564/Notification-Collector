@@ -51,10 +51,9 @@ public class AppInfoDialog extends Activity {
         for (ApplicationInfo appInfo : packs) {
             Intent intent = getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
             if (intent != null) {
-                AppInfo item = new AppInfo(appInfo.loadIcon(pm), appInfo.loadLabel(pm).toString(), String.valueOf(appInfo.loadDescription(pm)));
-//                item.setName(appInfo.loadLabel(pm).toString());
-//                item.setIcon(appInfo.loadIcon(pm));
-//                item.setPackageName(String.valueOf(appInfo.loadDescription(pm)));
+                AppInfo item = new AppInfo(appInfo.loadIcon(pm),
+                        appInfo.loadLabel(pm).toString(),
+                        String.valueOf(appInfo.loadDescription(pm)));
                 data.add(item);
             }
         }

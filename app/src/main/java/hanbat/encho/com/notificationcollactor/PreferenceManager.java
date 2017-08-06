@@ -14,6 +14,16 @@ import java.util.ArrayList;
 
 public class PreferenceManager {
 
+    private static PreferenceManager manager;
+
+    private PreferenceManager() {}
+    public static PreferenceManager getInstance() {
+        if (manager == null)
+            manager = new PreferenceManager();
+
+        return manager;
+    }
+
     public void setStringArrayPref(Context context, String key, ArrayList<String> values) {
         SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();

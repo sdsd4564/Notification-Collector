@@ -28,17 +28,15 @@ public class MainActivity extends AppCompatActivity {
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.setMain(this);
 
-
-//        Set<PackageInfo> selectedApp = new ArraySet<>();
-        ArrayList<String> selectedApps = new PreferenceManager().getStringArrayPref(this, "Packages");
-        Toast.makeText(this, selectedApps.isEmpty() ? "0" : selectedApps.size() + "", Toast.LENGTH_SHORT).show();
-        //todo 앱 실행시 걸러낼 어플
-
-
         if (!isPermissionAllowed()) {
             Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_SHORT).show();
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
         }
+
+//        Set<PackageInfo> selectedApp = new ArraySet<>();
+
+        //todo 앱 실행시 걸러낼 어플
+
 
         db = new DBhelper(this, "NC", null, 1);
 
@@ -56,11 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 123) {
             if (resultCode == RESULT_OK) {
-                if (data.getParcelableArrayListExtra("apps").get(0) instanceof ApplicationInfo) {
-                    Log.d("hanlog item check", "어플리케이션 인포");
-                } else if (data.getParcelableArrayListExtra("apps").get(0) instanceof AppInfo) {
-                    Log.w("hanlog item check : ", "앱 인포");
-                }
+                ArrayList<String> selectedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
+                Toast.makeText(MainActivity.this, selectedApps.size() + "", Toast.LENGTH_SHORT).show();
 //                ArrayList<AppInfo> selectedApps = data.getParcelableArrayListExtra("apps");
 //                int size = selectedApps.size();
 //                Toast.makeText(this, size + "", Toast.LENGTH_SHORT).show();

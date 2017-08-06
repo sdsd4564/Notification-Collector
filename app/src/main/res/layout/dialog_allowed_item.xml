@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:contentDescription="@string/app_name"
-            app:iconImage="@{app.icon}"/>
+            app:iconImage="@{app.icon}" />
 
         <TextView
             android:layout_width="match_parent"

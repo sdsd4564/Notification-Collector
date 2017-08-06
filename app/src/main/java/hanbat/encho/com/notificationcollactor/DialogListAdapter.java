@@ -60,13 +60,14 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
 
     public void onAppCheckConfirm(View view) {
         Intent intent = new Intent();
-        ArrayList<AppInfo> confirmedApps = new ArrayList<>();
+        ArrayList<String> confirmedApps = new ArrayList<>();
         for (AppInfo app : items) {
             if (app.isSelected()) {
-                confirmedApps.add(app);
+                confirmedApps.add(app.getPackageName());
             }
         }
-        intent.putParcelableArrayListExtra("apps", confirmedApps);
+
+        PreferenceManager.getInstance().setStringArrayPref(mContext, "Packages", confirmedApps);
         ((AppInfoDialog) mContext).setResult(Activity.RESULT_OK, intent);
         ((AppInfoDialog) mContext).finish();
     }
