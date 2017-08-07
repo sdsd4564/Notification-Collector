@@ -12,12 +12,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="4dp"
         android:clickable="true"
         android:onClick="@{app::onAppClicked}"
+        app:setBackground="@{app.selected}"
         android:orientation="vertical"
         android:padding="8dp">
 
         <ImageView
+            android:id="@+id/appitem_image"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:contentDescription="@string/app_name"

@@ -8,9 +8,13 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.Log;
 import android.view.Window;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import hanbat.encho.com.notificationcollactor.databinding.CheckAllowedApplistBinding;
@@ -37,6 +41,7 @@ public class AppInfoDialog extends Activity {
 
         ArrayList<AppInfo> items = getPackageList();
 
+        items.sort(new AscPackages());
         DialogListAdapter mAdapter = new DialogListAdapter(this, items, pm);
         binding.setAdapter(mAdapter);
         binding.dialogApplist.setHasFixedSize(true);
@@ -53,11 +58,19 @@ public class AppInfoDialog extends Activity {
             if (intent != null) {
                 AppInfo item = new AppInfo(appInfo.loadIcon(pm),
                         appInfo.loadLabel(pm).toString(),
-                        String.valueOf(appInfo.loadDescription(pm)));
+                        appInfo.packageName);
                 data.add(item);
             }
         }
 
         return data;
+    }
+
+    class AscPackages implements Comparator<AppInfo> {
+
+        @Override
+        public int compare(AppInfo appInfo, AppInfo t1) {
+            return appInfo.getName().compareTo(t1.getName());
+        }
     }
 }

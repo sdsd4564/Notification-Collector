@@ -16,7 +16,9 @@ public class PreferenceManager {
 
     private static PreferenceManager manager;
 
-    private PreferenceManager() {}
+    private PreferenceManager() {
+    }
+
     public static PreferenceManager getInstance() {
         if (manager == null)
             manager = new PreferenceManager();

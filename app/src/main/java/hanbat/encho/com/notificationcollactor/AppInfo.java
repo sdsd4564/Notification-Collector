@@ -1,17 +1,12 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageItemInfo;
 import android.databinding.BindingAdapter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
-
-/**
- * Created by USER on 2017-07-27.
- */
 
 public class AppInfo extends ApplicationInfo {
     private Drawable icon;
@@ -24,8 +19,9 @@ public class AppInfo extends ApplicationInfo {
         iv.setImageDrawable(drawable);
     }
 
-    public AppInfo(ApplicationInfo orig) {
-        super(orig);
+    @BindingAdapter({"setBackground"})
+    public static void setBackground(View view, boolean checked) {
+        view.setBackgroundColor(checked ? Color.MAGENTA : Color.WHITE);
     }
 
     public AppInfo(Drawable icon, String name, String packageName) {
@@ -68,7 +64,7 @@ public class AppInfo extends ApplicationInfo {
 
     public void onAppClicked(View view) {
         this.setSelected(!isSelected);
-        Toast.makeText(Application.getAppContext(), name + " : " + isSelected, Toast.LENGTH_SHORT).show();
-        view.setBackgroundColor(this.isSelected ? Color.CYAN : Color.WHITE);
+        Log.d("hanlog package check", packageName);
+        view.setBackgroundColor(this.isSelected ? Color.MAGENTA : Color.WHITE);
     }
 }

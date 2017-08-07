@@ -2,14 +2,13 @@ package hanbat.encho.com.notificationcollactor;
 
 import android.app.Notification;
 import android.content.pm.PackageManager;
-import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
-import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 /**
  * Created by USER on 2017-07-19.
@@ -31,8 +30,10 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         Notification mNotification = sbn.getNotification();
+        ArrayList<String> confirmedApps = PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages");
 
-        if (PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages").contains(sbn.getPackageName())) {
+        Toast.makeText(Application.getAppContext(), sbn.getPackageName() + "", Toast.LENGTH_SHORT).show();
+        if (confirmedApps.contains(sbn.getPackageName())) {
             Bundle extras = mNotification.extras;
             String title = extras.getString(Notification.EXTRA_TITLE);
             int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);

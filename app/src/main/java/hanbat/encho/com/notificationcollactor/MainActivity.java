@@ -1,7 +1,6 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
@@ -33,9 +32,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
         }
 
-//        Set<PackageInfo> selectedApp = new ArraySet<>();
+        ArrayList<String> confirmedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
+        if (confirmedApps.isEmpty()) {
+            Intent toDialog = new Intent(this, AppInfoDialog.class);
+            startActivityForResult(toDialog, 123);
+        } else
+            Toast.makeText(this, "선택된 앱 갯수 : " + confirmedApps.size(), Toast.LENGTH_SHORT).show();
 
-        //todo 앱 실행시 걸러낼 어플
+
 
 
         db = new DBhelper(this, "NC", null, 1);
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 123) {
             if (resultCode == RESULT_OK) {
                 ArrayList<String> selectedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
-                Toast.makeText(MainActivity.this, selectedApps.size() + "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "선택된 어플 갯수 : " + selectedApps.size(), Toast.LENGTH_SHORT).show();
 //                ArrayList<AppInfo> selectedApps = data.getParcelableArrayListExtra("apps");
 //                int size = selectedApps.size();
 //                Toast.makeText(this, size + "", Toast.LENGTH_SHORT).show();
@@ -73,13 +77,16 @@ public class MainActivity extends AppCompatActivity {
     public void onRefreshTouched(View view) {
         mAdapter.setList(db.getAllNotifications());
         mAdapter.notifyDataSetChanged();
-        Intent toDialog = new Intent(this, AppInfoDialog.class);
-        startActivityForResult(toDialog, 123);
     }
 
     public void onDeleteTouched(View view) {
         mAdapter.setList(db.dropAllNotifications());
         mAdapter.notifyDataSetChanged();
+    }
+
+    public void onCheckConfirmedApps(View view) {
+        Intent toDialog = new Intent(this, AppInfoDialog.class);
+        startActivityForResult(toDialog, 123);
     }
 
 

@@ -3,14 +3,12 @@ package hanbat.encho.com.notificationcollactor;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -41,6 +39,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
     @Override
     public void onBindViewHolder(DialogViewHolder holder, int position) {
         AppInfo app = items.get(position);
+        app.setSelected(PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages").contains(app.getPackageName()));
         holder.allowItemBinding.setApp(app);
     }
 
@@ -61,11 +60,10 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
     public void onAppCheckConfirm(View view) {
         Intent intent = new Intent();
         ArrayList<String> confirmedApps = new ArrayList<>();
-        for (AppInfo app : items) {
-            if (app.isSelected()) {
+        for (AppInfo app : items)
+            if (app.isSelected())
                 confirmedApps.add(app.getPackageName());
-            }
-        }
+
 
         PreferenceManager.getInstance().setStringArrayPref(mContext, "Packages", confirmedApps);
         ((AppInfoDialog) mContext).setResult(Activity.RESULT_OK, intent);
