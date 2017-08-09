@@ -33,13 +33,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         ArrayList<String> confirmedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
-        if (confirmedApps.isEmpty()) {
-            Intent toDialog = new Intent(this, AppInfoDialog.class);
-            startActivityForResult(toDialog, 123);
-        } else
+
+        if (confirmedApps.isEmpty())
+            startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
+        else
             Toast.makeText(this, "선택된 앱 갯수 : " + confirmedApps.size(), Toast.LENGTH_SHORT).show();
-
-
 
 
         db = new DBhelper(this, "NC", null, 1);
@@ -49,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<NotificationObject> items = db.getAllNotifications();
         mAdapter = new MainListAdapter(items);
         mainBinding.recyclerview.setAdapter(mAdapter);
-
     }
 
     @Override
