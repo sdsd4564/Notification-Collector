@@ -1,4 +1,4 @@
-package hanbat.encho.com.notificationcollactor;
+package hanbat.encho.com.notificationcollactor.AppListDialog;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -10,17 +10,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.v7.widget.GridLayoutManager;
-import android.util.Log;
 import android.view.Window;
-import android.widget.ProgressBar;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import hanbat.encho.com.notificationcollactor.AppListDialog.Adapter.DialogConfirmListAdapter;
+import hanbat.encho.com.notificationcollactor.Model.AppInfo;
+import hanbat.encho.com.notificationcollactor.Application;
+import hanbat.encho.com.notificationcollactor.AppListDialog.Adapter.DialogListAdapter;
+import hanbat.encho.com.notificationcollactor.PreferenceManager;
+import hanbat.encho.com.notificationcollactor.R;
 import hanbat.encho.com.notificationcollactor.databinding.CheckAllowedApplistBinding;
 
 /**
@@ -32,10 +36,12 @@ public class AppInfoDialog extends Activity {
     CheckAllowedApplistBinding binding;
     PackageManager pm;
     ArrayList<AppInfo> items;
+    ArrayList<AppInfo> confirmedItem;
     ProgressDialog loadingDialog;
+    Handler handler;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setFinishOnTouchOutside(false);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -50,12 +56,22 @@ public class AppInfoDialog extends Activity {
         getWindow().getAttributes().height = (int) (Application.getAppContext().getResources().getDisplayMetrics().heightPixels * 0.8);
         pm = Application.getAppContext().getPackageManager();
 
-        final Handler handler = new Handler() {
+        handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 loadingDialog.dismiss();
-                DialogListAdapter mAdapter = new DialogListAdapter(AppInfoDialog.this, items, pm);
+                ArrayList<AppInfo> confirmedApps = new ArrayList<>();
+                ArrayList<String> packages = PreferenceManager.getInstance().getStringArrayPref(AppInfoDialog.this, "Packages");
+                for (AppInfo appInfo : items) {
+                    if (packages.contains(appInfo.getPackageName()))
+                        confirmedApps.add(appInfo);
+                }
+                DialogListAdapter mAdapter = new DialogListAdapter(AppInfoDialog.this, items);
+                DialogConfirmListAdapter mConfirmedAdapter = new DialogConfirmListAdapter(confirmedApps, AppInfoDialog.this);
                 binding.setAdapter(mAdapter);
+                binding.dialogConfirmedApp.setHasFixedSize(true);
+                binding.dialogConfirmedApp.setLayoutManager(new GridLayoutManager(AppInfoDialog.this, 4));
+                binding.dialogConfirmedApp.setAdapter(mConfirmedAdapter);
                 binding.dialogApplist.setHasFixedSize(true);
                 binding.dialogApplist.setLayoutManager(new GridLayoutManager(AppInfoDialog.this, 4));
                 binding.dialogApplist.setAdapter(mAdapter);
@@ -86,13 +102,13 @@ public class AppInfoDialog extends Activity {
                 data.add(item);
             }
         }
-        data.sort(new AscPackages());
 
+        Collections.sort(data, new AscPackages());
 
         return data;
     }
 
-    class AscPackages implements Comparator<AppInfo> {
+    private class AscPackages implements Comparator<AppInfo> {
 
         @Override
         public int compare(AppInfo appInfo, AppInfo t1) {

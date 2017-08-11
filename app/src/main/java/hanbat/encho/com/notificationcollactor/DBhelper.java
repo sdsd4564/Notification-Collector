@@ -15,6 +15,8 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
+
 /**
  * Created by Encho on 2017-07-20.
  */

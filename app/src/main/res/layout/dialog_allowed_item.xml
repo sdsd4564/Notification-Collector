@@ -6,7 +6,7 @@
 
         <variable
             name="app"
-            type="hanbat.encho.com.notificationcollactor.AppInfo" />
+            type="hanbat.encho.com.notificationcollactor.Model.AppInfo" />
     </data>
 
     <LinearLayout
@@ -15,7 +15,6 @@
         android:layout_margin="4dp"
         android:clickable="true"
         android:onClick="@{app::onAppClicked}"
-        app:setBackground="@{app.selected}"
         android:orientation="vertical"
         android:padding="8dp">
 

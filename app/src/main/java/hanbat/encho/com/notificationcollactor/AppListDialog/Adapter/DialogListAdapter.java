@@ -1,9 +1,8 @@
-package hanbat.encho.com.notificationcollactor;
+package hanbat.encho.com.notificationcollactor.AppListDialog.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +11,10 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import hanbat.encho.com.notificationcollactor.Model.AppInfo;
+import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
+import hanbat.encho.com.notificationcollactor.PreferenceManager;
+import hanbat.encho.com.notificationcollactor.R;
 import hanbat.encho.com.notificationcollactor.databinding.DialogAllowedItemBinding;
 
 /**
@@ -20,14 +23,20 @@ import hanbat.encho.com.notificationcollactor.databinding.DialogAllowedItemBindi
 
 public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.DialogViewHolder> {
 
+    public interface OnMyItemCheckedChanged {
+        public void onItemCheckedChanged(AppInfo app);
+    }
+    private OnMyItemCheckedChanged mOnMyItemCheckedChanged;
     private ArrayList<AppInfo> items;
-    private PackageManager pm;
     private Context mContext;
 
-    public DialogListAdapter(Context mContext, ArrayList<AppInfo> items, PackageManager pm) {
+    public void setmOnMyItemCheckedChanged(OnMyItemCheckedChanged onMyItemCheckedChanged) {
+        this.mOnMyItemCheckedChanged = onMyItemCheckedChanged;
+    }
+
+    public DialogListAdapter(Context mContext, ArrayList<AppInfo> items) {
         this.mContext = mContext;
         this.items = items;
-        this.pm = pm;
     }
 
     @Override
@@ -39,9 +48,9 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
     @Override
     public void onBindViewHolder(DialogViewHolder holder, int position) {
         AppInfo app = items.get(position);
-        app.setSelected(PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages").contains(app.getPackageName()));
         holder.allowItemBinding.setApp(app);
     }
+
 
     @Override
     public int getItemCount() {
@@ -60,9 +69,9 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
     public void onAppCheckConfirm(View view) {
         Intent intent = new Intent();
         ArrayList<String> confirmedApps = new ArrayList<>();
-        for (AppInfo app : items)
-            if (app.isSelected())
-                confirmedApps.add(app.getPackageName());
+//        for (AppInfo app : items)
+//            if (app.isSelected())
+//                confirmedApps.add(app.getPackageName());
 
 
         PreferenceManager.getInstance().setStringArrayPref(mContext, "Packages", confirmedApps);

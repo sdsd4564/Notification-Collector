@@ -6,7 +6,7 @@
 
         <variable
             name="noti"
-            type="hanbat.encho.com.notificationcollactor.NotificationObject" />
+            type="hanbat.encho.com.notificationcollactor.Model.NotificationObject" />
 
     </data>
 

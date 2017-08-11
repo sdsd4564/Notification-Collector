@@ -5,10 +5,11 @@
 
         <variable
             name="dialog"
-            type="hanbat.encho.com.notificationcollactor.AppInfoDialog" />
+            type="hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog" />
+
         <variable
             name="adapter"
-            type="hanbat.encho.com.notificationcollactor.DialogListAdapter"/>
+            type="hanbat.encho.com.notificationcollactor.AppListDialog.Adapter.DialogListAdapter" />
     </data>
 
     <LinearLayout
@@ -19,10 +20,19 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Luxury Life"
-            android:textAlignment="center"
-            android:textSize="30sp" />
+            android:padding="16dp"
+            android:text="알립 수집 앱" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/dialog_confirmed_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="기기에 설치된 앱" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/dialog_applist"
@@ -36,9 +46,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginBottom="16dp"
-            android:onClick="@{(view) -> adapter.onAppCheckConfirm(view)}"
             android:layout_marginEnd="30dp"
             android:layout_marginTop="16dp"
+            android:onClick="@{(view) -> adapter.onAppCheckConfirm(view)}"
             android:text="@string/confirm"
             android:textSize="20sp" />
     </LinearLayout>

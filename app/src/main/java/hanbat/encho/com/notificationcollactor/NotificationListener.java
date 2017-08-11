@@ -10,13 +10,15 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
+
 /**
  * Created by USER on 2017-07-19.
  */
 
 public class NotificationListener extends NotificationListenerService {
 
-    public static NotificationListenerService mNotificationListenerService;
+    public NotificationListenerService mNotificationListenerService;
     private DBhelper db;
 
     @Override
@@ -32,7 +34,6 @@ public class NotificationListener extends NotificationListenerService {
         Notification mNotification = sbn.getNotification();
         ArrayList<String> confirmedApps = PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages");
 
-        Toast.makeText(Application.getAppContext(), sbn.getPackageName() + "", Toast.LENGTH_SHORT).show();
         if (confirmedApps.contains(sbn.getPackageName())) {
             Bundle extras = mNotification.extras;
             String title = extras.getString(Notification.EXTRA_TITLE);
@@ -55,5 +56,6 @@ public class NotificationListener extends NotificationListenerService {
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
+        super.onNotificationRemoved(sbn);
     }
 }

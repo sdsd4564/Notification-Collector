@@ -1,4 +1,4 @@
-package hanbat.encho.com.notificationcollactor;
+package hanbat.encho.com.notificationcollactor.Model;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;

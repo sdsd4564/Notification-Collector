@@ -1,4 +1,4 @@
-package hanbat.encho.com.notificationcollactor;
+package hanbat.encho.com.notificationcollactor.Model;
 
 import android.content.pm.ApplicationInfo;
 import android.databinding.BindingAdapter;
@@ -12,16 +12,10 @@ public class AppInfo extends ApplicationInfo {
     private Drawable icon;
     private String name;
     private String packageName;
-    private boolean isSelected = false;
 
     @BindingAdapter({"iconImage"})
     public static void loadDrawableImage(ImageView iv, Drawable drawable) {
         iv.setImageDrawable(drawable);
-    }
-
-    @BindingAdapter({"setBackground"})
-    public static void setBackground(View view, boolean checked) {
-        view.setBackgroundColor(checked ? Color.MAGENTA : Color.WHITE);
     }
 
     public AppInfo(Drawable icon, String name, String packageName) {
@@ -46,14 +40,6 @@ public class AppInfo extends ApplicationInfo {
         this.name = name;
     }
 
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean selected) {
-        isSelected = selected;
-    }
-
     public String getPackageName() {
         return packageName;
     }
@@ -63,8 +49,9 @@ public class AppInfo extends ApplicationInfo {
     }
 
     public void onAppClicked(View view) {
+        /*
         this.setSelected(!isSelected);
-        Log.d("hanlog package check", packageName);
         view.setBackgroundColor(this.isSelected ? Color.MAGENTA : Color.WHITE);
+        */
     }
 }

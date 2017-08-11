@@ -6,13 +6,14 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Set;
 
+import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
+import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {

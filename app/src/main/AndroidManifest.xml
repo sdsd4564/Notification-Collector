@@ -26,7 +26,7 @@
             </intent-filter>
         </service>
         <activity
-            android:name=".AppInfoDialog"
+            android:name=".AppListDialog.AppInfoDialog"
             android:theme="@style/dialog_light"/>
     </application>
 
