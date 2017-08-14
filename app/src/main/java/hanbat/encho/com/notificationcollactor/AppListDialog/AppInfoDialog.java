@@ -79,19 +79,19 @@ public class AppInfoDialog extends Activity {
                 binding.dialogApplist.setAdapter(mAdapter);
                 mAdapter.setmOnMyItemCheckedChanged(new DialogListAdapter.OnMyItemCheckedChanged() {
                     @Override
-                    public void onItemCheckedChanged(AppInfo app) {
+                    public void onItemCheckedChanged(AppInfo app, int position) {
                         items.remove(app);
                         confirmedApps.add(app);
-                        mAdapter.updateList(items);
+                        mAdapter.updateList(items, position);
                         mConfirmedAdapter.updateList(confirmedApps);
                     }
                 });
                 mConfirmedAdapter.setmOnMyItemCheckedChange(new DialogConfirmListAdapter.OnMyItemCheckedChange() {
                     @Override
-                    public void onItemCheckedChange(AppInfo appInfo) {
+                    public void onItemCheckedChange(AppInfo appInfo, int position) {
                         items.add(appInfo);
                         confirmedApps.remove(appInfo);
-                        mAdapter.updateList(items);
+                        mAdapter.updateList(items, position);
                         mConfirmedAdapter.updateList(confirmedApps);
                     }
                 });

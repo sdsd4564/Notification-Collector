@@ -24,7 +24,7 @@ import hanbat.encho.com.notificationcollactor.databinding.DialogAllowedItemBindi
 public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.DialogViewHolder> {
 
     public interface OnMyItemCheckedChanged {
-        void onItemCheckedChanged(AppInfo app);
+        void onItemCheckedChanged(AppInfo app, int position);
     }
 
     private OnMyItemCheckedChanged mOnMyItemCheckedChanged;
@@ -40,9 +40,10 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
         this.items = items;
     }
 
-    public void updateList(ArrayList<AppInfo> apps) {
+    public void updateList(ArrayList<AppInfo> apps, int position) {
         items = apps;
-        notifyDataSetChanged();
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, apps.size());
     }
 
     @Override
@@ -58,7 +59,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
         holder.allowItemBinding.appinfoItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnMyItemCheckedChanged.onItemCheckedChanged(app);
+                mOnMyItemCheckedChanged.onItemCheckedChanged(app, position);
             }
         });
     }

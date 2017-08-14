@@ -26,7 +26,7 @@ import hanbat.encho.com.notificationcollactor.databinding.DialogAllowedItemBindi
 public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirmListAdapter.DialogViewHolder> {
 
     public interface OnMyItemCheckedChange {
-        void onItemCheckedChange(AppInfo appInfo);
+        void onItemCheckedChange(AppInfo appInfo, int position);
     }
 
     private OnMyItemCheckedChange mOnMyItemCheckedChange;
@@ -54,13 +54,13 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
     }
 
     @Override
-    public void onBindViewHolder(DialogViewHolder holder, int position) {
+    public void onBindViewHolder(DialogViewHolder holder, final int position) {
         final AppInfo app = confirmApps.get(position);
         holder.binding.setApp(app);
         holder.binding.appinfoItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnMyItemCheckedChange.onItemCheckedChange(app);
+                mOnMyItemCheckedChange.onItemCheckedChange(app, position);
             }
         });
     }
