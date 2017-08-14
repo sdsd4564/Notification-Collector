@@ -47,11 +47,4 @@ public class AppInfo extends ApplicationInfo {
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
-
-    public void onAppClicked(View view) {
-        /*
-        this.setSelected(!isSelected);
-        view.setBackgroundColor(this.isSelected ? Color.MAGENTA : Color.WHITE);
-        */
-    }
 }

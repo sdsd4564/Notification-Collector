@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.Log;
 import android.view.Window;
 
 import java.util.ArrayList;
@@ -20,9 +20,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import hanbat.encho.com.notificationcollactor.AppListDialog.Adapter.DialogConfirmListAdapter;
-import hanbat.encho.com.notificationcollactor.Model.AppInfo;
-import hanbat.encho.com.notificationcollactor.Application;
 import hanbat.encho.com.notificationcollactor.AppListDialog.Adapter.DialogListAdapter;
+import hanbat.encho.com.notificationcollactor.Application;
+import hanbat.encho.com.notificationcollactor.Model.AppInfo;
 import hanbat.encho.com.notificationcollactor.PreferenceManager;
 import hanbat.encho.com.notificationcollactor.R;
 import hanbat.encho.com.notificationcollactor.databinding.CheckAllowedApplistBinding;
@@ -36,9 +36,11 @@ public class AppInfoDialog extends Activity {
     CheckAllowedApplistBinding binding;
     PackageManager pm;
     ArrayList<AppInfo> items;
-    ArrayList<AppInfo> confirmedItem;
+    ArrayList<AppInfo> confirmedApps;
     ProgressDialog loadingDialog;
     Handler handler;
+    DialogListAdapter mAdapter;
+    DialogConfirmListAdapter mConfirmedAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,23 +60,41 @@ public class AppInfoDialog extends Activity {
 
         handler = new Handler() {
             @Override
-            public void handleMessage(Message msg) {
+            public void handleMessage(final Message msg) {
                 loadingDialog.dismiss();
-                ArrayList<AppInfo> confirmedApps = new ArrayList<>();
+                final ArrayList<AppInfo> confirmedApps = new ArrayList<>();
                 ArrayList<String> packages = PreferenceManager.getInstance().getStringArrayPref(AppInfoDialog.this, "Packages");
                 for (AppInfo appInfo : items) {
                     if (packages.contains(appInfo.getPackageName()))
                         confirmedApps.add(appInfo);
                 }
-                DialogListAdapter mAdapter = new DialogListAdapter(AppInfoDialog.this, items);
-                DialogConfirmListAdapter mConfirmedAdapter = new DialogConfirmListAdapter(confirmedApps, AppInfoDialog.this);
+                mAdapter = new DialogListAdapter(AppInfoDialog.this, items);
+                mConfirmedAdapter = new DialogConfirmListAdapter(confirmedApps, AppInfoDialog.this);
                 binding.setAdapter(mAdapter);
-                binding.dialogConfirmedApp.setHasFixedSize(true);
+//                binding.dialogConfirmedApp.setHasFixedSize(true);
                 binding.dialogConfirmedApp.setLayoutManager(new GridLayoutManager(AppInfoDialog.this, 4));
                 binding.dialogConfirmedApp.setAdapter(mConfirmedAdapter);
-                binding.dialogApplist.setHasFixedSize(true);
+//                binding.dialogApplist.setHasFixedSize(true);
                 binding.dialogApplist.setLayoutManager(new GridLayoutManager(AppInfoDialog.this, 4));
                 binding.dialogApplist.setAdapter(mAdapter);
+                mAdapter.setmOnMyItemCheckedChanged(new DialogListAdapter.OnMyItemCheckedChanged() {
+                    @Override
+                    public void onItemCheckedChanged(AppInfo app) {
+                        items.remove(app);
+                        confirmedApps.add(app);
+                        mAdapter.updateList(items);
+                        mConfirmedAdapter.updateList(confirmedApps);
+                    }
+                });
+                mConfirmedAdapter.setmOnMyItemCheckedChange(new DialogConfirmListAdapter.OnMyItemCheckedChange() {
+                    @Override
+                    public void onItemCheckedChange(AppInfo appInfo) {
+                        items.add(appInfo);
+                        confirmedApps.remove(appInfo);
+                        mAdapter.updateList(items);
+                        mConfirmedAdapter.updateList(confirmedApps);
+                    }
+                });
             }
         };
 

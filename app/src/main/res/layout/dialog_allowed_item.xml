@@ -10,11 +10,11 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/appinfo_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:clickable="true"
-        android:onClick="@{app::onAppClicked}"
         android:orientation="vertical"
         android:padding="8dp">
 
