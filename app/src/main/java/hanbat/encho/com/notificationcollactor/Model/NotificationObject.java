@@ -27,6 +27,11 @@ public class NotificationObject {
         iv.setImageBitmap(b);
     }
 
+    @BindingAdapter({"resourceToDrawable"})
+    public static void resourceToDrawable(ImageView iv, int res) {
+        iv.setImageResource(res);
+    }
+
     public NotificationObject() {
     }
 

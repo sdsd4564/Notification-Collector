@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.setMain(this);
-
+        
         if (!isPermissionAllowed()) {
             Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_SHORT).show();
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
@@ -47,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
         db = new DBhelper(this, "NC", null, 1);
 
-        mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
         ArrayList<NotificationObject> items = db.getAllNotifications();
+        mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new MainListAdapter(items);
         mainBinding.recyclerview.setAdapter(mAdapter);
     }

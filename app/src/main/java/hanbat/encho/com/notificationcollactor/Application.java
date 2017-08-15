@@ -23,8 +23,4 @@ public class Application extends android.app.Application{
     public static Context getAppContext() {
         return mContext;
     }
-
-
-
-
 }

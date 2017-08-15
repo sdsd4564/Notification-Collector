@@ -45,7 +45,6 @@ public class DBhelper extends SQLiteOpenHelper {
         db.execSQL(sb);
 
         Toast.makeText(mContext, "데이터베이스 생성 완료", Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
@@ -56,6 +55,7 @@ public class DBhelper extends SQLiteOpenHelper {
 
     public void addNotification(NotificationObject object) {
         SQLiteDatabase db = getWritableDatabase();
+        Toast.makeText(Application.getAppContext(), "is it work?", Toast.LENGTH_SHORT).show();
         String sb = "INSERT INTO tempp " +
                 "(title, text, subtext, smallicon, largeicon, posttime, packagename) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -78,8 +78,8 @@ public class DBhelper extends SQLiteOpenHelper {
 //                object.getPackageName()
 //        });
         st.execute();
-
     }
+
     public ArrayList<NotificationObject> dropAllNotifications() {
         String query = "DELETE FROM tempp";
         SQLiteDatabase db = getWritableDatabase();

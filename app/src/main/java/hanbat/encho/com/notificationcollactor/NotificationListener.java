@@ -32,6 +32,7 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         Notification mNotification = sbn.getNotification();
+
         ArrayList<String> confirmedApps = PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages");
 
         if (confirmedApps.contains(sbn.getPackageName())) {
