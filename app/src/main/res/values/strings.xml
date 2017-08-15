@@ -3,4 +3,6 @@
     <string name="permission_check_message">알림 관리를 허용해주셔야 원활한 사용이 가능합니다</string>
     <string name="confirm">확인</string>
     <string name="loading_package_message">기기에 설치된 앱 목록 불러오는 중...</string>
+    <string name="dialog_text_message">기기에 설치된 앱</string>
+    <string name="dialog_text_message2">알립 수집 앱</string>
 </resources>

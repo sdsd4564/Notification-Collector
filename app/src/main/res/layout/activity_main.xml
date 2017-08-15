@@ -22,6 +22,15 @@
             android:gravity="end|center_vertical"
             android:orientation="horizontal">
 
+            <ImageButton
+                android:id="@+id/notitest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="notificationBuild"
+                style="?android:attr/buttonBarButtonStyle"
+                android:src="@mipmap/ic_launcher_round"
+                android:contentDescription="@string/confirm" />
+
             <Button
                 android:id="@+id/button3"
                 style="?android:attr/buttonBarButtonStyle"

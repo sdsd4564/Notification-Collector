@@ -25,6 +25,9 @@ import hanbat.encho.com.notificationcollactor.databinding.DialogAllowedItemBindi
 
 public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirmListAdapter.DialogViewHolder> {
 
+    public static final int NOTIFY_REMOVE = 15;
+    public static final int NOTIFY_INSERT = 16;
+
     public interface OnMyItemCheckedChange {
         void onItemCheckedChange(AppInfo appInfo, int position);
     }
@@ -42,9 +45,17 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
         this.mContext = mContext;
     }
 
-    public void updateList(ArrayList<AppInfo> apps) {
+    public void updateList(ArrayList<AppInfo> apps, int position, int notifyMode) {
         confirmApps = apps;
-        notifyDataSetChanged();
+        switch (notifyMode) {
+            case NOTIFY_REMOVE:
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, confirmApps.size());
+                break;
+            case NOTIFY_INSERT:
+                notifyDataSetChanged();
+                break;
+        }
     }
 
     @Override
@@ -80,23 +91,18 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
     }
 
     public void updateConfirmedAppListItem(ArrayList<AppInfo> apps) {
-        final AppInfoDiffCallback diffCallback = new AppInfoDiffCallback(this.confirmApps, apps);
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-
-        this.confirmApps.clear();
-        this.confirmApps.addAll(apps);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new AppInfoDiffCallback(this.confirmApps, apps));
         diffResult.dispatchUpdatesTo(this);
     }
 
     public void onAppCheckConfirm(View view) {
         Intent intent = new Intent();
-        ArrayList<String> confirmedApps = new ArrayList<>();
-//        for (AppInfo app : items)
-//            if (app.isSelected())
-//                confirmedApps.add(app.getPackageName());
+        ArrayList<String> apps = new ArrayList<>();
+        for (AppInfo app : confirmApps)
+            apps.add(app.getPackageName());
 
 
-        PreferenceManager.getInstance().setStringArrayPref(mContext, "Packages", confirmedApps);
+        PreferenceManager.getInstance().setStringArrayPref(mContext, "Packages", apps);
         ((AppInfoDialog) mContext).setResult(Activity.RESULT_OK, intent);
         ((AppInfoDialog) mContext).finish();
     }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,9 @@ import hanbat.encho.com.notificationcollactor.databinding.DialogAllowedItemBindi
 
 public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.DialogViewHolder> {
 
+    public static final int NOTIFY_REMOVE = 15;
+    public static final int NOTIFY_INSERT = 16;
+
     public interface OnMyItemCheckedChanged {
         void onItemCheckedChanged(AppInfo app, int position);
     }
@@ -40,10 +42,17 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
         this.items = items;
     }
 
-    public void updateList(ArrayList<AppInfo> apps, int position) {
+    public void updateList(ArrayList<AppInfo> apps, int position, int notifyMode) {
         items = apps;
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, apps.size());
+        switch (notifyMode) {
+            case NOTIFY_REMOVE:
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, items.size());
+                break;
+            case NOTIFY_INSERT:
+                notifyDataSetChanged();
+                break;
+        }
     }
 
     @Override
@@ -80,8 +89,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
     }
 
     public void updateAppListItem(List<AppInfo> apps) {
-        final AppInfoDiffCallback diffCallback = new AppInfoDiffCallback(this.items, apps);
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new AppInfoDiffCallback(this.items, apps));
 
         this.items.clear();
         this.items.addAll(apps);

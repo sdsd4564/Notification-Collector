@@ -1,9 +1,7 @@
 package hanbat.encho.com.notificationcollactor;
 
-import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import hanbat.encho.com.notificationcollactor.Model.AppInfo;
@@ -14,8 +12,8 @@ import hanbat.encho.com.notificationcollactor.Model.AppInfo;
 
 public class AppInfoDiffCallback extends DiffUtil.Callback {
 
-    private final List<AppInfo> mOldAppInfos;
-    private final List<AppInfo> mNewAppInfos;
+    private List<AppInfo> mOldAppInfos;
+    private List<AppInfo> mNewAppInfos;
 
     public AppInfoDiffCallback(List<AppInfo> mOldAppInfos, List<AppInfo> mNewAppInfos) {
         this.mOldAppInfos = mOldAppInfos;
@@ -39,16 +37,9 @@ public class AppInfoDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        final AppInfo oldAppInfo = mOldAppInfos.get(oldItemPosition);
-        final AppInfo newAppInfo = mNewAppInfos.get(newItemPosition);
+        AppInfo oldAppInfo = mOldAppInfos.get(oldItemPosition);
+        AppInfo newAppInfo = mNewAppInfos.get(newItemPosition);
 
-        return oldAppInfo.getName().equals(newAppInfo.getName())
-                && oldAppInfo.getIcon().equals(newAppInfo.getIcon());
-    }
-
-    @Nullable
-    @Override
-    public Object getChangePayload(int oldItemPosition, int newItemPosition) {
-        return super.getChangePayload(oldItemPosition, newItemPosition);
+        return oldAppInfo.getName().equals(newAppInfo.getName());
     }
 }

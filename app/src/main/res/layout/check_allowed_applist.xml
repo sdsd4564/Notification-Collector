@@ -8,10 +8,6 @@
             type="hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog" />
 
         <variable
-            name="adapter"
-            type="hanbat.encho.com.notificationcollactor.AppListDialog.Adapter.DialogListAdapter" />
-
-        <variable
             name="confirmAdapter"
             type="hanbat.encho.com.notificationcollactor.AppListDialog.Adapter.DialogConfirmListAdapter" />
     </data>
@@ -20,30 +16,41 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="알립 수집 앱" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/dialog_confirmed_app"
+        
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.7"/>
+            android:layout_weight="1">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="기기에 설치된 앱" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/dialog_applist"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="@string/dialog_text_message2" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/dialog_confirmed_app"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="@string/dialog_text_message" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/dialog_applist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
 
         <Button
             style="@style/Widget.AppCompat.Button.Borderless"

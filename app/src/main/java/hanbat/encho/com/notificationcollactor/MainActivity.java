@@ -1,7 +1,11 @@
 package hanbat.encho.com.notificationcollactor;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -98,5 +102,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    public void notificationBuild(View view) {
+        Notification.Builder mBuilder = new Notification.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.permission_check_message))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.notification))
+                .setOngoing(true)
+                .setAutoCancel(false);
+
+        NotificationManager mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mManager.notify(151, mBuilder.build());
     }
 }
