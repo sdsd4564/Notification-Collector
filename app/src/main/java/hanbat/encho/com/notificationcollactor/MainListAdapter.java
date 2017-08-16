@@ -1,6 +1,7 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.databinding.DataBindingUtil;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import hanbat.encho.com.notificationcollactor.DiffCallback.NotificationObjectDiffCallback;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBinding;
 
@@ -16,15 +18,11 @@ import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBindin
  * Created by USER on 2017-07-19.
  */
 
-public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainViewHolder> {
+class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainViewHolder> {
 
     private ArrayList<NotificationObject> items;
 
-    public MainListAdapter(ArrayList<NotificationObject> items) {
-        this.items = items;
-    }
-
-    public void setList(ArrayList<NotificationObject> items) {
+    MainListAdapter(ArrayList<NotificationObject> items) {
         this.items = items;
     }
 
@@ -35,8 +33,8 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainVi
     }
 
     @Override
-    public void onBindViewHolder(MainViewHolder holder, int position) {
-        NotificationObject obj = items.get(position);
+    public void onBindViewHolder(final MainViewHolder holder, int position) {
+        final NotificationObject obj = items.get(position);
         holder.binding.setNoti(obj);
     }
 
@@ -48,9 +46,17 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainVi
     class MainViewHolder extends RecyclerView.ViewHolder {
         NotificationItemBinding binding;
 
-        public MainViewHolder(View itemView) {
+        MainViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
         }
+    }
+
+    void updateNotificationList(ArrayList<NotificationObject> items) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new NotificationObjectDiffCallback(this.items, items));
+
+        this.items.clear();
+        this.items.addAll(items);
+        diffResult.dispatchUpdatesTo(this);
     }
 }

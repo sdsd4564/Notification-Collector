@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class NotificationListener extends NotificationListenerService {
 
     public NotificationListenerService mNotificationListenerService;
     private DBhelper db;
+    private String title;
 
     @Override
     public void onCreate() {
@@ -37,20 +39,15 @@ public class NotificationListener extends NotificationListenerService {
 
         if (confirmedApps.contains(sbn.getPackageName())) {
             Bundle extras = mNotification.extras;
-            String title = extras.getString(Notification.EXTRA_TITLE);
+            title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
             int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);
-            CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT);
+            CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
             CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
             Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
             long postTime = sbn.getPostTime();
             String packageName = sbn.getPackageName();
 
             NotificationObject obj = new NotificationObject(title, smallIcon, largeIcon, text, subText, postTime, packageName);
-            try {
-                obj.setIcon(getPackageManager().getResourcesForApplication(sbn.getPackageName()).getDrawable(extras.getInt(Notification.EXTRA_SMALL_ICON)));
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
             db.addNotification(obj);
         }
     }

@@ -1,4 +1,4 @@
-package hanbat.encho.com.notificationcollactor;
+package hanbat.encho.com.notificationcollactor.DiffCallback;
 
 import android.support.v7.util.DiffUtil;
 
@@ -22,24 +22,26 @@ public class AppInfoDiffCallback extends DiffUtil.Callback {
 
     @Override
     public int getOldListSize() {
-        return mOldAppInfos.size();
+        return mOldAppInfos == null ? 0 : mOldAppInfos.size();
     }
 
     @Override
     public int getNewListSize() {
-        return mNewAppInfos.size();
+        return mNewAppInfos == null ? 0 : mNewAppInfos.size();
     }
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        return mOldAppInfos.get(oldItemPosition).getPackageName().equals(mNewAppInfos.get(newItemPosition).getPackageName());
+        return mOldAppInfos.get(oldItemPosition).equals(mNewAppInfos.get(newItemPosition));
     }
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        AppInfo oldAppInfo = mOldAppInfos.get(oldItemPosition);
-        AppInfo newAppInfo = mNewAppInfos.get(newItemPosition);
+        final AppInfo oldAppInfo = mOldAppInfos.get(oldItemPosition);
+        final AppInfo newAppInfo = mNewAppInfos.get(newItemPosition);
 
-        return oldAppInfo.getName().equals(newAppInfo.getName());
+        return oldAppInfo.getName().equals(newAppInfo.getName())
+                && oldAppInfo.getIcon() == newAppInfo.getIcon()
+                && oldAppInfo.getPackageName().equals(newAppInfo.getPackageName());
     }
 }

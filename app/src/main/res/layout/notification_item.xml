@@ -13,8 +13,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -27,16 +27,24 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginEnd="8dp"
-                app:resourceToDrawable="@{noti.smallIcon}" />
+                android:contentDescription="@string/app_name"
+                android:src="@{noti.smallIcon}" />
 
             <TextView
                 android:id="@+id/tvTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="2"
                 android:text="@{noti.title}"
                 android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="12dp"
+                android:textSize="12sp"
+                app:longToDate="@{noti.postTime}" />
 
         </LinearLayout>
 
@@ -46,7 +54,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
@@ -55,19 +63,17 @@
                 <TextView
                     android:id="@+id/tvText"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="4dp"
-                    android:layout_weight="1"
                     android:text="@{noti.title}"
-                    android:textSize="16sp" />
+                    android:textSize="17sp" />
 
                 <TextView
                     android:id="@+id/tvSubText"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
                     android:text="@{noti.text}"
                     android:textSize="14sp" />
 
@@ -77,10 +83,9 @@
                 android:id="@+id/ivIcon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                app:imageBitmap="@{noti.largeIcon}" />
+                app:imageBitmap="@{noti.largeIcon}"
+                android:contentDescription="@string/app_name" />
 
         </LinearLayout>
-
     </LinearLayout>
-
 </layout>

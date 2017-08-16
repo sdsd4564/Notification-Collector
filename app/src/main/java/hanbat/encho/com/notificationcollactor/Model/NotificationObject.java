@@ -1,12 +1,18 @@
 package hanbat.encho.com.notificationcollactor.Model;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.text.format.DateUtils;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by Encho on 2017-07-19.
@@ -16,7 +22,6 @@ public class NotificationObject {
     private String title;
     private int smallIcon;
     private Bitmap largeIcon;
-    private Drawable icon;
     private CharSequence text;
     private CharSequence subText;
     private long postTime;
@@ -27,9 +32,23 @@ public class NotificationObject {
         iv.setImageBitmap(b);
     }
 
-    @BindingAdapter({"resourceToDrawable"})
+    @BindingAdapter({"android:src"})
     public static void resourceToDrawable(ImageView iv, int res) {
-        iv.setImageResource(res);
+        try {
+            iv.setImageResource(res);
+        } catch (Resources.NotFoundException e) {
+            iv.setVisibility(View.GONE);
+        }
+    }
+
+    @BindingAdapter({"longToDate"})
+    public static void longToDate(TextView tv, long time) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        long now = System.currentTimeMillis();
+
+        CharSequence ago = DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS);
+        tv.setText(ago);
     }
 
     public NotificationObject() {
@@ -101,11 +120,4 @@ public class NotificationObject {
         this.packageName = packageName;
     }
 
-    public Drawable getIcon() {
-        return icon;
-    }
-
-    public void setIcon(Drawable icon) {
-        this.icon = icon;
-    }
 }

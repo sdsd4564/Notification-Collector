@@ -34,10 +34,9 @@ public class AppInfoDialog extends Activity {
 
     CheckAllowedApplistBinding binding;
     PackageManager pm;
-    ArrayList<AppInfo> items;
-    ArrayList<AppInfo> confirmedApps;
+    ArrayList<AppInfo> items, itemsClone;
+    ArrayList<AppInfo> confirmedApps, confirmedAppsClone;
     ProgressDialog loadingDialog;
-    Handler handler;
     DialogListAdapter mAdapter;
     DialogConfirmListAdapter mConfirmedAdapter;
     AscPackages sort;
@@ -57,64 +56,72 @@ public class AppInfoDialog extends Activity {
         loadingDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
         loadingDialog.show();
 
-        getWindow().getAttributes().width = (int) (Application.getAppContext().getResources().getDisplayMetrics().widthPixels);
+        getWindow().getAttributes().width = (int) (Application.getAppContext().getResources().getDisplayMetrics().widthPixels * 0.9);
         getWindow().getAttributes().height = (int) (Application.getAppContext().getResources().getDisplayMetrics().heightPixels * 0.9);
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        handler = new Handler() {
-            @Override
-            public void handleMessage(final Message msg) {
-                loadingDialog.dismiss();
-
-                confirmedApps = new ArrayList<>();
-                ArrayList<String> packages = PreferenceManager.getInstance().getStringArrayPref(AppInfoDialog.this, "Packages");
-
-                //설치된 앱 리스트에서 승인된 앱 리스트에 추가///////////////
-                for (AppInfo appInfo : items)
-                    if (packages.contains(appInfo.getPackageName()))
-                        confirmedApps.add(appInfo);
-                //설치된 앱 리스트에서 승인앱 제외////////////////////////
-                for (AppInfo app : confirmedApps)
-                    items.remove(app);
-                ////////////////////////////////////////////////////
-
-                mAdapter = new DialogListAdapter(AppInfoDialog.this, items);
-                mConfirmedAdapter = new DialogConfirmListAdapter(confirmedApps, AppInfoDialog.this);
-                binding.setConfirmAdapter(mConfirmedAdapter);
-                binding.dialogConfirmedApp.setLayoutManager(new GridLayoutManager(AppInfoDialog.this, 4));
-                binding.dialogConfirmedApp.setAdapter(mConfirmedAdapter);
-                binding.dialogApplist.setLayoutManager(new GridLayoutManager(AppInfoDialog.this, 4));
-                binding.dialogApplist.setAdapter(mAdapter);
-
-                mAdapter.setmOnMyItemCheckedChanged(new DialogListAdapter.OnMyItemCheckedChanged() {
-                    @Override
-                    public void onItemCheckedChanged(AppInfo app, int position) {
-                        confirmedApps.add(app);
-                        Collections.sort(confirmedApps, sort);
-                        items.remove(app);
-                        mAdapter.updateList(items, position, DialogListAdapter.NOTIFY_REMOVE);
-                        mConfirmedAdapter.updateList(confirmedApps, position, DialogConfirmListAdapter.NOTIFY_INSERT);
-                    }
-                });
-
-                mConfirmedAdapter.setmOnMyItemCheckedChange(new DialogConfirmListAdapter.OnMyItemCheckedChange() {
-                    @Override
-                    public void onItemCheckedChange(AppInfo appInfo, int position) {
-                        items.add(appInfo);
-                        Collections.sort(items, sort);
-                        confirmedApps.remove(appInfo);
-                        mAdapter.updateList(items, position, DialogListAdapter.NOTIFY_INSERT);
-                        mConfirmedAdapter.updateList(confirmedApps, position, DialogConfirmListAdapter.NOTIFY_REMOVE);
-                    }
-                });
-            }
-        };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         new Thread(new Runnable() {
             @Override
             public void run() {
                 items = getPackageList();
-                handler.sendEmptyMessage(0);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadingDialog.dismiss();
+                        confirmedApps = new ArrayList<>();
+                        itemsClone = new ArrayList<>();
+                        confirmedAppsClone = new ArrayList<>();
+                        ArrayList<String> packages = PreferenceManager.getInstance().getStringArrayPref(AppInfoDialog.this, "Packages");
+
+                        //설치된 앱 리스트에서 승인된 앱 리스트에 추가///////////////
+                        for (AppInfo appInfo : items)
+                            if (packages.contains(appInfo.getPackageName()))
+                                confirmedApps.add(appInfo);
+                        //설치된 앱 리스트에서 승인앱 제외////////////////////////
+                        for (AppInfo app : confirmedApps)
+                            items.remove(app);
+                        ////////////////////////////////////////////////////
+
+                        mAdapter = new DialogListAdapter(items);
+                        mConfirmedAdapter = new DialogConfirmListAdapter(confirmedApps, AppInfoDialog.this);
+                        binding.setConfirmAdapter(mConfirmedAdapter);
+                        binding.dialogConfirmedApp.setLayoutManager(new GridLayoutManager(AppInfoDialog.this, 4));
+                        binding.dialogConfirmedApp.setAdapter(mConfirmedAdapter);
+                        binding.dialogApplist.setLayoutManager(new GridLayoutManager(AppInfoDialog.this, 4));
+                        binding.dialogApplist.setAdapter(mAdapter);
+
+                        mAdapter.setmOnMyItemCheckedChanged(new DialogListAdapter.OnMyItemCheckedChanged() {
+                            @Override
+                            public void onItemCheckedChanged(AppInfo app) {
+                                itemsClone.clear();
+                                confirmedAppsClone.clear();
+                                itemsClone.addAll(items);
+                                confirmedAppsClone.addAll(confirmedApps);
+                                confirmedAppsClone.add(app);
+                                Collections.sort(confirmedAppsClone, sort);
+                                itemsClone.remove(app);
+                                mAdapter.updateAppListItem(itemsClone);
+                                mConfirmedAdapter.updateConfirmedAppListItem(confirmedAppsClone);
+                            }
+                        });
+
+                        mConfirmedAdapter.setmOnMyItemCheckedChange(new DialogConfirmListAdapter.OnMyItemCheckedChange() {
+                            @Override
+                            public void onItemCheckedChange(AppInfo appInfo) {
+                                itemsClone.clear();
+                                confirmedAppsClone.clear();
+                                itemsClone.addAll(items);
+                                confirmedAppsClone.addAll(confirmedApps);
+                                itemsClone.add(appInfo);
+                                Collections.sort(itemsClone, sort);
+                                confirmedAppsClone.remove(appInfo);
+                                mAdapter.updateAppListItem(itemsClone);
+                                mConfirmedAdapter.updateConfirmedAppListItem(confirmedAppsClone);
+                            }
+                        });
+                    }
+                });
             }
         }).start();
     }

@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,11 +22,11 @@ import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
  * Created by Encho on 2017-07-20.
  */
 
-public class DBhelper extends SQLiteOpenHelper {
+class DBhelper extends SQLiteOpenHelper {
 
     private Context mContext;
 
-    public DBhelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    DBhelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
         mContext = context;
     }
@@ -53,7 +54,7 @@ public class DBhelper extends SQLiteOpenHelper {
     }
 
 
-    public void addNotification(NotificationObject object) {
+    void addNotification(NotificationObject object) {
         SQLiteDatabase db = getWritableDatabase();
         Toast.makeText(Application.getAppContext(), "is it work?", Toast.LENGTH_SHORT).show();
         String sb = "INSERT INTO tempp " +
@@ -65,7 +66,7 @@ public class DBhelper extends SQLiteOpenHelper {
         st.bindString(2, String.valueOf(object.getText()));
         st.bindString(3, String.valueOf(object.getSubText() == null ? "No Sub-Text" : object.getSubText()));
         st.bindLong(4, object.getSmallIcon());
-        Drawable d = mContext.getResources().getDrawable(R.mipmap.ic_launcher);
+        Drawable d = ContextCompat.getDrawable(mContext, R.mipmap.ic_launcher);
         st.bindBlob(5, object.getLargeIcon() == null ? getByteArrayFromBitmap(((BitmapDrawable) d).getBitmap()) : getByteArrayFromBitmap(object.getLargeIcon()));
         st.bindLong(6, object.getPostTime());
         st.bindString(7, object.getPackageName());
@@ -80,14 +81,14 @@ public class DBhelper extends SQLiteOpenHelper {
         st.execute();
     }
 
-    public ArrayList<NotificationObject> dropAllNotifications() {
+    ArrayList<NotificationObject> dropAllNotifications() {
         String query = "DELETE FROM tempp";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query);
         return getAllNotifications();
     }
 
-    public ArrayList<NotificationObject> getAllNotifications() {
+    ArrayList<NotificationObject> getAllNotifications() {
         String query = "SELECT * FROM tempp";
 
         SQLiteDatabase db = getReadableDatabase();
@@ -97,7 +98,6 @@ public class DBhelper extends SQLiteOpenHelper {
         NotificationObject obj;
 
         while (cursor.moveToNext()) {
-            Log.w("HanLOG check blob", cursor.getBlob(4) == null ? "No Photo" : "Has Photo");
             byte[] largeIcon = cursor.getBlob(4);
 
 

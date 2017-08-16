@@ -63,28 +63,16 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 ArrayList<String> selectedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
                 Toast.makeText(MainActivity.this, "선택된 어플 갯수 : " + selectedApps.size(), Toast.LENGTH_SHORT).show();
-//                ArrayList<AppInfo> selectedApps = data.getParcelableArrayListExtra("apps");
-//                int size = selectedApps.size();
-//                Toast.makeText(this, size + "", Toast.LENGTH_SHORT).show();
-//                Log.d("hanlog item check", selectedApps.get(0).getName());
-//                PreferenceManager manager = new PreferenceManager();
-//                ArrayList<String> selectedAppNames = new ArrayList<>();
-//                for (AppInfo app : selectedApps) {
-//                    selectedAppNames.add(app.getPackageName());
-//                }
-//                manager.setStringArrayPref(this, "Packages", selectedAppNames);
             }
         }
     }
 
     public void onRefreshTouched(View view) {
-        mAdapter.setList(db.getAllNotifications());
-        mAdapter.notifyDataSetChanged();
+        mAdapter.updateNotificationList(db.getAllNotifications());
     }
 
     public void onDeleteTouched(View view) {
-        mAdapter.setList(db.dropAllNotifications());
-        mAdapter.notifyDataSetChanged();
+        mAdapter.updateNotificationList(db.dropAllNotifications());
     }
 
     public void onCheckConfirmedApps(View view) {

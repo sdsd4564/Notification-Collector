@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import hanbat.encho.com.notificationcollactor.AppInfoDiffCallback;
+import hanbat.encho.com.notificationcollactor.DiffCallback.AppInfoDiffCallback;
 import hanbat.encho.com.notificationcollactor.Model.AppInfo;
 import hanbat.encho.com.notificationcollactor.R;
 import hanbat.encho.com.notificationcollactor.databinding.DialogAllowedItemBinding;
@@ -22,37 +23,19 @@ import hanbat.encho.com.notificationcollactor.databinding.DialogAllowedItemBindi
 
 public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.DialogViewHolder> {
 
-    public static final int NOTIFY_REMOVE = 15;
-    public static final int NOTIFY_INSERT = 16;
-
-    public interface OnMyItemCheckedChanged {
-        void onItemCheckedChanged(AppInfo app, int position);
-    }
-
     private OnMyItemCheckedChanged mOnMyItemCheckedChanged;
     private ArrayList<AppInfo> items;
-    private Context mContext;
+
+    public DialogListAdapter(ArrayList<AppInfo> items) {
+        this.items = items;
+    }
 
     public void setmOnMyItemCheckedChanged(OnMyItemCheckedChanged onMyItemCheckedChanged) {
         this.mOnMyItemCheckedChanged = onMyItemCheckedChanged;
     }
 
-    public DialogListAdapter(Context mContext, ArrayList<AppInfo> items) {
-        this.mContext = mContext;
-        this.items = items;
-    }
-
-    public void updateList(ArrayList<AppInfo> apps, int position, int notifyMode) {
-        items = apps;
-        switch (notifyMode) {
-            case NOTIFY_REMOVE:
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, items.size());
-                break;
-            case NOTIFY_INSERT:
-                notifyDataSetChanged();
-                break;
-        }
+    public interface OnMyItemCheckedChanged {
+        void onItemCheckedChanged(AppInfo app);
     }
 
     @Override
@@ -62,22 +45,23 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
     }
 
     @Override
-    public void onBindViewHolder(DialogViewHolder holder, final int position) {
+    public void onBindViewHolder(final DialogViewHolder holder, int position) {
         final AppInfo app = items.get(position);
         holder.allowItemBinding.setApp(app);
-        holder.allowItemBinding.appinfoItem.setOnClickListener(new View.OnClickListener() {
+        holder.allowItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnMyItemCheckedChanged.onItemCheckedChanged(app, position);
+                mOnMyItemCheckedChanged.onItemCheckedChanged(app);
             }
         });
     }
-
 
     @Override
     public int getItemCount() {
         return items == null ? 0 : items.size();
     }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     class DialogViewHolder extends RecyclerView.ViewHolder {
         DialogAllowedItemBinding allowItemBinding;
@@ -88,11 +72,12 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
         }
     }
 
-    public void updateAppListItem(List<AppInfo> apps) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new AppInfoDiffCallback(this.items, apps));
+    public void updateAppListItem(ArrayList<AppInfo> items) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new AppInfoDiffCallback(this.items, items));
 
         this.items.clear();
-        this.items.addAll(apps);
-        diffResult.dispatchUpdatesTo(this);
+        this.items.addAll(items);
+
+        diffResult.dispatchUpdatesTo(DialogListAdapter.this);
     }
 }

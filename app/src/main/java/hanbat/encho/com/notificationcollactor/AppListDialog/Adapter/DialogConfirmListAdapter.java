@@ -6,13 +6,14 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import hanbat.encho.com.notificationcollactor.AppInfoDiffCallback;
+import hanbat.encho.com.notificationcollactor.DiffCallback.AppInfoDiffCallback;
 import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
 import hanbat.encho.com.notificationcollactor.Model.AppInfo;
 import hanbat.encho.com.notificationcollactor.PreferenceManager;
@@ -25,14 +26,8 @@ import hanbat.encho.com.notificationcollactor.databinding.DialogAllowedItemBindi
 
 public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirmListAdapter.DialogViewHolder> {
 
-    public static final int NOTIFY_REMOVE = 15;
-    public static final int NOTIFY_INSERT = 16;
-
-    public interface OnMyItemCheckedChange {
-        void onItemCheckedChange(AppInfo appInfo, int position);
-    }
-
     private OnMyItemCheckedChange mOnMyItemCheckedChange;
+
     private ArrayList<AppInfo> confirmApps;
     private Context mContext;
 
@@ -45,17 +40,8 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
         this.mContext = mContext;
     }
 
-    public void updateList(ArrayList<AppInfo> apps, int position, int notifyMode) {
-        confirmApps = apps;
-        switch (notifyMode) {
-            case NOTIFY_REMOVE:
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, confirmApps.size());
-                break;
-            case NOTIFY_INSERT:
-                notifyDataSetChanged();
-                break;
-        }
+    public interface OnMyItemCheckedChange {
+        void onItemCheckedChange(AppInfo appInfo);
     }
 
     @Override
@@ -65,13 +51,13 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
     }
 
     @Override
-    public void onBindViewHolder(DialogViewHolder holder, final int position) {
+    public void onBindViewHolder(final DialogViewHolder holder, int position) {
         final AppInfo app = confirmApps.get(position);
         holder.binding.setApp(app);
-        holder.binding.appinfoItem.setOnClickListener(new View.OnClickListener() {
+        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnMyItemCheckedChange.onItemCheckedChange(app, position);
+                mOnMyItemCheckedChange.onItemCheckedChange(app);
             }
         });
     }
@@ -90,9 +76,12 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
         }
     }
 
-    public void updateConfirmedAppListItem(ArrayList<AppInfo> apps) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new AppInfoDiffCallback(this.confirmApps, apps));
-        diffResult.dispatchUpdatesTo(this);
+    public void updateConfirmedAppListItem(ArrayList<AppInfo> confirmApps) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new AppInfoDiffCallback(this.confirmApps, confirmApps));
+
+        this.confirmApps.clear();
+        this.confirmApps.addAll(confirmApps);
+        diffResult.dispatchUpdatesTo(DialogConfirmListAdapter.this);
     }
 
     public void onAppCheckConfirm(View view) {
