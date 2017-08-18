@@ -36,9 +36,14 @@ public class NotificationListener extends NotificationListenerService {
         Notification mNotification = sbn.getNotification();
 
         ArrayList<String> confirmedApps = PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages");
-
+        Bundle extras = mNotification.extras;
         if (confirmedApps.contains(sbn.getPackageName())) {
-            Bundle extras = mNotification.extras;
+
+            for (String key : extras.keySet()) {
+                Log.d("data check", "key=" + key + " : " + extras.get(key));
+            }
+            Log.d("data check", "key=");
+
             title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
             int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);
             CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
@@ -47,8 +52,10 @@ public class NotificationListener extends NotificationListenerService {
             long postTime = sbn.getPostTime();
             String packageName = sbn.getPackageName();
 
+
             NotificationObject obj = new NotificationObject(title, smallIcon, largeIcon, text, subText, postTime, packageName);
-            db.addNotification(obj);
+            if (text != "" && !title.equals(""))
+                db.addNotification(obj);
         }
     }
 

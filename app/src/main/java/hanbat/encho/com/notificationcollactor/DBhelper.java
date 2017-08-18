@@ -56,7 +56,6 @@ class DBhelper extends SQLiteOpenHelper {
 
     void addNotification(NotificationObject object) {
         SQLiteDatabase db = getWritableDatabase();
-        Toast.makeText(Application.getAppContext(), "is it work?", Toast.LENGTH_SHORT).show();
         String sb = "INSERT INTO tempp " +
                 "(title, text, subtext, smallicon, largeicon, posttime, packagename) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";

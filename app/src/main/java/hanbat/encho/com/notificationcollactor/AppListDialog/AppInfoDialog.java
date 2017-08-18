@@ -83,6 +83,9 @@ public class AppInfoDialog extends Activity {
                             items.remove(app);
                         ////////////////////////////////////////////////////
 
+                        itemsClone.addAll(items);
+                        confirmedAppsClone.addAll(confirmedApps);
+
                         mAdapter = new DialogListAdapter(items);
                         mConfirmedAdapter = new DialogConfirmListAdapter(confirmedApps, AppInfoDialog.this);
                         binding.setConfirmAdapter(mConfirmedAdapter);
@@ -94,10 +97,6 @@ public class AppInfoDialog extends Activity {
                         mAdapter.setmOnMyItemCheckedChanged(new DialogListAdapter.OnMyItemCheckedChanged() {
                             @Override
                             public void onItemCheckedChanged(AppInfo app) {
-                                itemsClone.clear();
-                                confirmedAppsClone.clear();
-                                itemsClone.addAll(items);
-                                confirmedAppsClone.addAll(confirmedApps);
                                 confirmedAppsClone.add(app);
                                 Collections.sort(confirmedAppsClone, sort);
                                 itemsClone.remove(app);
@@ -109,10 +108,6 @@ public class AppInfoDialog extends Activity {
                         mConfirmedAdapter.setmOnMyItemCheckedChange(new DialogConfirmListAdapter.OnMyItemCheckedChange() {
                             @Override
                             public void onItemCheckedChange(AppInfo appInfo) {
-                                itemsClone.clear();
-                                confirmedAppsClone.clear();
-                                itemsClone.addAll(items);
-                                confirmedAppsClone.addAll(confirmedApps);
                                 itemsClone.add(appInfo);
                                 Collections.sort(itemsClone, sort);
                                 confirmedAppsClone.remove(appInfo);
