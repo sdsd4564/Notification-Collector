@@ -31,11 +31,18 @@
                 android:src="@{noti.smallIcon}" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:text="@{noti.appName}"
+                android:textSize="13sp" />
+
+            <TextView
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:text="@{noti.title}"
+                android:text="@{noti.subText}"
                 android:textSize="12sp" />
 
             <TextView
@@ -83,8 +90,8 @@
                 android:id="@+id/ivIcon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                app:imageBitmap="@{noti.largeIcon}"
-                android:contentDescription="@string/app_name" />
+                android:contentDescription="@string/app_name"
+                app:imageBitmap="@{noti.largeIcon}" />
 
         </LinearLayout>
     </LinearLayout>

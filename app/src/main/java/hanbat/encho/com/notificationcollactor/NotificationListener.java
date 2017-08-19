@@ -1,6 +1,7 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.app.Notification;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 
@@ -21,7 +23,7 @@ public class NotificationListener extends NotificationListenerService {
 
     public NotificationListenerService mNotificationListenerService;
     private DBhelper db;
-    private String title;
+    private PackageManager pm;
 
     @Override
     public void onCreate() {
@@ -34,26 +36,22 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         Notification mNotification = sbn.getNotification();
+        pm = Application.getAppContext().getPackageManager();
 
         ArrayList<String> confirmedApps = PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages");
         Bundle extras = mNotification.extras;
         if (confirmedApps.contains(sbn.getPackageName())) {
-
-            for (String key : extras.keySet()) {
-                Log.d("data check", "key=" + key + " : " + extras.get(key));
-            }
-            Log.d("data check", "key=");
-
-            title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
+            String title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
             int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);
             CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
             CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
             Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
             long postTime = sbn.getPostTime();
             String packageName = sbn.getPackageName();
+            ApplicationInfo app = (ApplicationInfo) extras.get("android.appInfo");
+            CharSequence appName = app != null ? app.loadLabel(pm) : null;
 
-
-            NotificationObject obj = new NotificationObject(title, smallIcon, largeIcon, text, subText, postTime, packageName);
+            NotificationObject obj = new NotificationObject(title, smallIcon, largeIcon, text, subText, postTime, packageName, appName);
             if (text != "" && !title.equals(""))
                 db.addNotification(obj);
         }

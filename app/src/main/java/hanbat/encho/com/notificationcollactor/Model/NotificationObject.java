@@ -26,6 +26,7 @@ public class NotificationObject {
     private CharSequence subText;
     private long postTime;
     private String packageName;
+    private CharSequence appName;
 
     @BindingAdapter({"imageBitmap"})
     public static void loadImage(ImageView iv, Bitmap b) {
@@ -54,7 +55,7 @@ public class NotificationObject {
     public NotificationObject() {
     }
 
-    public NotificationObject(String title, int smallIcon, Bitmap largeIcon, CharSequence text, CharSequence subText, long postTime, String packageName) {
+    public NotificationObject(String title, int smallIcon, Bitmap largeIcon, CharSequence text, CharSequence subText, long postTime, String packageName, CharSequence appName) {
         this.title = title;
         this.smallIcon = smallIcon;
         this.largeIcon = largeIcon;
@@ -62,6 +63,7 @@ public class NotificationObject {
         this.subText = subText;
         this.postTime = postTime;
         this.packageName = packageName;
+        this.appName = appName;
     }
 
     public Bitmap getLargeIcon() {
@@ -118,6 +120,14 @@ public class NotificationObject {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public CharSequence getAppName() {
+        return appName;
+    }
+
+    public void setAppName(CharSequence appName) {
+        this.appName = appName;
     }
 
 }

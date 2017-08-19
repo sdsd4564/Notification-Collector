@@ -40,7 +40,8 @@ class DBhelper extends SQLiteOpenHelper {
                 "smallicon INTEGER," +
                 "largeicon BLOB," +
                 "posttime INTEGER," +
-                "packagename TEXT ) ";
+                "packagename TEXT," +
+                "appname TEXT) ";
 
         db.execSQL("DROP TABLE IF EXISTS tempp");
         db.execSQL(sb);
@@ -57,26 +58,20 @@ class DBhelper extends SQLiteOpenHelper {
     void addNotification(NotificationObject object) {
         SQLiteDatabase db = getWritableDatabase();
         String sb = "INSERT INTO tempp " +
-                "(title, text, subtext, smallicon, largeicon, posttime, packagename) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "(title, text, subtext, smallicon, largeicon, posttime, packagename, appname) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         SQLiteStatement st = db.compileStatement(sb);
-        st.bindString(1, object.getTitle() == null ? "No Title" : object.getTitle());
+        st.bindString(1, object.getTitle() == null ? "" : object.getTitle());
         st.bindString(2, String.valueOf(object.getText()));
-        st.bindString(3, String.valueOf(object.getSubText() == null ? "No Sub-Text" : object.getSubText()));
+        st.bindString(3, String.valueOf(object.getSubText() == null ? "" : object.getSubText()));
         st.bindLong(4, object.getSmallIcon());
         Drawable d = ContextCompat.getDrawable(mContext, R.mipmap.ic_launcher);
         st.bindBlob(5, object.getLargeIcon() == null ? getByteArrayFromBitmap(((BitmapDrawable) d).getBitmap()) : getByteArrayFromBitmap(object.getLargeIcon()));
         st.bindLong(6, object.getPostTime());
         st.bindString(7, object.getPackageName());
-//        db.execSQL(sb, new Object[]{
-//                object.getTitle(),
-//                object.getText(),
-//                object.getSubText(),
-//                object.getSmallIcon(),
-//                object.getPostTime(),
-//                object.getPackageName()
-//        });
+        st.bindString(8, String.valueOf(object.getAppName()));
+
         st.execute();
     }
 
@@ -105,10 +100,10 @@ class DBhelper extends SQLiteOpenHelper {
             obj.setText(cursor.getString(1));
             obj.setSubText(cursor.getString(2));
             obj.setSmallIcon(cursor.getInt(3));
-
             obj.setLargeIcon(getImage(largeIcon));
             obj.setPostTime(cursor.getLong(5));
             obj.setPackageName(cursor.getString(6));
+            obj.setAppName(cursor.getString(7));
 
             list.add(obj);
         }
