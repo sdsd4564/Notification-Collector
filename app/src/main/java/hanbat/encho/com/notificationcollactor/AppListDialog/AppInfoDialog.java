@@ -92,6 +92,7 @@ public class AppInfoDialog extends Activity {
                         binding.dialogConfirmedApp.setLayoutManager(new GridLayoutManager(AppInfoDialog.this, 4));
                         binding.dialogConfirmedApp.setAdapter(mConfirmedAdapter);
                         binding.dialogApplist.setLayoutManager(new GridLayoutManager(AppInfoDialog.this, 4));
+                        binding.dialogApplist.setNestedScrollingEnabled(false);
                         binding.dialogApplist.setAdapter(mAdapter);
 
                         mAdapter.setmOnMyItemCheckedChanged(new DialogListAdapter.OnMyItemCheckedChanged() {

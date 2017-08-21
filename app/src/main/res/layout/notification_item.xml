@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.view.View"/>
+
         <variable
             name="noti"
             type="hanbat.encho.com.notificationcollactor.Model.NotificationObject" />
@@ -42,8 +44,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
+                android:layout_marginStart="12dp"
                 android:text="@{noti.subText}"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="@{noti.subText.length > 0 ? View.VISIBLE : View.GONE }"/>
 
             <TextView
                 android:layout_width="wrap_content"

@@ -48,10 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
         db = new DBhelper(this, "NC", null, 1);
 
-
         ArrayList<NotificationObject> items = db.getAllNotifications();
-        mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new MainListAdapter(items);
+        mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
         mainBinding.recyclerview.setAdapter(mAdapter);
     }
 
