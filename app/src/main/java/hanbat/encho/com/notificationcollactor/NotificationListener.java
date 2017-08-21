@@ -4,14 +4,14 @@ import android.app.Notification;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
-import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 
@@ -40,7 +40,17 @@ public class NotificationListener extends NotificationListenerService {
 
         ArrayList<String> confirmedApps = PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages");
         Bundle extras = mNotification.extras;
+
         if (confirmedApps.contains(sbn.getPackageName())) {
+            ApplicationInfo app = null;
+
+            for (String _key : extras.keySet()) {
+                if (extras.get(_key) instanceof ApplicationInfo) {
+                    app = (ApplicationInfo) extras.get(_key);
+                    break;
+                }
+            }
+
             String title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
             int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);
             CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
@@ -48,10 +58,11 @@ public class NotificationListener extends NotificationListenerService {
             Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
             long postTime = sbn.getPostTime();
             String packageName = sbn.getPackageName();
-            ApplicationInfo app = (ApplicationInfo) extras.get("android.appInfo");
-            CharSequence appName = app != null ? app.loadLabel(pm) : null;
+
+            CharSequence appName = pm.getApplicationLabel(app);
 
             NotificationObject obj = new NotificationObject(title, smallIcon, largeIcon, text, subText, postTime, packageName, appName);
+
             if (text != "" && !title.equals(""))
                 db.addNotification(obj);
         }
@@ -59,6 +70,12 @@ public class NotificationListener extends NotificationListenerService {
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        super.onNotificationRemoved(sbn);
+
+        Notification noti = sbn.getNotification();
+        Bundle bundle = noti.extras;
+        for (String _key : bundle.keySet()) {
+            Log.d("hanlog bundle check", "key=" + _key + " : " + bundle.get(_key));
+        }
+        Log.d("hanlog enter", "");
     }
 }

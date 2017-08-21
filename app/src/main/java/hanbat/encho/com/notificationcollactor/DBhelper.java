@@ -94,12 +94,12 @@ class DBhelper extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             byte[] largeIcon = cursor.getBlob(4);
 
-
             obj = new NotificationObject();
             obj.setTitle(cursor.getString(0));
             obj.setText(cursor.getString(1));
             obj.setSubText(cursor.getString(2));
             obj.setSmallIcon(cursor.getInt(3));
+            Log.d("hanlog icon data check", cursor.getInt(3)+ "");
             obj.setLargeIcon(getImage(largeIcon));
             obj.setPostTime(cursor.getLong(5));
             obj.setPackageName(cursor.getString(6));
