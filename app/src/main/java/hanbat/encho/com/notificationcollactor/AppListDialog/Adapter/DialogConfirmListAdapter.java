@@ -3,16 +3,28 @@ package hanbat.encho.com.notificationcollactor.AppListDialog.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import hanbat.encho.com.notificationcollactor.Application;
 import hanbat.encho.com.notificationcollactor.DiffCallback.AppInfoDiffCallback;
 import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
 import hanbat.encho.com.notificationcollactor.Model.AppInfo;
@@ -85,14 +97,45 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
     }
 
     public void onAppCheckConfirm(View view) {
+        PackageManager pm = Application.getAppContext().getPackageManager();
         Intent intent = new Intent();
         ArrayList<String> apps = new ArrayList<>();
-        for (AppInfo app : confirmApps)
+        for (AppInfo app : confirmApps) {
             apps.add(app.getPackageName());
-
+            saveBitmapToFile(convertDrawableToBitmap(app.getIcon()), app.getPackageName());
+        }
 
         PreferenceManager.getInstance().setStringArrayPref(mContext, "Packages", apps);
         ((AppInfoDialog) mContext).setResult(Activity.RESULT_OK, intent);
         ((AppInfoDialog) mContext).finish();
+    }
+
+    private Bitmap convertDrawableToBitmap(Drawable d) {
+        if (d instanceof BitmapDrawable)
+            return ((BitmapDrawable) d).getBitmap();
+
+        Bitmap b = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(b);
+        d.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        d.draw(canvas);
+
+        return b;
+    }
+
+    private void saveBitmapToFile(Bitmap bm, String filePath) {
+        File iconImage = new File(Application.getAppContext().getFilesDir(), filePath);
+        try {
+            iconImage.createNewFile();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.PNG, 0, bos);
+            byte[] bitmapData = bos.toByteArray();
+
+            FileOutputStream fos = new FileOutputStream(iconImage);
+            fos.write(bitmapData);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            Toast.makeText(Application.getAppContext(), "알림 아이콘의 이미지 처리를 실패했습니다", Toast.LENGTH_SHORT).show();
+        }
     }
 }

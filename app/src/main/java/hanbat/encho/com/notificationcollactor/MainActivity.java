@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,15 +23,15 @@ import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding mainBinding;
-    private DBhelper db;
     MainListAdapter mAdapter;
+    private DBhelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.setMain(this);
-        
+
         if (!isPermissionAllowed()) {
             Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_SHORT).show();
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
@@ -98,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getString(R.string.permission_check_message))
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.notification))
-                .setOngoing(true)
                 .setAutoCancel(false);
 
         NotificationManager mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

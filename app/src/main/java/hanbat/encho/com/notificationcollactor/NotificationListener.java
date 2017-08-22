@@ -4,23 +4,11 @@ import android.app.Notification;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
@@ -70,12 +58,10 @@ public class NotificationListener extends NotificationListenerService {
             String packageName = sbn.getPackageName();
 
             CharSequence appName = pm.getApplicationLabel(app);
-            Drawable d = pm.getApplicationIcon(app);
-            saveBitmapToFile(convertDrawableToBitmap(d), packageName);
 
             NotificationObject obj = new NotificationObject(title, smallIcon, largeIcon, text, subText, postTime, packageName, appName);
 
-            if (text != "" && !title.equals(""))
+            if (text.length() > 0 && title.length() > 0)
                 db.addNotification(obj);
         }
     }
@@ -89,36 +75,5 @@ public class NotificationListener extends NotificationListenerService {
             Log.d("hanlog bundle check", "key=" + _key + " : " + bundle.get(_key));
         }
         Log.d("hanlog enter", "");
-    }
-
-    private Bitmap convertDrawableToBitmap(Drawable d) {
-        if (d instanceof BitmapDrawable)
-            return ((BitmapDrawable) d).getBitmap();
-
-        Bitmap b = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(b);
-        d.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        d.draw(canvas);
-
-        return b;
-    }
-
-    private void saveBitmapToFile(Bitmap bm, String filePath) {
-        File f = new File(getExternalCacheDir(), "IconImage");
-        if (!f.mkdirs())
-            Log.d("hanlog mkdir check", "FAILURE");
-
-        File iconImage = new File(f, filePath + ".png");
-        if (!iconImage.exists()) {
-            OutputStream stream;
-            try {
-                f.createNewFile();
-                stream = new FileOutputStream(f);
-
-                bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

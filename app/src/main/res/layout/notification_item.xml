@@ -30,7 +30,7 @@
                 android:layout_height="16dp"
                 android:layout_marginEnd="8dp"
                 android:contentDescription="@string/app_name"
-                android:src="@{noti.smallIcon}" />
+                app:loadIcon="@{noti.packageName}"/>
 
             <TextView
                 android:layout_width="wrap_content"

@@ -13,11 +13,6 @@ public class AppInfo extends ApplicationInfo {
     private String name;
     private String packageName;
 
-    @BindingAdapter({"iconImage"})
-    public static void loadDrawableImage(ImageView iv, Drawable drawable) {
-        iv.setImageDrawable(drawable);
-    }
-
     public AppInfo(Drawable icon, String name, String packageName) {
         this.icon = icon;
         this.name = name;
