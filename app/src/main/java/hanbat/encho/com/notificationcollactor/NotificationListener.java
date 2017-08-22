@@ -4,13 +4,21 @@ import android.app.Notification;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
@@ -77,5 +85,20 @@ public class NotificationListener extends NotificationListenerService {
             Log.d("hanlog bundle check", "key=" + _key + " : " + bundle.get(_key));
         }
         Log.d("hanlog enter", "");
+    }
+
+
+    private void saveBitmapToFile(Bitmap bm, String filePath) {
+        File f = new File(filePath);
+        OutputStream stream = null;
+
+        try {
+            f.createNewFile();
+            stream = new FileOutputStream(f);
+
+            bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="hanbat.encho.com.notificationcollactor">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:name=".Application"
         android:allowBackup="true"
@@ -27,7 +28,7 @@
         </service>
         <activity
             android:name=".AppListDialog.AppInfoDialog"
-            android:theme="@style/dialog_light"/>
+            android:theme="@style/dialog_light" />
     </application>
 
 </manifest>
