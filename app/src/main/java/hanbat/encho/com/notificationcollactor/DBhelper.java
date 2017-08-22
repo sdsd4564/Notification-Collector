@@ -54,7 +54,6 @@ class DBhelper extends SQLiteOpenHelper {
         Toast.makeText(mContext, "데이터베이스를 수정했습니다", Toast.LENGTH_SHORT).show();
     }
 
-
     void addNotification(NotificationObject object) {
         SQLiteDatabase db = getWritableDatabase();
         String sb = "INSERT INTO tempp " +
@@ -99,7 +98,6 @@ class DBhelper extends SQLiteOpenHelper {
             obj.setText(cursor.getString(1));
             obj.setSubText(cursor.getString(2));
             obj.setSmallIcon(cursor.getInt(3));
-            Log.d("hanlog icon data check", cursor.getInt(3)+ "");
             obj.setLargeIcon(getImage(largeIcon));
             obj.setPostTime(cursor.getLong(5));
             obj.setPackageName(cursor.getString(6));
