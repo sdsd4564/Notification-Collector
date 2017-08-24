@@ -10,13 +10,18 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.SnapHelper;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
+
+import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 
 import java.util.ArrayList;
 import java.util.Set;
 
 import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
+import hanbat.encho.com.notificationcollactor.Model.NotiTest;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
 
@@ -24,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding mainBinding;
     MainListAdapter mAdapter;
+    TestAdapter testAdapter;
     private DBhelper db;
 
     @Override
@@ -31,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.setMain(this);
+
+        SnapHelper snapHelper = new GravitySnapHelper(Gravity.TOP);
+        snapHelper.attachToRecyclerView(mainBinding.recyclerview);
 
         if (!isPermissionAllowed()) {
             Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_SHORT).show();
@@ -44,13 +53,51 @@ public class MainActivity extends AppCompatActivity {
         else
             Toast.makeText(this, "선택된 앱 갯수 : " + confirmedApps.size(), Toast.LENGTH_SHORT).show();
 
-
         db = new DBhelper(this, "NC", null, 1);
 
+//        ArrayList<NotificationObject> items = db.getAllNotifications();
+//        mAdapter = new MainListAdapter(items);
+//        mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
+//        mainBinding.recyclerview.setAdapter(mAdapter);
         ArrayList<NotificationObject> items = db.getAllNotifications();
-        mAdapter = new MainListAdapter(items);
+        ArrayList<NotiTest> groups = new ArrayList<>();
+        for (String app : confirmedApps) {
+            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
+            CharSequence s = null;
+            for (NotificationObject object : items) {
+                if (app.equals(object.getPackageName())) {
+                    separatedItems.add(object);
+                    s = object.getAppName();
+                }
+            }
+            groups.add(new NotiTest(String.valueOf(s), app, separatedItems));
+        }
+        testAdapter = new TestAdapter(groups, this);
         mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
-        mainBinding.recyclerview.setAdapter(mAdapter);
+        mainBinding.recyclerview.setAdapter(testAdapter);
+        /*
+        ArrayList<NotificationObject> items = db.getAllNotifications();
+        ArrayList<NotiTest> lists = new ArrayList<>();
+        Iterator<String> iter = confirmedApps.iterator();
+        Iterator<NotificationObject> notiIter = items.iterator();
+        while (iter.hasNext()) {
+            String s = iter.next();
+            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
+            while (notiIter.hasNext()) {
+                NotificationObject noti = notiIter.next();
+                if (s.equals(noti.getPackageName())) {
+                    separatedItems.add(noti);
+                    items.remove(noti);
+                }
+            }
+            lists.add(new NotiTest(separatedItems.isEmpty() ? null : separatedItems.get(0).getAppName().toString(), s, separatedItems));
+        }
+
+        testAdapter = new TestAdapter(lists);
+        mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
+        mainBinding.recyclerview.setAdapter(testAdapter);
+        */
+
     }
 
     @Override

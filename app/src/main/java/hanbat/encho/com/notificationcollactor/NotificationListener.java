@@ -22,6 +22,7 @@ public class NotificationListener extends NotificationListenerService {
     public NotificationListenerService mNotificationListenerService;
     private DBhelper db;
     private PackageManager pm;
+    private String TAG = this.getClass().getSimpleName();
 
     @Override
     public void onCreate() {
@@ -33,6 +34,7 @@ public class NotificationListener extends NotificationListenerService {
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
+        Log.i(TAG,"ID :" + sbn.getId() + "\t" + sbn.getNotification().tickerText + "\t" + sbn.getPackageName());
         Notification mNotification = sbn.getNotification();
         pm = Application.getAppContext().getPackageManager();
 
@@ -50,7 +52,6 @@ public class NotificationListener extends NotificationListenerService {
             }
 
             String title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
-            int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);
             CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
             CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
             Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
@@ -59,7 +60,7 @@ public class NotificationListener extends NotificationListenerService {
 
             CharSequence appName = pm.getApplicationLabel(app);
 
-            NotificationObject obj = new NotificationObject(title, smallIcon, largeIcon, text, subText, postTime, packageName, appName);
+            NotificationObject obj = new NotificationObject(title, largeIcon, text, subText, postTime, packageName, appName);
 
             if (text.length() > 0 && title.length() > 0)
                 db.addNotification(obj);

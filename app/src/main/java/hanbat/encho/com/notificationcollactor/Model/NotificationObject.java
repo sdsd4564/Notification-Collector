@@ -1,29 +1,17 @@
 package hanbat.encho.com.notificationcollactor.Model;
 
-import android.content.res.Resources;
-import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.text.format.DateUtils;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.io.File;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import hanbat.encho.com.notificationcollactor.Application;
+import java.io.ByteArrayOutputStream;
 
 /**
  * Created by Encho on 2017-07-19.
  */
 
-public class NotificationObject {
+public class NotificationObject implements Parcelable {
     private String title;
-    private int smallIcon;
     private Bitmap largeIcon;
     private CharSequence text;
     private CharSequence subText;
@@ -34,9 +22,8 @@ public class NotificationObject {
     public NotificationObject() {
     }
 
-    public NotificationObject(String title, int smallIcon, Bitmap largeIcon, CharSequence text, CharSequence subText, long postTime, String packageName, CharSequence appName) {
+    public NotificationObject(String title, Bitmap largeIcon, CharSequence text, CharSequence subText, long postTime, String packageName, CharSequence appName) {
         this.title = title;
-        this.smallIcon = smallIcon;
         this.largeIcon = largeIcon;
         this.text = text;
         this.subText = subText;
@@ -44,6 +31,18 @@ public class NotificationObject {
         this.packageName = packageName;
         this.appName = appName;
     }
+
+    public NotificationObject(Parcel in) {
+        title = in.readString();
+        largeIcon = in.readParcelable(Bitmap.class.getClassLoader());
+        text = in.readString();
+        subText = in.readString();
+        postTime = in.readLong();
+        packageName = in.readString();
+        appName = in.readString();
+    }
+
+
 
     public Bitmap getLargeIcon() {
         return largeIcon;
@@ -59,14 +58,6 @@ public class NotificationObject {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public int getSmallIcon() {
-        return smallIcon;
-    }
-
-    public void setSmallIcon(int smallIcon) {
-        this.smallIcon = smallIcon;
     }
 
     public CharSequence getText() {
@@ -109,4 +100,34 @@ public class NotificationObject {
         this.appName = appName;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        largeIcon.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        byte[] largeIconArray = stream.toByteArray();
+        parcel.writeString(title);
+        parcel.writeByteArray(largeIconArray);
+        parcel.writeString(text.toString());
+        parcel.writeString(subText.toString());
+        parcel.writeLong(postTime);
+        parcel.writeString(packageName);
+        parcel.writeString(appName.toString());
+    }
+
+    public static final Creator<NotificationObject> CREATOR = new Creator<NotificationObject>() {
+        @Override
+        public NotificationObject createFromParcel(Parcel in) {
+            return new NotificationObject(in);
+        }
+
+        @Override
+        public NotificationObject[] newArray(int size) {
+            return new NotificationObject[size];
+        }
+    };
 }

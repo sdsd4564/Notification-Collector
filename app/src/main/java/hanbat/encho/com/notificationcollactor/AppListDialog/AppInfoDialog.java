@@ -11,7 +11,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.SnapHelper;
+import android.view.Gravity;
 import android.view.Window;
+
+import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +52,10 @@ public class AppInfoDialog extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         binding = DataBindingUtil.setContentView(this, R.layout.check_allowed_applist);
         binding.setDialog(this);
+
+        SnapHelper snapHelper = new GravitySnapHelper(Gravity.TOP);
+        snapHelper.attachToRecyclerView(binding.dialogApplist);
+
         pm = Application.getAppContext().getPackageManager();
         sort = new AscPackages();
 
