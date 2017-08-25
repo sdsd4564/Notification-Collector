@@ -30,74 +30,44 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding mainBinding;
     MainListAdapter mAdapter;
     TestAdapter testAdapter;
+    ArrayList<String> confirmedApps;
     private DBhelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        mainBinding.setMain(this);
-
-        SnapHelper snapHelper = new GravitySnapHelper(Gravity.TOP);
-        snapHelper.attachToRecyclerView(mainBinding.recyclerview);
 
         if (!isPermissionAllowed()) {
             Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_SHORT).show();
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-        }
+            this.finishAffinity();
+        } else {
+            mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+            mainBinding.setMain(this);
 
-        ArrayList<String> confirmedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
+            SnapHelper snapHelper = new GravitySnapHelper(Gravity.TOP);
+            snapHelper.attachToRecyclerView(mainBinding.recyclerview);
 
-        if (confirmedApps.isEmpty())
-            startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
-        else
-            Toast.makeText(this, "선택된 앱 갯수 : " + confirmedApps.size(), Toast.LENGTH_SHORT).show();
+            db = new DBhelper(this, "NC", null, 1);
+            confirmedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
+            ArrayList<NotiTest> groups = getGroupNotifications(db.getAllNotifications());
 
-        db = new DBhelper(this, "NC", null, 1);
-
-//        ArrayList<NotificationObject> items = db.getAllNotifications();
-//        mAdapter = new MainListAdapter(items);
-//        mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
-//        mainBinding.recyclerview.setAdapter(mAdapter);
-        ArrayList<NotificationObject> items = db.getAllNotifications();
-        ArrayList<NotiTest> groups = new ArrayList<>();
-        for (String app : confirmedApps) {
-            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
-            CharSequence s = null;
-            for (NotificationObject object : items) {
-                if (app.equals(object.getPackageName())) {
-                    separatedItems.add(object);
-                    s = object.getAppName();
-                }
+            if (confirmedApps.isEmpty()) {
+                startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
+            } else {
+                Toast.makeText(this, "선택된 앱 갯수 : " + confirmedApps.size(), Toast.LENGTH_SHORT).show();
             }
-            groups.add(new NotiTest(String.valueOf(s), app, separatedItems));
-        }
-        testAdapter = new TestAdapter(groups, this);
-        mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
-        mainBinding.recyclerview.setAdapter(testAdapter);
-        /*
-        ArrayList<NotificationObject> items = db.getAllNotifications();
-        ArrayList<NotiTest> lists = new ArrayList<>();
-        Iterator<String> iter = confirmedApps.iterator();
-        Iterator<NotificationObject> notiIter = items.iterator();
-        while (iter.hasNext()) {
-            String s = iter.next();
-            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
-            while (notiIter.hasNext()) {
-                NotificationObject noti = notiIter.next();
-                if (s.equals(noti.getPackageName())) {
-                    separatedItems.add(noti);
-                    items.remove(noti);
-                }
-            }
-            lists.add(new NotiTest(separatedItems.isEmpty() ? null : separatedItems.get(0).getAppName().toString(), s, separatedItems));
-        }
 
-        testAdapter = new TestAdapter(lists);
-        mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
-        mainBinding.recyclerview.setAdapter(testAdapter);
-        */
+            testAdapter = new TestAdapter(groups);
+            mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
+            mainBinding.recyclerview.setAdapter(testAdapter);
+        }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        testAdapter.updateAppListItem(getGroupNotifications(db.getAllNotifications()));
     }
 
     @Override
@@ -113,11 +83,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onRefreshTouched(View view) {
-        mAdapter.updateNotificationList(db.getAllNotifications());
+        testAdapter.updateAppListItem(getGroupNotifications(db.getAllNotifications()));
     }
 
     public void onDeleteTouched(View view) {
-        mAdapter.updateNotificationList(db.dropAllNotifications());
+        testAdapter.updateAppListItem(getGroupNotifications(db.dropAllNotifications()));
     }
 
     public void onCheckConfirmedApps(View view) {
@@ -125,6 +95,23 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(toDialog, 123);
     }
 
+    private ArrayList<NotiTest> getGroupNotifications(ArrayList<NotificationObject> items) {
+        ArrayList<NotiTest> groups = new ArrayList<>();
+        for (String app : PreferenceManager.getInstance().getStringArrayPref(this, "Packages")) {
+            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
+            CharSequence s = null;
+            for (NotificationObject object : items) {
+                if (app.equals(object.getPackageName())) {
+                    separatedItems.add(object);
+                    s = object.getAppName();
+                }
+            }
+            if (!separatedItems.isEmpty())
+                groups.add(new NotiTest(String.valueOf(s), app, separatedItems));
+        }
+
+        return groups;
+    }
 
     private boolean isPermissionAllowed() {
         Set<String> notiListerSet = NotificationManagerCompat.getEnabledListenerPackages(this);
