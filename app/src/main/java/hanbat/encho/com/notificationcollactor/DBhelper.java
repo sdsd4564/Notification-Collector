@@ -2,6 +2,7 @@ package hanbat.encho.com.notificationcollactor;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
@@ -9,10 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -27,11 +26,20 @@ import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 
 class DBhelper extends SQLiteOpenHelper {
 
-    private Context mContext;
+    private static final String DATABASE_NAME = "NC";
+    private static final String TABLE_NAME = "tempp";
+    private static final int VERSION = 1;
+    private static DBhelper f = null;
 
-    DBhelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-        mContext = context;
+    DBhelper(Context context) {
+        super(context, DATABASE_NAME, null, VERSION);
+    }
+
+    static synchronized DBhelper getInstance() {
+        if (f == null) {
+            f = new DBhelper(Application.getAppContext());
+        }
+        return f;
     }
 
     @Override
@@ -48,12 +56,12 @@ class DBhelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS tempp");
         db.execSQL(sb);
 
-        Toast.makeText(mContext, "데이터베이스 생성 완료", Toast.LENGTH_SHORT).show();
+        Toast.makeText(Application.getAppContext(), "데이터베이스 생성 완료", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        Toast.makeText(mContext, "데이터베이스를 수정했습니다", Toast.LENGTH_SHORT).show();
+        Toast.makeText(Application.getAppContext(), "데이터베이스를 수정했습니다", Toast.LENGTH_SHORT).show();
     }
 
     void addNotification(NotificationObject object) {
@@ -85,6 +93,13 @@ class DBhelper extends SQLiteOpenHelper {
         return getAllNotifications();
     }
 
+    ArrayList<NotificationObject> deleteNotification(long postTime) {
+        String query = "DELETE FROM tempp WHERE posttime = " + postTime;
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(query);
+        return getAllNotifications();
+    }
+
     ArrayList<NotificationObject> getAllNotifications() {
         String query = "SELECT * FROM tempp";
 
@@ -95,8 +110,8 @@ class DBhelper extends SQLiteOpenHelper {
         NotificationObject obj;
 
         while (cursor.moveToNext()) {
+            Log.d("hanlog db check", DatabaseUtils.dumpCurrentRowToString(cursor));
             byte[] largeIcon = cursor.getBlob(3);
-
             obj = new NotificationObject();
             obj.setTitle(cursor.getString(0));
             obj.setText(cursor.getString(1));

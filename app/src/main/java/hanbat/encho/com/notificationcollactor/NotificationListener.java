@@ -27,8 +27,7 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onCreate() {
         mNotificationListenerService = this;
-        if (db == null)
-            db = new DBhelper(Application.getAppContext(), "NC", null, 1);
+        db = DBhelper.getInstance();
     }
 
 

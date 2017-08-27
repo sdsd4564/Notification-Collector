@@ -10,10 +10,16 @@ import android.text.format.DateUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import hanbat.encho.com.notificationcollactor.Model.NotiTest;
+import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 
 /**
  * Created by USER on 2017-07-19.
@@ -59,6 +65,24 @@ public class Application extends android.app.Application {
 
         CharSequence ago = DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS);
         tv.setText(ago);
+    }
+
+    public static ArrayList<NotiTest> getGroupNotifications(ArrayList<NotificationObject> items) {
+        ArrayList<NotiTest> groups = new ArrayList<>();
+        for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
+            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
+            CharSequence s = null;
+            for (NotificationObject object : items) {
+                if (app.equals(object.getPackageName())) {
+                    separatedItems.add(object);
+                    s = object.getAppName();
+                }
+            }
+            if (!separatedItems.isEmpty())
+                groups.add(new NotiTest(String.valueOf(s), app, separatedItems));
+        }
+
+        return groups;
     }
 }
 

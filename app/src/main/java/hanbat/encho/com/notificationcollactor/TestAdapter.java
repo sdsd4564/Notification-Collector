@@ -1,30 +1,23 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.support.v7.util.DiffUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
-import com.thoughtbot.expandablerecyclerview.listeners.OnGroupClickListener;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
-import junit.framework.Test;
-
 import java.util.ArrayList;
-import java.util.List;
 
-import hanbat.encho.com.notificationcollactor.AppListDialog.Adapter.DialogListAdapter;
-import hanbat.encho.com.notificationcollactor.DiffCallback.AppInfoDiffCallback;
 import hanbat.encho.com.notificationcollactor.DiffCallback.NotificationGroupDiffCallback;
-import hanbat.encho.com.notificationcollactor.Model.AppInfo;
 import hanbat.encho.com.notificationcollactor.Model.NotiTest;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBinding;
@@ -35,12 +28,16 @@ import hanbat.encho.com.notificationcollactor.databinding.NotificationParentBind
  * Created by Encho on 2017-08-23.
  */
 
-public class TestAdapter extends ExpandableRecyclerViewAdapter<TestAdapter.ParentViewHolder, TestAdapter.MainViewHolder> {
+class TestAdapter extends ExpandableRecyclerViewAdapter<TestAdapter.ParentViewHolder, TestAdapter.MainViewHolder> {
     private ArrayList<NotiTest> groups;
+    private Context mContext;
+    private DBhelper db;
 
-    public TestAdapter(ArrayList<NotiTest> groups) {
+    TestAdapter(ArrayList<NotiTest> groups, Context mContext) {
         super(groups);
         this.groups = groups;
+        this.mContext = mContext;
+        db = DBhelper.getInstance();
     }
 
     @Override
@@ -56,9 +53,33 @@ public class TestAdapter extends ExpandableRecyclerViewAdapter<TestAdapter.Paren
     }
 
     @Override
-    public void onBindChildViewHolder(MainViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
-        NotificationObject object = (NotificationObject) group.getItems().get(childIndex);
+    public void onBindChildViewHolder(MainViewHolder holder, int flatPosition, final ExpandableGroup group, int childIndex) {
+        final NotificationObject object = (NotificationObject) group.getItems().get(childIndex);
         holder.binding.setNoti(object);
+        holder.binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext)
+                        .setMessage(R.string.alert_message_delete);
+
+                builder.setPositiveButton("삭제",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                db.deleteNotification(object.getPostTime());
+                            }
+                        });
+                builder.setNegativeButton("취소",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                builder.show();
+                return false;
+            }
+        });
     }
 
     @Override
@@ -66,7 +87,7 @@ public class TestAdapter extends ExpandableRecyclerViewAdapter<TestAdapter.Paren
         holder.parentBinding.setNoti((NotiTest) group);
     }
 
-    public void updateAppListItem(ArrayList<NotiTest> groups) {
+    void updateGroupItem(ArrayList<NotiTest> groups) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new NotificationGroupDiffCallback(this.groups, groups));
 
         this.groups.clear();

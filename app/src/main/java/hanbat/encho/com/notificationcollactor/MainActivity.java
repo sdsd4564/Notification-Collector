@@ -22,13 +22,11 @@ import java.util.Set;
 
 import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
 import hanbat.encho.com.notificationcollactor.Model.NotiTest;
-import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding mainBinding;
-    MainListAdapter mAdapter;
     TestAdapter testAdapter;
     ArrayList<String> confirmedApps;
     private DBhelper db;
@@ -48,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
             SnapHelper snapHelper = new GravitySnapHelper(Gravity.TOP);
             snapHelper.attachToRecyclerView(mainBinding.recyclerview);
 
-            db = new DBhelper(this, "NC", null, 1);
+            db = DBhelper.getInstance();
             confirmedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
-            ArrayList<NotiTest> groups = getGroupNotifications(db.getAllNotifications());
+            ArrayList<NotiTest> groups = Application.getGroupNotifications(db.getAllNotifications());
 
             if (confirmedApps.isEmpty()) {
                 startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
@@ -58,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "선택된 앱 갯수 : " + confirmedApps.size(), Toast.LENGTH_SHORT).show();
             }
 
-            testAdapter = new TestAdapter(groups);
+            testAdapter = new TestAdapter(groups, this);
             mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
             mainBinding.recyclerview.setAdapter(testAdapter);
         }
@@ -67,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        testAdapter.updateAppListItem(getGroupNotifications(db.getAllNotifications()));
+//        testAdapter.updateGroupItem(Application.getGroupNotifications(db.getAllNotifications()));
     }
 
     @Override
@@ -82,35 +80,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        testAdapter.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        testAdapter.onRestoreInstanceState(savedInstanceState);
+    }
+
     public void onRefreshTouched(View view) {
-        testAdapter.updateAppListItem(getGroupNotifications(db.getAllNotifications()));
+//        testAdapter.updateGroupItem(Application.getGroupNotifications(db.getAllNotifications()));
     }
 
     public void onDeleteTouched(View view) {
-        testAdapter.updateAppListItem(getGroupNotifications(db.dropAllNotifications()));
+//        testAdapter.updateGroupItem(Application.getGroupNotifications(db.dropAllNotifications()));
     }
 
     public void onCheckConfirmedApps(View view) {
         Intent toDialog = new Intent(this, AppInfoDialog.class);
         startActivityForResult(toDialog, 123);
-    }
-
-    private ArrayList<NotiTest> getGroupNotifications(ArrayList<NotificationObject> items) {
-        ArrayList<NotiTest> groups = new ArrayList<>();
-        for (String app : PreferenceManager.getInstance().getStringArrayPref(this, "Packages")) {
-            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
-            CharSequence s = null;
-            for (NotificationObject object : items) {
-                if (app.equals(object.getPackageName())) {
-                    separatedItems.add(object);
-                    s = object.getAppName();
-                }
-            }
-            if (!separatedItems.isEmpty())
-                groups.add(new NotiTest(String.valueOf(s), app, separatedItems));
-        }
-
-        return groups;
     }
 
     private boolean isPermissionAllowed() {
