@@ -21,13 +21,13 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
-import hanbat.encho.com.notificationcollactor.Model.NotiTest;
+import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding mainBinding;
-    TestAdapter testAdapter;
+    NotificationAdapter notificationAdapter;
     ArrayList<String> confirmedApps;
     private DBhelper db;
 
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
             db = DBhelper.getInstance();
             confirmedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
-            ArrayList<NotiTest> groups = Application.getGroupNotifications(db.getAllNotifications());
+            ArrayList<NotificationGroup> groups = Application.getGroupNotifications(db.getAllNotifications());
 
             if (confirmedApps.isEmpty()) {
                 startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
@@ -56,16 +56,16 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "선택된 앱 갯수 : " + confirmedApps.size(), Toast.LENGTH_SHORT).show();
             }
 
-            testAdapter = new TestAdapter(groups, this);
+            notificationAdapter = new NotificationAdapter(groups, this);
             mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
-            mainBinding.recyclerview.setAdapter(testAdapter);
+            mainBinding.recyclerview.setAdapter(notificationAdapter);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        testAdapter.updateGroupItem(Application.getGroupNotifications(db.getAllNotifications()));
+//        notificationAdapter.updateGroupItem(Application.getGroupNotifications(db.getAllNotifications()));
     }
 
     @Override
@@ -83,21 +83,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        testAdapter.onSaveInstanceState(outState);
+        notificationAdapter.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        testAdapter.onRestoreInstanceState(savedInstanceState);
+        notificationAdapter.onRestoreInstanceState(savedInstanceState);
     }
 
     public void onRefreshTouched(View view) {
-//        testAdapter.updateGroupItem(Application.getGroupNotifications(db.getAllNotifications()));
+//        notificationAdapter.updateGroupItem(Application.getGroupNotifications(db.getAllNotifications()));
     }
 
     public void onDeleteTouched(View view) {
-//        testAdapter.updateGroupItem(Application.getGroupNotifications(db.dropAllNotifications()));
+//        notificationAdapter.updateGroupItem(Application.getGroupNotifications(db.dropAllNotifications()));
     }
 
     public void onCheckConfirmedApps(View view) {

@@ -2,23 +2,20 @@ package hanbat.encho.com.notificationcollactor.DiffCallback;
 
 import android.support.v7.util.DiffUtil;
 
-import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
-
 import java.util.ArrayList;
 
-import hanbat.encho.com.notificationcollactor.Model.NotiTest;
-import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
+import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 
 /**
  * Created by USER on 2017-08-25.
  */
 
 public class NotificationGroupDiffCallback extends DiffUtil.Callback {
-    private ArrayList<NotiTest> mOldGroup;
-    private ArrayList<NotiTest> mNewGroup;
+    private ArrayList<NotificationGroup> mOldGroup;
+    private ArrayList<NotificationGroup> mNewGroup;
 
 
-    public NotificationGroupDiffCallback(ArrayList<NotiTest> mOldGroup, ArrayList<NotiTest> mNewGroup) {
+    public NotificationGroupDiffCallback(ArrayList<NotificationGroup> mOldGroup, ArrayList<NotificationGroup> mNewGroup) {
         this.mOldGroup = mOldGroup;
         this.mNewGroup = mNewGroup;
     }
@@ -41,8 +38,8 @@ public class NotificationGroupDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        final NotiTest mOld = mOldGroup.get(oldItemPosition);
-        final NotiTest mNew = mNewGroup.get(newItemPosition);
+        final NotificationGroup mOld = mOldGroup.get(oldItemPosition);
+        final NotificationGroup mNew = mNewGroup.get(newItemPosition);
 
         return mNew.getItems() == mOld.getItems()
                 && mNew.getAppName().equals(mOld.getAppName())

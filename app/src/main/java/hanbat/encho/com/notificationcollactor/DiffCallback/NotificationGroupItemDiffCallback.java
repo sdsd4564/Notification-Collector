@@ -2,18 +2,18 @@ package hanbat.encho.com.notificationcollactor.DiffCallback;
 
 import android.support.v7.util.DiffUtil;
 
-import hanbat.encho.com.notificationcollactor.Model.NotiTest;
+import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 
 /**
  * Created by USER on 2017-09-01.
  */
 
-public class NotiTestDiffCallback extends DiffUtil.Callback {
-    private final NotiTest mOldGroup;
-    private final NotiTest mNewGroup;
+public class NotificationGroupItemDiffCallback extends DiffUtil.Callback {
+    private final NotificationGroup mOldGroup;
+    private final NotificationGroup mNewGroup;
 
-    public NotiTestDiffCallback(NotiTest mOldGroup, NotiTest mNewGroup) {
+    public NotificationGroupItemDiffCallback(NotificationGroup mOldGroup, NotificationGroup mNewGroup) {
         this.mOldGroup = mOldGroup;
         this.mNewGroup = mNewGroup;
     }

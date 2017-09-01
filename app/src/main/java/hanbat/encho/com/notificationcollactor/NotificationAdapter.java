@@ -17,9 +17,9 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
 import java.util.ArrayList;
 
-import hanbat.encho.com.notificationcollactor.DiffCallback.NotiTestDiffCallback;
+import hanbat.encho.com.notificationcollactor.DiffCallback.NotificationGroupItemDiffCallback;
 import hanbat.encho.com.notificationcollactor.DiffCallback.NotificationGroupDiffCallback;
-import hanbat.encho.com.notificationcollactor.Model.NotiTest;
+import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBinding;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationParentBinding;
@@ -29,12 +29,12 @@ import hanbat.encho.com.notificationcollactor.databinding.NotificationParentBind
  * Created by Encho on 2017-08-23.
  */
 
-class TestAdapter extends ExpandableRecyclerViewAdapter<TestAdapter.ParentViewHolder, TestAdapter.MainViewHolder> {
-    private ArrayList<NotiTest> groups;
+class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdapter.ParentViewHolder, NotificationAdapter.MainViewHolder> {
+    private ArrayList<NotificationGroup> groups;
     private Context mContext;
     private DBhelper db;
 
-    TestAdapter(ArrayList<NotiTest> groups, Context mContext) {
+    NotificationAdapter(ArrayList<NotificationGroup> groups, Context mContext) {
         super(groups);
         this.groups = groups;
         this.mContext = mContext;
@@ -86,25 +86,25 @@ class TestAdapter extends ExpandableRecyclerViewAdapter<TestAdapter.ParentViewHo
 
     @Override
     public void onBindGroupViewHolder(final ParentViewHolder holder, int flatPosition, ExpandableGroup group) {
-        holder.parentBinding.setNoti((NotiTest) group);
+        holder.parentBinding.setNoti((NotificationGroup) group);
     }
 
-    void updateGroupItem(ArrayList<NotiTest> groups) {
+    void updateGroupItem(ArrayList<NotificationGroup> groups) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new NotificationGroupDiffCallback(this.groups, groups));
 
         this.groups.clear();
         this.groups.addAll(groups);
 
-        diffResult.dispatchUpdatesTo(TestAdapter.this);
+        diffResult.dispatchUpdatesTo(NotificationAdapter.this);
     }
 
-    void refreshGroup(NotiTest oldGroup, NotiTest newGroup) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new NotiTestDiffCallback(oldGroup, newGroup));
+    void refreshGroup(NotificationGroup oldGroup, NotificationGroup newGroup) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new NotificationGroupItemDiffCallback(oldGroup, newGroup));
 
         oldGroup.getItems().clear();
         oldGroup.getItems().addAll(newGroup.getItems());
 
-        diffResult.dispatchUpdatesTo(TestAdapter.this);
+        diffResult.dispatchUpdatesTo(NotificationAdapter.this);
     }
 
     class ParentViewHolder extends GroupViewHolder {

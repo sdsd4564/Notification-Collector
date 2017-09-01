@@ -1,7 +1,6 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,15 +9,13 @@ import android.text.format.DateUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import hanbat.encho.com.notificationcollactor.Model.NotiTest;
+import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 
 /**
@@ -67,8 +64,8 @@ public class Application extends android.app.Application {
         tv.setText(ago);
     }
 
-    public static ArrayList<NotiTest> getGroupNotifications(ArrayList<NotificationObject> items) {
-        ArrayList<NotiTest> groups = new ArrayList<>();
+    public static ArrayList<NotificationGroup> getGroupNotifications(ArrayList<NotificationObject> items) {
+        ArrayList<NotificationGroup> groups = new ArrayList<>();
         for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
             ArrayList<NotificationObject> separatedItems = new ArrayList<>();
             CharSequence s = null;
@@ -79,7 +76,7 @@ public class Application extends android.app.Application {
                 }
             }
             if (!separatedItems.isEmpty())
-                groups.add(new NotiTest(String.valueOf(s), app, separatedItems));
+                groups.add(new NotificationGroup(String.valueOf(s), app, separatedItems));
         }
 
         return groups;
