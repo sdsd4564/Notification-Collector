@@ -17,6 +17,7 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
 import java.util.ArrayList;
 
+import hanbat.encho.com.notificationcollactor.DiffCallback.NotiTestDiffCallback;
 import hanbat.encho.com.notificationcollactor.DiffCallback.NotificationGroupDiffCallback;
 import hanbat.encho.com.notificationcollactor.Model.NotiTest;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
@@ -53,13 +54,14 @@ class TestAdapter extends ExpandableRecyclerViewAdapter<TestAdapter.ParentViewHo
     }
 
     @Override
-    public void onBindChildViewHolder(MainViewHolder holder, int flatPosition, final ExpandableGroup group, int childIndex) {
+    public void onBindChildViewHolder(final MainViewHolder holder, int flatPosition, final ExpandableGroup group, final int childIndex) {
+        final int couint = group.getItemCount();
         final NotificationObject object = (NotificationObject) group.getItems().get(childIndex);
         holder.binding.setNoti(object);
         holder.binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext)
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext)
                         .setMessage(R.string.alert_message_delete);
 
                 builder.setPositiveButton("삭제",
@@ -92,6 +94,15 @@ class TestAdapter extends ExpandableRecyclerViewAdapter<TestAdapter.ParentViewHo
 
         this.groups.clear();
         this.groups.addAll(groups);
+
+        diffResult.dispatchUpdatesTo(TestAdapter.this);
+    }
+
+    void refreshGroup(NotiTest oldGroup, NotiTest newGroup) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new NotiTestDiffCallback(oldGroup, newGroup));
+
+        oldGroup.getItems().clear();
+        oldGroup.getItems().addAll(newGroup.getItems());
 
         diffResult.dispatchUpdatesTo(TestAdapter.this);
     }

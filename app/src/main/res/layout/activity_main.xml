@@ -14,12 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="0dp"
+        android:gravity="center"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end|center_vertical"
+            android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
 
             <ImageButton
@@ -43,30 +44,6 @@
                 android:onClick="@{main::onCheckConfirmedApps}"
                 android:text="알림허용목록"
                 android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/button2"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:onClick="@{main::onDeleteTouched}"
-                android:text="목록삭제"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/button"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:onClick="@{main::onRefreshTouched}"
-                android:text="새로고침"
-                android:textSize="20sp" />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView

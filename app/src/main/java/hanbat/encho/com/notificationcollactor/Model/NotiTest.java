@@ -25,4 +25,8 @@ public class NotiTest extends ExpandableGroup<NotificationObject> {
     public String getAppName() {
         return appName;
     }
+
+    public int getCount() {
+        return this.getItemCount();
+    }
 }
