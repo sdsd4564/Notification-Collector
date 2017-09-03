@@ -1,5 +1,7 @@
 package hanbat.encho.com.notificationcollactor.Model;
 
+import android.os.Parcel;
+
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 
 import java.util.List;

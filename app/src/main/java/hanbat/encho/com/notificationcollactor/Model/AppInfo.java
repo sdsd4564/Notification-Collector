@@ -13,6 +13,11 @@ public class AppInfo extends ApplicationInfo {
     private String name;
     private String packageName;
 
+    public AppInfo(ApplicationInfo orig, Drawable icon) {
+        super(orig);
+        this.icon = icon;
+    }
+
     public AppInfo(Drawable icon, String name, String packageName) {
         this.icon = icon;
         this.name = name;

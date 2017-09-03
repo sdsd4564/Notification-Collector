@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         if (!isPermissionAllowed()) {
-            Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_LONG).show();
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
             this.finishAffinity();
         } else {

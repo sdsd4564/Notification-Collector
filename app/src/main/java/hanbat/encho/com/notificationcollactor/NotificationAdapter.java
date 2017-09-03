@@ -17,8 +17,8 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
 import java.util.ArrayList;
 
-import hanbat.encho.com.notificationcollactor.DiffCallback.NotificationGroupItemDiffCallback;
 import hanbat.encho.com.notificationcollactor.DiffCallback.NotificationGroupDiffCallback;
+import hanbat.encho.com.notificationcollactor.DiffCallback.NotificationGroupItemDiffCallback;
 import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBinding;
@@ -55,20 +55,26 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
 
     @Override
     public void onBindChildViewHolder(final MainViewHolder holder, int flatPosition, final ExpandableGroup group, final int childIndex) {
-        final int couint = group.getItemCount();
         final NotificationObject object = (NotificationObject) group.getItems().get(childIndex);
         holder.binding.setNoti(object);
         holder.binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext)
-                        .setMessage(R.string.alert_message_delete);
+                        .setTitle(R.string.alert_message_delete);
 
                 builder.setPositiveButton("삭제",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                db.deleteNotification(object.getPostTime());
+                                ArrayList<NotificationObject> arr = new ArrayList<NotificationObject>();
+                                for (NotificationObject obj : db.deleteNotification(object.getPostTime())) {
+                                    if (obj.getPackageName().equals(object.getPackageName())) {
+                                        arr.add(obj);
+                                    }
+                                }
+                                NotificationGroup notificationGroup = new NotificationGroup(group.getTitle(), ((NotificationGroup) group).getPackageName(), arr);
+                                refreshGroup(notificationGroup);
                             }
                         });
                 builder.setNegativeButton("취소",
@@ -98,13 +104,18 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
         diffResult.dispatchUpdatesTo(NotificationAdapter.this);
     }
 
-    void refreshGroup(NotificationGroup oldGroup, NotificationGroup newGroup) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new NotificationGroupItemDiffCallback(oldGroup, newGroup));
+    void refreshGroup(NotificationGroup newGroup) {
+        for (NotificationGroup obj : groups) {
+            if (newGroup.getPackageName().equals(obj.getPackageName())) {
+                DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new NotificationGroupItemDiffCallback(obj, newGroup));
 
-        oldGroup.getItems().clear();
-        oldGroup.getItems().addAll(newGroup.getItems());
+                obj.getItems().clear();
+                obj.getItems().addAll(newGroup.getItems());
 
-        diffResult.dispatchUpdatesTo(NotificationAdapter.this);
+                diffResult.dispatchUpdatesTo(NotificationAdapter.this);
+                break;
+            }
+        }
     }
 
     class ParentViewHolder extends GroupViewHolder {
