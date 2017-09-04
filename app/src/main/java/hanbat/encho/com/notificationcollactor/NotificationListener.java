@@ -33,7 +33,6 @@ public class NotificationListener extends NotificationListenerService {
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-        Log.i(TAG,"ID :" + sbn.getId() + "\t" + sbn.getNotification().tickerText + "\t" + sbn.getPackageName());
         Notification mNotification = sbn.getNotification();
         pm = Application.getAppContext().getPackageManager();
 
@@ -68,12 +67,5 @@ public class NotificationListener extends NotificationListenerService {
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-
-        Notification noti = sbn.getNotification();
-        Bundle bundle = noti.extras;
-        for (String _key : bundle.keySet()) {
-            Log.d("hanlog bundle check", "key=" + _key + " : " + bundle.get(_key));
-        }
-        Log.d("hanlog enter", "");
     }
 }

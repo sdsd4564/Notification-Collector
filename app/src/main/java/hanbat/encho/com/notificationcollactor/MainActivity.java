@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding mainBinding;
     NotificationAdapter notificationAdapter;
+    TestAdapter testAdapter;
     ArrayList<String> confirmedApps;
     private DBhelper db;
 
@@ -56,9 +57,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "선택된 앱 갯수 : " + confirmedApps.size(), Toast.LENGTH_SHORT).show();
             }
 
-            notificationAdapter = new NotificationAdapter(groups, this);
             mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
-            mainBinding.recyclerview.setAdapter(notificationAdapter);
+//            notificationAdapter = new NotificationAdapter(groups, this);
+//            mainBinding.recyclerview.setAdapter(notificationAdapter);
+            testAdapter = new TestAdapter(Application.getGroupTest(db.getAllNotifications()), this);
+            mainBinding.recyclerview.setAdapter(testAdapter);
+
         }
     }
 

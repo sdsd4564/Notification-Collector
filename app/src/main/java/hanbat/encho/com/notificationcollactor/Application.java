@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.facebook.stetho.Stetho;
 
+import junit.framework.Test;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.TimeZone;
 
 import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
+import hanbat.encho.com.notificationcollactor.Model.TestGroup;
 
 /**
  * Created by USER on 2017-07-19.
@@ -80,6 +83,24 @@ public class Application extends android.app.Application {
             }
             if (!separatedItems.isEmpty())
                 groups.add(new NotificationGroup(String.valueOf(s), app, separatedItems));
+        }
+
+        return groups;
+    }
+
+    public static ArrayList<TestGroup> getGroupTest(ArrayList<NotificationObject> items) {
+        ArrayList<TestGroup> groups = new ArrayList<>();
+        for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
+            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
+            CharSequence s = null;
+            for (NotificationObject object : items) {
+                if (app.equals(object.getPackageName())) {
+                    separatedItems.add(object);
+                    s = object.getAppName();
+                }
+            }
+            if (!separatedItems.isEmpty())
+                groups.add(new TestGroup(String.valueOf(s), app, separatedItems));
         }
 
         return groups;

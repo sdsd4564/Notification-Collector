@@ -110,7 +110,6 @@ class DBhelper extends SQLiteOpenHelper {
         NotificationObject obj;
 
         while (cursor.moveToNext()) {
-            Log.d("hanlog db check", DatabaseUtils.dumpCurrentRowToString(cursor));
             byte[] largeIcon = cursor.getBlob(3);
             obj = new NotificationObject();
             obj.setTitle(cursor.getString(0));
