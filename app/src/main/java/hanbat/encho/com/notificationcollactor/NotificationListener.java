@@ -49,14 +49,15 @@ public class NotificationListener extends NotificationListenerService {
                 }
             }
 
-            String title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
+            CharSequence appName = pm.getApplicationLabel(app);
+            String title = extras.getString(Notification.EXTRA_TITLE) != null
+                    ? extras.getString(Notification.EXTRA_TITLE)
+                    : "";
             CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
             CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
             Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
             long postTime = sbn.getPostTime();
             String packageName = sbn.getPackageName();
-
-            CharSequence appName = pm.getApplicationLabel(app);
 
             NotificationObject obj = new NotificationObject(title, largeIcon, text, subText, postTime, packageName, appName);
 

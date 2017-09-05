@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SnapHelper;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
             db = DBhelper.getInstance();
             confirmedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
-            ArrayList<NotificationGroup> groups = Application.getGroupNotifications(db.getAllNotifications());
+            final ArrayList<NotificationGroup> groups = Application.getGroupNotifications(db.getAllNotifications());
 
             if (confirmedApps.isEmpty()) {
                 startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
@@ -70,6 +71,12 @@ public class MainActivity extends AppCompatActivity {
 //            testAdapter = new TestAdapter(Application.getGroupTest(db.getAllNotifications()), this);
 //            mainBinding.recyclerview.setAdapter(testAdapter);
 
+            mainBinding.swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    //todo Refresh List
+                }
+            });
         }
     }
 
@@ -110,26 +117,29 @@ public class MainActivity extends AppCompatActivity {
 
             ApplicationInfo app = null;
 
-            for (String _key : extras.keySet()) {
-                if (extras.get(_key) instanceof ApplicationInfo) {
-                    app = (ApplicationInfo) extras.get(_key);
-                    break;
+            if (confirmedApps.contains(sbn.getPackageName())) {
+                for (String _key : extras.keySet()) {
+                    if (extras.get(_key) instanceof ApplicationInfo) {
+                        app = (ApplicationInfo) extras.get(_key);
+                        break;
+                    }
                 }
-            }
 
-            String title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
-            CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
-            CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
-            Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
-            long postTime = sbn.getPostTime();
-            String packageName = sbn.getPackageName();
+                String title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
+                CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
+                CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
+                Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
+                long postTime = sbn.getPostTime();
+                String packageName = sbn.getPackageName();
 
-            CharSequence appName = pm.getApplicationLabel(app);
+                CharSequence appName = pm.getApplicationLabel(app);
 
-            NotificationObject obj = new NotificationObject(title, largeIcon, text, subText, postTime, packageName, appName);
+                NotificationObject obj = new NotificationObject(title, largeIcon, text, subText, postTime, packageName, appName);
 
 //                if (text.length() > 0 && title.length() > 0)
-            db.addNotification(obj);
+                db.addNotification(obj);
+                Toast.makeText(this, title + "\n" + text + "\n", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

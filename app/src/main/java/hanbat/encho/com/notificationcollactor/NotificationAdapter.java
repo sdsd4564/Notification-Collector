@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.Toast;
 
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
@@ -53,6 +54,7 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
         return new MainViewHolder(view);
     }
 
+
     @Override
     public void onBindChildViewHolder(final MainViewHolder holder, int flatPosition, final ExpandableGroup group, final int childIndex) {
         final NotificationObject object = (NotificationObject) group.getItems().get(childIndex);
@@ -73,8 +75,16 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
                                         arr.add(obj);
                                     }
                                 }
-                                NotificationGroup notificationGroup = new NotificationGroup(group.getTitle(), ((NotificationGroup) group).getPackageName(), arr);
-                                refreshGroup(notificationGroup);
+                                if (arr.size() != 0) {
+                                    NotificationGroup notificationGroup =
+                                            new NotificationGroup(group.getTitle(), ((NotificationGroup) group).getPackageName(), arr);
+                                    refreshGroup(notificationGroup);
+                                } else {
+                                    toggleGroup(group);
+                                    NotificationGroup temp = (NotificationGroup) group;
+                                    notifyItemRemoved(groups.indexOf(temp));
+                                    groups.remove(temp);
+                                }
                             }
                         });
                 builder.setNegativeButton("취소",
@@ -93,6 +103,7 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
     @Override
     public void onBindGroupViewHolder(final ParentViewHolder holder, int flatPosition, ExpandableGroup group) {
         holder.parentBinding.setNoti((NotificationGroup) group);
+
     }
 
     void updateGroupItem(ArrayList<NotificationGroup> groups) {
@@ -100,6 +111,8 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
 
         this.groups.clear();
         this.groups.addAll(groups);
+
+        Toast.makeText(mContext, "호출 호출 하하하", Toast.LENGTH_SHORT).show();
 
         diffResult.dispatchUpdatesTo(NotificationAdapter.this);
     }
@@ -113,7 +126,6 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
                 obj.getItems().addAll(newGroup.getItems());
 
                 diffResult.dispatchUpdatesTo(NotificationAdapter.this);
-                break;
             }
         }
     }

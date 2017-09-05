@@ -47,6 +47,8 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
         //todo SetAdapter here
     }
 
+
+
     @Override
     public int getItemCount() {
         return groups == null ? 0 : groups.size();

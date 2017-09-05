@@ -25,12 +25,12 @@
 
             <ImageButton
                 android:id="@+id/notitest"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/confirm"
                 android:onClick="notificationBuild"
-                style="?android:attr/buttonBarButtonStyle"
-                android:src="@mipmap/ic_launcher_round"
-                android:contentDescription="@string/confirm" />
+                android:src="@mipmap/ic_launcher_round" />
 
             <Button
                 android:id="@+id/button3"
@@ -46,20 +46,29 @@
                 android:textSize="18sp" />
 
             <Button
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/app_name"
                 android:onClick="@{main::onCheckActiveNotification}"
-                style="?attr/borderlessButtonStyle"/>
+                android:text="@string/app_name" />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
+
+
 </layout>
