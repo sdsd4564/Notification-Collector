@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -19,17 +19,17 @@ import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 
 public class NotificationListener extends NotificationListenerService {
 
-    public NotificationListenerService mNotificationListenerService;
+    public static NotificationListenerService mNotificationListenerService;
     private DBhelper db;
     private PackageManager pm;
     private String TAG = this.getClass().getSimpleName();
 
     @Override
     public void onCreate() {
+        super.onCreate();
         mNotificationListenerService = this;
         db = DBhelper.getInstance();
     }
-
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
@@ -60,8 +60,10 @@ public class NotificationListener extends NotificationListenerService {
 
             NotificationObject obj = new NotificationObject(title, largeIcon, text, subText, postTime, packageName, appName);
 
-            if (text.length() > 0 && title.length() > 0)
+            Toast.makeText(Application.getAppContext(), TAG + obj.getPackageName(), Toast.LENGTH_SHORT).show();
+            if (text.length() > 0 && title.length() > 0) {
                 db.addNotification(obj);
+            }
         }
     }
 

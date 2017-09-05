@@ -4,9 +4,13 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +26,7 @@ import java.util.Set;
 
 import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
 import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
+import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,11 +35,13 @@ public class MainActivity extends AppCompatActivity {
     NotificationAdapter notificationAdapter;
     TestAdapter testAdapter;
     ArrayList<String> confirmedApps;
+    PackageManager pm;
     private DBhelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pm = Application.getAppContext().getPackageManager();
 
         if (!isPermissionAllowed()) {
             Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_LONG).show();
@@ -58,10 +65,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
-//            notificationAdapter = new NotificationAdapter(groups, this);
-//            mainBinding.recyclerview.setAdapter(notificationAdapter);
-            testAdapter = new TestAdapter(Application.getGroupTest(db.getAllNotifications()), this);
-            mainBinding.recyclerview.setAdapter(testAdapter);
+            notificationAdapter = new NotificationAdapter(groups, this);
+            mainBinding.recyclerview.setAdapter(notificationAdapter);
+//            testAdapter = new TestAdapter(Application.getGroupTest(db.getAllNotifications()), this);
+//            mainBinding.recyclerview.setAdapter(testAdapter);
 
         }
     }
@@ -96,12 +103,34 @@ public class MainActivity extends AppCompatActivity {
         notificationAdapter.onRestoreInstanceState(savedInstanceState);
     }
 
-    public void onRefreshTouched(View view) {
-//        notificationAdapter.updateGroupItem(Application.getGroupNotifications(db.getAllNotifications()));
-    }
+    public void onCheckActiveNotification(View view) {
+        for (StatusBarNotification sbn : NotificationListener.mNotificationListenerService.getActiveNotifications()) {
+            Notification mNotification = sbn.getNotification();
+            Bundle extras = mNotification.extras;
 
-    public void onDeleteTouched(View view) {
-//        notificationAdapter.updateGroupItem(Application.getGroupNotifications(db.dropAllNotifications()));
+            ApplicationInfo app = null;
+
+            for (String _key : extras.keySet()) {
+                if (extras.get(_key) instanceof ApplicationInfo) {
+                    app = (ApplicationInfo) extras.get(_key);
+                    break;
+                }
+            }
+
+            String title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
+            CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
+            CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
+            Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
+            long postTime = sbn.getPostTime();
+            String packageName = sbn.getPackageName();
+
+            CharSequence appName = pm.getApplicationLabel(app);
+
+            NotificationObject obj = new NotificationObject(title, largeIcon, text, subText, postTime, packageName, appName);
+
+//                if (text.length() > 0 && title.length() > 0)
+            db.addNotification(obj);
+        }
     }
 
     public void onCheckConfirmedApps(View view) {
