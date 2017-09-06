@@ -50,9 +50,7 @@ public class NotificationListener extends NotificationListenerService {
             }
 
             CharSequence appName = pm.getApplicationLabel(app);
-            String title = extras.getString(Notification.EXTRA_TITLE) != null
-                    ? extras.getString(Notification.EXTRA_TITLE)
-                    : "";
+            String title = String.valueOf(extras.get(Notification.EXTRA_TITLE));
             CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
             CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
             Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);

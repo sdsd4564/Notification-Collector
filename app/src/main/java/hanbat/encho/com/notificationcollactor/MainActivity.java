@@ -16,6 +16,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SnapHelper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
@@ -118,6 +119,9 @@ public class MainActivity extends AppCompatActivity {
             ApplicationInfo app = null;
 
             if (confirmedApps.contains(sbn.getPackageName())) {
+                for (String key : extras.keySet()) {
+                    Log.d(this.getClass().getSimpleName(), "key=" + key + ", content=" + extras.get(key));
+                }
                 for (String _key : extras.keySet()) {
                     if (extras.get(_key) instanceof ApplicationInfo) {
                         app = (ApplicationInfo) extras.get(_key);
@@ -125,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                String title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
+//                String title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
+                String title = String.valueOf(extras.get(Notification.EXTRA_TITLE));
                 CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
                 CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
                 Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
@@ -136,9 +141,10 @@ public class MainActivity extends AppCompatActivity {
 
                 NotificationObject obj = new NotificationObject(title, largeIcon, text, subText, postTime, packageName, appName);
 
-//                if (text.length() > 0 && title.length() > 0)
-                db.addNotification(obj);
-                Toast.makeText(this, title + "\n" + text + "\n", Toast.LENGTH_SHORT).show();
+                if (text.length() > 0 && title.length() > 0) {
+                    db.addNotification(obj);
+                    Toast.makeText(this, title + "\n" + text + "\n", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
