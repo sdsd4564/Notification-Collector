@@ -71,13 +71,6 @@ public class MainActivity extends AppCompatActivity {
             mainBinding.recyclerview.setAdapter(notificationAdapter);
 //            testAdapter = new TestAdapter(Application.getGroupTest(db.getAllNotifications()), this);
 //            mainBinding.recyclerview.setAdapter(testAdapter);
-
-            mainBinding.swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    //todo Refresh List
-                }
-            });
         }
     }
 
@@ -129,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-//                String title = extras.getString(Notification.EXTRA_TITLE) != null ? extras.getString(Notification.EXTRA_TITLE) : "";
                 String title = String.valueOf(extras.get(Notification.EXTRA_TITLE));
                 CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
                 CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);

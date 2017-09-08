@@ -32,7 +32,6 @@ public class NotificationGroupDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-//        return mOldGroup.getItems().get(oldItemPosition).getPackageName().equals(mNewGroup.getItems().get(newItemPosition).getPackageName());
         return mOldGroup.get(oldItemPosition).getPackageName().equals(mNewGroup.get(newItemPosition).getPackageName());
     }
 
@@ -40,8 +39,15 @@ public class NotificationGroupDiffCallback extends DiffUtil.Callback {
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         final NotificationGroup mOld = mOldGroup.get(oldItemPosition);
         final NotificationGroup mNew = mNewGroup.get(newItemPosition);
+        boolean isArrayEqual = false;
 
-        return mNew.getItems() == mOld.getItems()
+        int size = mOld.getItemCount() > mNew.getItemCount() ? mNew.getItemCount() : mOld.getItemCount();
+        for (int i = 0; i < size; i++) {
+            isArrayEqual = mOld.getItems().get(i).equals(mNew.getItems().get(i));
+            if (!isArrayEqual) break;
+        }
+
+        return isArrayEqual
                 && mNew.getAppName().equals(mOld.getAppName())
                 && mNew.getItemCount() == mOld.getItemCount();
     }
