@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="@{main::onCheckActiveNotification}"
-                android:text="@string/app_name" />
+                android:text="수집" />
         </LinearLayout>
 
         <android.support.v4.widget.SwipeRefreshLayout

@@ -87,24 +87,6 @@ public class Application extends android.app.Application {
 
         return groups;
     }
-
-    public static ArrayList<TestGroup> getGroupTest(ArrayList<NotificationObject> items) {
-        ArrayList<TestGroup> groups = new ArrayList<>();
-        for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
-            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
-            CharSequence s = null;
-            for (NotificationObject object : items) {
-                if (app.equals(object.getPackageName())) {
-                    separatedItems.add(object);
-                    s = object.getAppName();
-                }
-            }
-            if (!separatedItems.isEmpty())
-                groups.add(new TestGroup(String.valueOf(s), app, separatedItems));
-        }
-
-        return groups;
-    }
 }
 
 

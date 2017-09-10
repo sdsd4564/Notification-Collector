@@ -42,6 +42,11 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
         db = DBhelper.getInstance();
     }
 
+    void setGroups(ArrayList<NotificationGroup> groups) {
+        this.groups.clear();
+        this.groups.addAll(groups);
+    }
+
     @Override
     public ParentViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_parent, parent, false);

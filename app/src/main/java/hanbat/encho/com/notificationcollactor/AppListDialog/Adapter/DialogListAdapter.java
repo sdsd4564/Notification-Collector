@@ -1,16 +1,15 @@
 package hanbat.encho.com.notificationcollactor.AppListDialog.Adapter;
 
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
+
 import java.util.ArrayList;
-import java.util.List;
 
 import hanbat.encho.com.notificationcollactor.DiffCallback.AppInfoDiffCallback;
 import hanbat.encho.com.notificationcollactor.Model.AppInfo;
@@ -32,10 +31,6 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
 
     public void setmOnMyItemCheckedChanged(OnMyItemCheckedChanged onMyItemCheckedChanged) {
         this.mOnMyItemCheckedChanged = onMyItemCheckedChanged;
-    }
-
-    public interface OnMyItemCheckedChanged {
-        void onItemCheckedChanged(AppInfo app);
     }
 
     @Override
@@ -61,15 +56,9 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
         return items == null ? 0 : items.size();
     }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    class DialogViewHolder extends RecyclerView.ViewHolder {
-        DialogAllowedItemBinding allowItemBinding;
-
-        DialogViewHolder(View itemView) {
-            super(itemView);
-            allowItemBinding = DataBindingUtil.bind(itemView);
-        }
+    @Override
+    public long getItemId(int position) {
+        return items.get(position).hashCode();
     }
 
     public void updateAppListItem(ArrayList<AppInfo> items) {
@@ -79,5 +68,20 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
         this.items.addAll(items);
 
         diffResult.dispatchUpdatesTo(DialogListAdapter.this);
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public interface OnMyItemCheckedChanged {
+        void onItemCheckedChanged(AppInfo app);
+    }
+
+    class DialogViewHolder extends RecyclerView.ViewHolder {
+        DialogAllowedItemBinding allowItemBinding;
+
+        DialogViewHolder(View itemView) {
+            super(itemView);
+            allowItemBinding = DataBindingUtil.bind(itemView);
+        }
     }
 }

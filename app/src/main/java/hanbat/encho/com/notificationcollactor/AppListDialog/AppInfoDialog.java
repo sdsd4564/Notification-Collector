@@ -13,9 +13,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.SnapHelper;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,8 +111,7 @@ public class AppInfoDialog extends Activity {
                                 confirmedAppsClone.add(app);
                                 Collections.sort(confirmedAppsClone, sort);
                                 itemsClone.remove(app);
-                                mAdapter.updateAppListItem(itemsClone);
-                                mConfirmedAdapter.updateConfirmedAppListItem(confirmedAppsClone);
+                                updateLayout(itemsClone, confirmedAppsClone);
                             }
                         });
 
@@ -120,8 +121,7 @@ public class AppInfoDialog extends Activity {
                                 itemsClone.add(appInfo);
                                 Collections.sort(itemsClone, sort);
                                 confirmedAppsClone.remove(appInfo);
-                                mAdapter.updateAppListItem(itemsClone);
-                                mConfirmedAdapter.updateConfirmedAppListItem(confirmedAppsClone);
+                                updateLayout(itemsClone, confirmedAppsClone);
                             }
                         });
                     }
@@ -148,6 +148,13 @@ public class AppInfoDialog extends Activity {
         Collections.sort(data, sort);
 
         return data;
+    }
+
+    private void updateLayout(ArrayList<AppInfo> items, ArrayList<AppInfo> confirmedApps) {
+        mAdapter.updateAppListItem(items);
+        mConfirmedAdapter.updateConfirmedAppListItem(confirmedApps);
+        binding.countComfirmedApps.setText(String.valueOf(mConfirmedAdapter.getItemCount()));
+        binding.countComfirmedApps.setVisibility(mConfirmedAdapter.getItemCount() != 0 ? View.VISIBLE : View.INVISIBLE);
     }
 
     private class AscPackages implements Comparator<AppInfo> {

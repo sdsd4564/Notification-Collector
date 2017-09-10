@@ -3,6 +3,8 @@
 
     <data>
 
+        <import type="android.view.View"/>
+
         <variable
             name="dialog"
             type="hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog" />
@@ -16,7 +18,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/dialog_text_message2" />
+
+            <TextView
+                android:id="@+id/count_comfirmed_apps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{confirmAdapter.itemCount == 0 ? View.INVISIBLE : View.VISIBLE}"
+                android:background="@drawable/red_circle"
+                android:gravity="center"
+                android:paddingEnd="3dp"
+                android:paddingStart="3dp"
+                android:text="@{String.valueOf(confirmAdapter.itemCount)}"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -26,12 +55,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="@string/dialog_text_message2" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/dialog_confirmed_app"
