@@ -7,6 +7,7 @@ import android.support.v7.util.DiffUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 
@@ -102,7 +103,26 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
     @Override
     public void onBindGroupViewHolder(final ParentViewHolder holder, int flatPosition, final ExpandableGroup group) {
         holder.parentBinding.setNoti((NotificationGroup) group);
+        this.setOnGroupClickListener(new OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(int flatPos) {
+                if (!isGroupExpanded(flatPos) && group.getItemCount() == 0) {
+//                    holder.parentBinding.noItems.setVisibility(View.VISIBLE);
+                    animationFade(holder.parentBinding.noItems, true);
+                } else {
+//                    holder.parentBinding.noItems.setVisibility(View.GONE);
+                    animationFade(holder.parentBinding.noItems, false);
+                }
+                return false;
+            }
+        });
+    }
 
+    private void animationFade(View view, boolean onFade) {
+        view.setVisibility(onFade ? View.VISIBLE : View.GONE);
+        Animation animation = new AlphaAnimation(onFade ? 0 : 1, onFade ? 1 : 0);
+        animation.setDuration(300);
+        view.setAnimation(animation);
     }
 
     private void refreshGroup(NotificationGroup newGroup) {
@@ -143,6 +163,8 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
             rotate.setFillAfter(true);
             parentBinding.arrow.setAnimation(rotate);
         }
+
+
     }
 
     class MainViewHolder extends ChildViewHolder {

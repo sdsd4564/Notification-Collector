@@ -31,7 +31,7 @@ class DBhelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
     private static DBhelper f = null;
 
-    DBhelper(Context context) {
+    private DBhelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 
