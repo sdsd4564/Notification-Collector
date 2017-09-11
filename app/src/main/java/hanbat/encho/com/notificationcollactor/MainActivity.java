@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding mainBinding;
     NotificationAdapter notificationAdapter;
     ArrayList<String> confirmedApps;
+    ArrayList<NotificationGroup> groups;
     PackageManager pm;
     private DBhelper db;
 
@@ -46,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
         pm = Application.getAppContext().getPackageManager();
 
         if (!isPermissionAllowed()) {
-            Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_LONG).show();
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+            Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_LONG).show();
             this.finishAffinity();
         } else {
             mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
             db = DBhelper.getInstance();
             confirmedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
-            ArrayList<NotificationGroup> groups = Application.getGroupNotifications(db.getAllNotifications());
+            groups = Application.getGroupNotifications(db.getAllNotifications());
 
             if (confirmedApps.isEmpty()) {
                 startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
@@ -71,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
             mainBinding.swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    notificationAdapter.setGroups(Application.getGroupNotifications(db.getAllNotifications()));
-                    notificationAdapter.notifyDataSetChanged();
+                    groups = Application.getGroupNotifications(db.getAllNotifications());
+                    notificationAdapter.setGroups(groups);
                     mainBinding.swipeLayout.setRefreshing(false);
                 }
             });
@@ -82,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        notificationAdapter.setGroups(Application.getGroupNotifications(db.getAllNotifications()));
-        notificationAdapter.notifyDataSetChanged();
+        groups = Application.getGroupNotifications(db.getAllNotifications());
+        notificationAdapter.setGroups(groups);
     }
 
     @Override
@@ -144,11 +145,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onCheckConfirmedApps(View view) {
-        Intent toDialog = new Intent(this, AppInfoDialog.class);
-        startActivityForResult(toDialog, 123);
-    }
-
     private boolean isPermissionAllowed() {
         Set<String> notiListerSet = NotificationManagerCompat.getEnabledListenerPackages(this);
         String myPackageName = getPackageName();
@@ -159,6 +155,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    public void onCheckConfirmedApps(View view) {
+        Intent toDialog = new Intent(this, AppInfoDialog.class);
+        startActivityForResult(toDialog, 123);
     }
 
     public void notificationBuild(View view) {

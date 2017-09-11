@@ -9,26 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.Toast;
 
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
+import com.thoughtbot.expandablerecyclerview.listeners.OnGroupClickListener;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
 import java.util.ArrayList;
 
-import hanbat.encho.com.notificationcollactor.DiffCallback.NotificationGroupDiffCallback;
 import hanbat.encho.com.notificationcollactor.DiffCallback.NotificationGroupItemDiffCallback;
 import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBinding;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationParentBinding;
-
-
-/**
- * Created by Encho on 2017-08-23.
- */
 
 class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdapter.ParentViewHolder, NotificationAdapter.MainViewHolder> {
     private ArrayList<NotificationGroup> groups;
@@ -45,6 +39,7 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
     void setGroups(ArrayList<NotificationGroup> groups) {
         this.groups.clear();
         this.groups.addAll(groups);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -58,7 +53,6 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_item, parent, false);
         return new MainViewHolder(view);
     }
-
 
     @Override
     public void onBindChildViewHolder(final MainViewHolder holder, int flatPosition, final ExpandableGroup group, final int childIndex) {
@@ -106,23 +100,12 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
     }
 
     @Override
-    public void onBindGroupViewHolder(final ParentViewHolder holder, int flatPosition, ExpandableGroup group) {
+    public void onBindGroupViewHolder(final ParentViewHolder holder, int flatPosition, final ExpandableGroup group) {
         holder.parentBinding.setNoti((NotificationGroup) group);
 
     }
 
-    void updateGroupItem(ArrayList<NotificationGroup> groups) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new NotificationGroupDiffCallback(this.groups, groups));
-
-        this.groups.clear();
-        this.groups.addAll(groups);
-
-        Toast.makeText(mContext, "호출 호출 하하하", Toast.LENGTH_SHORT).show();
-
-        diffResult.dispatchUpdatesTo(NotificationAdapter.this);
-    }
-
-    void refreshGroup(NotificationGroup newGroup) {
+    private void refreshGroup(NotificationGroup newGroup) {
         for (NotificationGroup obj : groups) {
             if (newGroup.getPackageName().equals(obj.getPackageName())) {
                 DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new NotificationGroupItemDiffCallback(obj, newGroup));
@@ -131,6 +114,7 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
                 obj.getItems().addAll(newGroup.getItems());
 
                 diffResult.dispatchUpdatesTo(NotificationAdapter.this);
+                break;
             }
         }
     }

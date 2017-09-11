@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.facebook.stetho.Stetho;
 
-import junit.framework.Test;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ import java.util.TimeZone;
 
 import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
-import hanbat.encho.com.notificationcollactor.Model.TestGroup;
 
 /**
  * Created by USER on 2017-07-19.
@@ -29,13 +26,6 @@ import hanbat.encho.com.notificationcollactor.Model.TestGroup;
 
 public class Application extends android.app.Application {
     private static Context mContext;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Stetho.initializeWithDefaults(this);
-        mContext = this;
-    }
 
     public static Context getAppContext() {
         return mContext;
@@ -81,11 +71,18 @@ public class Application extends android.app.Application {
                     s = object.getAppName();
                 }
             }
-            if (!separatedItems.isEmpty())
-                groups.add(new NotificationGroup(String.valueOf(s), app, separatedItems));
+//            if (!separatedItems.isEmpty())
+            groups.add(new NotificationGroup(String.valueOf(s), app, separatedItems));
         }
 
         return groups;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Stetho.initializeWithDefaults(this);
+        mContext = this;
     }
 }
 

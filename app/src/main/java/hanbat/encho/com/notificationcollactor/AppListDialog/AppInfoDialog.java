@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.Window;
 
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
-import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.util.ArrayList;
 import java.util.Collections;
