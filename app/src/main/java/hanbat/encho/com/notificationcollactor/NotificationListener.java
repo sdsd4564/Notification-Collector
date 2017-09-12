@@ -36,7 +36,10 @@ public class NotificationListener extends NotificationListenerService {
         Notification mNotification = sbn.getNotification();
         pm = Application.getAppContext().getPackageManager();
 
-        ArrayList<String> confirmedApps = PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages");
+        ArrayList<String> confirmedApps = new ArrayList<>();
+        for (String str : PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages"))
+            confirmedApps.add(str.split(",")[0]);
+
         Bundle extras = mNotification.extras;
 
         if (confirmedApps.contains(sbn.getPackageName())) {

@@ -1,6 +1,5 @@
 package hanbat.encho.com.notificationcollactor;
 
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -17,7 +16,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SnapHelper;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
@@ -36,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding mainBinding;
     NotificationAdapter notificationAdapter;
-    ArrayList<String> confirmedApps;
+    ArrayList<String> confirmedApps = new ArrayList<>();
     ArrayList<NotificationGroup> groups;
     PackageManager pm;
     private DBhelper db;
@@ -58,7 +56,9 @@ public class MainActivity extends AppCompatActivity {
             snapHelper.attachToRecyclerView(mainBinding.recyclerview);
 
             db = DBhelper.getInstance();
-            confirmedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
+            for (String str : PreferenceManager.getInstance().getStringArrayPref(this, "Packages")) {
+                confirmedApps.add(str.split(",")[0]);
+            }
             groups = Application.getGroupNotifications(db.getAllNotifications());
 
             if (confirmedApps.isEmpty()) {
@@ -85,18 +85,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         groups = Application.getGroupNotifications(db.getAllNotifications());
         notificationAdapter.setGroups(groups);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 123) {
-            if (resultCode == RESULT_OK) {
-                ArrayList<String> selectedApps = PreferenceManager.getInstance().getStringArrayPref(this, "Packages");
-                Toast.makeText(MainActivity.this, "선택된 어플 갯수 : " + selectedApps.size(), Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     @Override

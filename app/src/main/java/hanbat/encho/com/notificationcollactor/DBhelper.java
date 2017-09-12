@@ -2,7 +2,6 @@ package hanbat.encho.com.notificationcollactor;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
@@ -12,7 +11,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -66,24 +64,48 @@ class DBhelper extends SQLiteOpenHelper {
 
     void addNotification(NotificationObject object) {
         SQLiteDatabase db = getWritableDatabase();
-        String sb = "INSERT INTO tempp " +
-                "(title, text, subtext, largeicon, posttime, packagename, appname) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        SQLiteStatement st = db.compileStatement(sb);
-        st.bindString(1, object.getTitle() == null ? "" : object.getTitle());
-        st.bindString(2, String.valueOf(object.getText()));
-        st.bindString(3, String.valueOf(object.getSubText() == null ? "" : object.getSubText()));
-        Drawable d = new ColorDrawable(Color.TRANSPARENT);
-        Bitmap emptyImage = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(emptyImage);
-        canvas.drawColor(Color.TRANSPARENT);
-        st.bindBlob(4, object.getLargeIcon() == null ? getByteArrayFromBitmap(emptyImage) : getByteArrayFromBitmap(object.getLargeIcon()));
-        st.bindLong(5, object.getPostTime());
-        st.bindString(6, object.getPackageName());
-        st.bindString(7, String.valueOf(object.getAppName()));
+        String noDuplicated = "SELECT title, text, posttime, packagename FROM tempp " +
+                "WHERE title=? AND " +
+                "text=? AND " +
+                "posttime=? AND " +
+                "packagename=?;";
 
-        st.execute();
+        Cursor cursor = db.rawQuery(noDuplicated,
+                new String[]{
+                        object.getTitle(),
+                        String.valueOf(object.getText()),
+                        String.valueOf(object.getPostTime()),
+                        object.getPackageName()});
+
+        boolean isDuplicated = false;
+        if (cursor.moveToNext())
+            isDuplicated = cursor.getString(0).equals(object.getTitle())
+                    && cursor.getString(1).equals(String.valueOf(object.getText()))
+                    && cursor.getLong(2) == object.getPostTime()
+                    && cursor.getString(3).equals(object.getPackageName());
+        cursor.close();
+
+        if (!isDuplicated) {
+            String sb = "INSERT INTO tempp " +
+                    "(title, text, subtext, largeicon, posttime, packagename, appname) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+            SQLiteStatement st = db.compileStatement(sb);
+            st.bindString(1, object.getTitle() == null ? "" : object.getTitle());
+            st.bindString(2, String.valueOf(object.getText()));
+            st.bindString(3, String.valueOf(object.getSubText() == null ? "" : object.getSubText()));
+            Drawable d = new ColorDrawable(Color.TRANSPARENT);
+            Bitmap emptyImage = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(emptyImage);
+            canvas.drawColor(Color.TRANSPARENT);
+            st.bindBlob(4, object.getLargeIcon() == null ? getByteArrayFromBitmap(emptyImage) : getByteArrayFromBitmap(object.getLargeIcon()));
+            st.bindLong(5, object.getPostTime());
+            st.bindString(6, object.getPackageName());
+            st.bindString(7, String.valueOf(object.getAppName()));
+
+            st.execute();
+        }
     }
 
     ArrayList<NotificationObject> dropAllNotifications() {

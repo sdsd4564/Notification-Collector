@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.SnapHelper;
 import android.view.Gravity;
@@ -81,7 +82,10 @@ public class AppInfoDialog extends Activity {
                         confirmedApps = new ArrayList<>();
                         itemsClone = new ArrayList<>();
                         confirmedAppsClone = new ArrayList<>();
-                        ArrayList<String> packages = PreferenceManager.getInstance().getStringArrayPref(AppInfoDialog.this, "Packages");
+                        ArrayList<String> packages = new ArrayList<String>();
+                        for (String str : PreferenceManager.getInstance().getStringArrayPref(AppInfoDialog.this, "Packages"))
+                            packages.add(str.split(",")[0]);
+
 
                         //설치된 앱 리스트에서 승인된 앱 리스트에 추가///////////////
                         for (AppInfo appInfo : items)

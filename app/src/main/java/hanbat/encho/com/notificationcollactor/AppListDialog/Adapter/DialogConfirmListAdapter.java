@@ -97,16 +97,13 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
     }
 
     public void onAppCheckConfirm(View view) {
-        PackageManager pm = Application.getAppContext().getPackageManager();
-        Intent intent = new Intent();
         ArrayList<String> apps = new ArrayList<>();
         for (AppInfo app : confirmApps) {
-            apps.add(app.getPackageName());
+            apps.add(app.getPackageName() + "," + app.getName());
             saveBitmapToFile(convertDrawableToBitmap(app.getIcon()), app.getPackageName());
         }
 
         PreferenceManager.getInstance().setStringArrayPref(mContext, "Packages", apps);
-        ((AppInfoDialog) mContext).setResult(Activity.RESULT_OK, intent);
         ((AppInfoDialog) mContext).finish();
     }
 

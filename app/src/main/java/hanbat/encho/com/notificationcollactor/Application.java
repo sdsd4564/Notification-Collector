@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.format.DateUtils;
 import android.widget.ImageView;
@@ -19,10 +20,6 @@ import java.util.TimeZone;
 
 import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
-
-/**
- * Created by USER on 2017-07-19.
- */
 
 public class Application extends android.app.Application {
     private static Context mContext;
@@ -41,7 +38,25 @@ public class Application extends android.app.Application {
         File imgFile = new File(mContext.getFilesDir(), packageName);
         if (imgFile.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+
+            int redBucket = 0;
+            int greenBucket = 0;
+            int blueBucket = 0;
+            int pixelCount = 0;
+
+            for (int y = 0; y < bitmap.getHeight(); ++y) {
+                for (int x = 0; x < bitmap.getWidth(); ++x) {
+                    int c = bitmap.getPixel(x, y);
+
+                    pixelCount++;
+                    redBucket += Color.red(c);
+                    greenBucket += Color.green(c);
+                    blueBucket += Color.blue(c);
+                }
+            }
+            int averageColor = Color.rgb(redBucket / pixelCount, greenBucket / pixelCount, blueBucket / pixelCount);
             iv.setImageBitmap(bitmap);
+            iv.setBackgroundColor(averageColor);
         }
     }
 
@@ -63,16 +78,14 @@ public class Application extends android.app.Application {
     public static ArrayList<NotificationGroup> getGroupNotifications(ArrayList<NotificationObject> items) {
         ArrayList<NotificationGroup> groups = new ArrayList<>();
         for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
+            String[] row = app.split(",");
             ArrayList<NotificationObject> separatedItems = new ArrayList<>();
-            CharSequence s = null;
             for (NotificationObject object : items) {
-                if (app.equals(object.getPackageName())) {
+                if (row[0].equals(object.getPackageName())) {
                     separatedItems.add(object);
-                    s = object.getAppName();
                 }
             }
-//            if (!separatedItems.isEmpty())
-            groups.add(new NotificationGroup(String.valueOf(s), app, separatedItems));
+            groups.add(new NotificationGroup(row[1], row[0], separatedItems));
         }
 
         return groups;
