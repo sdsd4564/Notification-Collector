@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.util.DiffUtil;
@@ -99,8 +100,25 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
     public void onAppCheckConfirm(View view) {
         ArrayList<String> apps = new ArrayList<>();
         for (AppInfo app : confirmApps) {
-            apps.add(app.getPackageName() + "," + app.getName());
-            saveBitmapToFile(convertDrawableToBitmap(app.getIcon()), app.getPackageName());
+            Bitmap bitmap = convertDrawableToBitmap(app.getIcon());
+
+            int redBucket = 0;
+            int greenBucket = 0;
+            int blueBucket = 0;
+            int pixelCount = 0;
+            for (int y = 0; y < bitmap.getHeight(); ++y) {
+                for (int x = 0; x < bitmap.getWidth(); ++x) {
+                    int c = bitmap.getPixel(x, y);
+                    pixelCount++;
+                    redBucket += Color.red(c);
+                    greenBucket += Color.green(c);
+                    blueBucket += Color.blue(c);
+                }
+            }
+            int averageColor = Color.rgb(redBucket / pixelCount, greenBucket / pixelCount, blueBucket / pixelCount);
+
+            apps.add(app.getPackageName() + "," + app.getName() + "," + averageColor);
+            saveBitmapToFile(bitmap, app.getPackageName());
         }
 
         PreferenceManager.getInstance().setStringArrayPref(mContext, "Packages", apps);

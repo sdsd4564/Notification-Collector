@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="gravitysnaphelper-1.3">
     <CLASSES>
-      <root url="file://$USER_HOME$/.android/build-cache/757b7a5d1570e0b78098db2c498db6ffbe92ca1e/output/res" />
-      <root url="jar://$USER_HOME$/.android/build-cache/757b7a5d1570e0b78098db2c498db6ffbe92ca1e/output/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.android/build-cache/39f1d733bd1d205ca2514230fd0d7657bee26549/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/39f1d733bd1d205ca2514230fd0d7657bee26549/output/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

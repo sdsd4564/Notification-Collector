@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +71,7 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if (group.getItemCount() == 1) {
-
+                                    toggleGroup(group);
                                 }
                                 setGroups(Application.getGroupNotifications(db.deleteNotification(object.getPostTime())));
                             }
@@ -91,6 +92,13 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
     @Override
     public void onBindGroupViewHolder(final ParentViewHolder holder, final int flatPosition, final ExpandableGroup group) {
         holder.parentBinding.setNoti((NotificationGroup) group);
+//        for (String str : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
+//            String[] attr = str.split(",");
+//            if (((NotificationGroup) group).getPackageName().equals(attr[0])) {
+//                holder.parentBinding.getRoot().setBackgroundColor(Integer.parseInt(attr[2]));
+//                break;
+//            }
+//        }
     }
 
     class ParentViewHolder extends GroupViewHolder {

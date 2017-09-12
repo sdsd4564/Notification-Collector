@@ -7,4 +7,5 @@
     <string name="dialog_text_message2">알립 수집 앱</string>
     <string name="alert_message_delete">정말 삭제하시겠습니까?</string>
     <string name="notification_no_items">저장된 알림이 없습니다</string>
+
 </resources>
