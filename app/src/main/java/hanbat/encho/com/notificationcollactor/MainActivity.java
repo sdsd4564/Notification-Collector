@@ -59,44 +59,57 @@ public class MainActivity extends AppCompatActivity {
             for (String str : PreferenceManager.getInstance().getStringArrayPref(this, "Packages")) {
                 confirmedApps.add(str.split(",")[0]);
             }
-            groups = Application.getGroupNotifications(db.getAllNotifications());
 
             if (confirmedApps.isEmpty()) {
                 startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
             }
 
-            mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
-            notificationAdapter = new NotificationAdapter(groups, this);
+            groups = Application.getGroupNotifications(db.getAllNotifications());
+
+            mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+            notificationAdapter = new NotificationAdapter(groups, MainActivity.this);
             mainBinding.recyclerview.setAdapter(notificationAdapter);
 
             mainBinding.swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    groups = Application.getGroupNotifications(db.getAllNotifications());
-                    notificationAdapter.setGroups(groups);
-                    mainBinding.swipeLayout.setRefreshing(false);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            groups = Application.getGroupNotifications(db.getAllNotifications());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    notificationAdapter.setGroups(groups);
+                                    mainBinding.swipeLayout.setRefreshing(false);
+                                }
+                            });
+                        }
+                    }).start();
                 }
             });
+
         }
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        groups = Application.getGroupNotifications(db.getAllNotifications());
-        notificationAdapter.setGroups(groups);
-    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        notificationAdapter.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        notificationAdapter.onRestoreInstanceState(savedInstanceState);
+        if (requestCode == 123 && resultCode == RESULT_OK) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    groups = Application.getGroupNotifications(db.getAllNotifications());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            notificationAdapter.setGroups(groups);
+                        }
+                    });
+                }
+            }).start();
+        }
     }
 
     public void onCheckActiveNotification(View view) {
@@ -127,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if (text.length() > 0 && title.length() > 0) {
                     db.addNotification(obj);
-                    Toast.makeText(this, title + "\n" + text + "\n", Toast.LENGTH_SHORT).show();
                 }
             }
         }

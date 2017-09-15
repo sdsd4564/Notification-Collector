@@ -73,7 +73,18 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
                                 if (group.getItemCount() == 1) {
                                     toggleGroup(group);
                                 }
-                                setGroups(Application.getGroupNotifications(db.deleteNotification(object.getPostTime())));
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        setGroups(Application.getGroupNotifications(db.deleteNotification(object.getPostTime())));
+                                        ((MainActivity)mContext).runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                notifyDataSetChanged();
+                                            }
+                                        });
+                                    }
+                                }).start();
                             }
                         });
                 builder.setNegativeButton("취소",
@@ -100,6 +111,7 @@ class NotificationAdapter extends ExpandableRecyclerViewAdapter<NotificationAdap
 //            }
 //        }
     }
+
 
     class ParentViewHolder extends GroupViewHolder {
         NotificationParentBinding parentBinding;

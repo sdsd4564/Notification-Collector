@@ -33,7 +33,7 @@ class DBhelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, VERSION);
     }
 
-    static synchronized DBhelper getInstance() {
+    static DBhelper getInstance() {
         if (f == null) {
             f = new DBhelper(Application.getAppContext());
         }

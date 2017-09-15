@@ -123,6 +123,8 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
 
         PreferenceManager.getInstance().setStringArrayPref(mContext, "Packages", apps);
         ((AppInfoDialog) mContext).finish();
+        ((AppInfoDialog) mContext).setResult(Activity.RESULT_OK);
+
     }
 
     private Bitmap convertDrawableToBitmap(Drawable d) {
