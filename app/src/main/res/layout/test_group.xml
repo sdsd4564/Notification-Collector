@@ -8,7 +8,7 @@
 
         <variable
             name="noti"
-            type="hanbat.encho.com.notificationcollactor.Model.NotificationGroup" />
+            type="hanbat.encho.com.notificationcollactor.Model.TestGroup" />
     </data>
 
     <LinearLayout
@@ -73,16 +73,10 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/no_items"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/child_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawableTop="@drawable/cool1600"
-            android:text="@string/notification_no_items"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            android:textStyle="bold|italic"
             android:visibility="gone" />
 
     </LinearLayout>

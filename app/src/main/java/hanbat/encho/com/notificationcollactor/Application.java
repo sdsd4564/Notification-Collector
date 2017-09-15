@@ -4,7 +4,6 @@ import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.format.DateUtils;
 import android.widget.ImageView;
@@ -18,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
+import hanbat.encho.com.notificationcollactor.Model.TestGroup;
 
 public class Application extends android.app.Application {
     private static Context mContext;
@@ -59,8 +58,8 @@ public class Application extends android.app.Application {
         tv.setText(ago);
     }
 
-    public static ArrayList<NotificationGroup> getGroupNotifications(ArrayList<NotificationObject> items) {
-        ArrayList<NotificationGroup> groups = new ArrayList<>();
+    public static ArrayList<TestGroup> getTestGroups(ArrayList<NotificationObject> items) {
+        ArrayList<TestGroup> groups = new ArrayList<>();
         for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
             String[] row = app.split(",");
             ArrayList<NotificationObject> separatedItems = new ArrayList<>();
@@ -69,7 +68,8 @@ public class Application extends android.app.Application {
                     separatedItems.add(object);
                 }
             }
-            groups.add(new NotificationGroup(row[1], row[0], separatedItems));
+            if (separatedItems.size() != 0)
+                groups.add(new TestGroup(row[1], row[0], separatedItems));
         }
 
         return groups;

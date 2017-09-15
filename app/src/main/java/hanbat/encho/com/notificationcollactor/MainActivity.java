@@ -15,27 +15,23 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.SnapHelper;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
-
-import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 
 import java.util.ArrayList;
 import java.util.Set;
 
 import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
-import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
+import hanbat.encho.com.notificationcollactor.Model.TestGroup;
 import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding mainBinding;
-    NotificationAdapter notificationAdapter;
+    TestAdapter mAdapter;
     ArrayList<String> confirmedApps = new ArrayList<>();
-    ArrayList<NotificationGroup> groups;
+    ArrayList<TestGroup> testGroups;
     PackageManager pm;
     private DBhelper db;
 
@@ -52,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
             mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
             mainBinding.setMain(this);
 
-            SnapHelper snapHelper = new GravitySnapHelper(Gravity.TOP);
-            snapHelper.attachToRecyclerView(mainBinding.recyclerview);
+//            SnapHelper snapHelper = new GravitySnapHelper(Gravity.TOP);
+//            snapHelper.attachToRecyclerView(mainBinding.recyclerview);
 
             db = DBhelper.getInstance();
             for (String str : PreferenceManager.getInstance().getStringArrayPref(this, "Packages")) {
@@ -64,23 +60,24 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
             }
 
-            groups = Application.getGroupNotifications(db.getAllNotifications());
+//            groups = Application.getGroupNotifications(db.getAllNotifications());
+            testGroups = Application.getTestGroups(db.getAllNotifications());
 
             mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-            notificationAdapter = new NotificationAdapter(groups, MainActivity.this);
-            mainBinding.recyclerview.setAdapter(notificationAdapter);
-
+            mAdapter = new TestAdapter(testGroups, MainActivity.this);
+            mAdapter.setHasStableIds(true);
+            mainBinding.recyclerview.setAdapter(mAdapter);
             mainBinding.swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            groups = Application.getGroupNotifications(db.getAllNotifications());
+                            testGroups = Application.getTestGroups(db.getAllNotifications());
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    notificationAdapter.setGroups(groups);
+                                    mAdapter.setGroups(testGroups);
                                     mainBinding.swipeLayout.setRefreshing(false);
                                 }
                             });
@@ -88,14 +85,13 @@ public class MainActivity extends AppCompatActivity {
                     }).start();
                 }
             });
-
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        /*
         if (requestCode == 123 && resultCode == RESULT_OK) {
             new Thread(new Runnable() {
                 @Override
@@ -109,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
             }).start();
-        }
+        }*/
     }
 
     public void onCheckActiveNotification(View view) {

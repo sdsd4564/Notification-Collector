@@ -17,8 +17,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 
-import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,9 +52,6 @@ public class AppInfoDialog extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         binding = DataBindingUtil.setContentView(this, R.layout.check_allowed_applist);
         binding.setDialog(this);
-
-        SnapHelper snapHelper = new GravitySnapHelper(Gravity.TOP);
-        snapHelper.attachToRecyclerView(binding.dialogApplist);
 
         pm = Application.getAppContext().getPackageManager();
         sort = new AscPackages();

@@ -62,7 +62,6 @@ public class NotificationListener extends NotificationListenerService {
 
             NotificationObject obj = new NotificationObject(title, largeIcon, text, subText, postTime, packageName, appName);
 
-            Toast.makeText(Application.getAppContext(), TAG + obj.getPackageName(), Toast.LENGTH_SHORT).show();
             if (text.length() > 0 && title.length() > 0) {
                 db.addNotification(obj);
             }
