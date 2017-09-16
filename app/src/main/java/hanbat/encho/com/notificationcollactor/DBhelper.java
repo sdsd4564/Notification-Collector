@@ -115,10 +115,17 @@ class DBhelper extends SQLiteOpenHelper {
         return getAllNotifications();
     }
 
-    ArrayList<NotificationObject> deleteNotification(long postTime) {
-        String query = "DELETE FROM tempp WHERE posttime = " + postTime;
+    ArrayList<NotificationObject> deleteNotification(String packageName, long postTime) {
+        String query = "DELETE FROM tempp WHERE packagename = ? AND posttime = ?";
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL(query);
+        db.execSQL(query, new String[]{packageName, String.valueOf(postTime)});
+        return getAllNotifications();
+    }
+
+    ArrayList<NotificationObject> deleteGroupNotification(String packageName) {
+        String query = "DELETE FROM tempp WHERE packagename = ?";
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(query, new String[]{packageName});
         return getAllNotifications();
     }
 

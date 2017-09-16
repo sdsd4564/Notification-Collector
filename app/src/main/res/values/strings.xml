@@ -2,10 +2,11 @@
     <string name="app_name">Notification Collactor</string>
     <string name="permission_check_message">스마트폰의 알림 접근을 허용해주셔야 앱이 알림 수집이 가능합니다</string>
     <string name="confirm">확인</string>
-    <string name="loading_package_message">기기에 설치된 앱 목록 불러오는 중...</string>
+    <string name="loading_package_message">기기에 설치된 앱 목록 불러오는 중…</string>
     <string name="dialog_text_message">기기에 설치된 앱</string>
     <string name="dialog_text_message2">알립 수집 앱</string>
-    <string name="alert_message_delete">정말 삭제하시겠습니까?</string>
+    <string name="alert_message_delete">이 메시지를 삭제하시겠습니까?</string>
+    <string name="alert_message_group_delete">메시지 전체를 삭제하시겠습니까?</string>
     <string name="notification_no_items">저장된 알림이 없습니다</string>
 
 </resources>

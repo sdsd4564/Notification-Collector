@@ -12,10 +12,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 
-import java.security.acl.Group;
 import java.util.ArrayList;
 
-import hanbat.encho.com.notificationcollactor.DiffCallback.NotificationObjectDiffCallback;
 import hanbat.encho.com.notificationcollactor.DiffCallback.TestGroupDiffCallback;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 import hanbat.encho.com.notificationcollactor.Model.TestGroup;
@@ -38,9 +36,11 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.GroupViewHolde
     }
 
     public void setGroups(ArrayList<TestGroup> groups) {
-        for (TestGroup obj : this.groups)
-            obj.setExpand(false);
-        updateList(groups);
+        for (TestGroup obj : this.groups) obj.setExpand(false);
+        this.groups.clear();
+        this.groups.addAll(groups);
+        notifyDataSetChanged();
+//        updateList(groups);
     }
 
     @Override
@@ -61,18 +61,41 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.GroupViewHolde
         final TestGroup group = groups.get(i);
         holder.groupBinding.setNoti(group);
 
-        final TestChildAdapter mAdapter = new TestChildAdapter(group);
+        TestChildAdapter mAdapter = new TestChildAdapter(group);
         mAdapter.setHasStableIds(true);
 
         holder.groupBinding.childListView.setLayoutManager(new LinearLayoutManager(mContext));
         holder.groupBinding.childListView.setAdapter(group.isExpand() ? mAdapter : null);
-        holder.groupBinding.childListView.setVisibility(group.isExpand() ? View.VISIBLE : View.GONE);
-        animationGroupItem(!group.isExpand(), holder.groupBinding.arrow);
+//        holder.groupBinding.childListView.setVisibility(group.isExpand() ? View.VISIBLE : View.INVISIBLE);
+        animationGroupItem(group.isExpand(), holder.groupBinding.arrow);
         holder.groupBinding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 notifyItemChanged(i);
                 group.setExpand(!group.isExpand());
+            }
+        });
+        holder.groupBinding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext)
+                        .setTitle(group.getAppName() + " " + mContext.getResources().getText(R.string.alert_message_delete));
+                builder.setPositiveButton("삭제",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                updateList(Application.getTestGroups(db.deleteGroupNotification(group.getPackageName())));
+                            }
+                        });
+                builder.setNegativeButton("취소",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                builder.show();
+                return false;
             }
         });
     }
@@ -138,7 +161,7 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.GroupViewHolde
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    ArrayList<TestGroup> list = Application.getTestGroups(db.deleteNotification(item.getPostTime()));
+                                    ArrayList<TestGroup> list = Application.getTestGroups(db.deleteNotification(item.getPackageName(), item.getPostTime()));
                                     if (list.size() == groups.size()) {
                                         for (TestGroup obj : list) {
                                             if (obj.getPackageName().equals(group.getPackageName())) {
