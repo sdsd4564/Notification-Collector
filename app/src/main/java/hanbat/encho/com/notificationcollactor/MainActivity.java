@@ -15,6 +15,8 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -86,6 +88,59 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.permitted_apps: {
+                Intent toDialog = new Intent(this, AppInfoDialog.class);
+                startActivityForResult(toDialog, 123);
+                break;
+            }
+            case R.id.collect_notification: {
+                for (StatusBarNotification sbn : NotificationListener.mNotificationListenerService.getActiveNotifications()) {
+                    Notification mNotification = sbn.getNotification();
+                    Bundle extras = mNotification.extras;
+
+                    ApplicationInfo app = null;
+
+                    if (confirmedApps.contains(sbn.getPackageName())) {
+                        for (String _key : extras.keySet()) {
+                            if (extras.get(_key) instanceof ApplicationInfo) {
+                                app = (ApplicationInfo) extras.get(_key);
+                                break;
+                            }
+                        }
+
+                        String title = String.valueOf(extras.get(Notification.EXTRA_TITLE));
+                        CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
+                        CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
+                        Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
+                        long postTime = sbn.getPostTime();
+                        String packageName = sbn.getPackageName();
+
+                        CharSequence appName = pm.getApplicationLabel(app);
+
+                        NotificationObject obj = new NotificationObject(title, largeIcon, text, subText, postTime, packageName, appName);
+
+                        if (text.length() > 0 && title.length() > 0) {
+                            db.addNotification(obj);
+                        }
+                    }
+                }
+                mAdapter.setGroups(Application.getTestGroups(db.getAllNotifications()));
+                Toast.makeText(this, "현재 띄워져있는 알림을 수집했습니다", Toast.LENGTH_SHORT).show();
+                break;
+            }
+        }
+        return true;
     }
 
     @Override

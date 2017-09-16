@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/permitted_apps"
+        android:title="@string/permitted_apps" />
+
+    <item
+        android:id="@+id/collect_notification"
+        android:title="@string/menu_message_collect"/>
+</menu>

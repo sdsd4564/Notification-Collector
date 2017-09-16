@@ -8,5 +8,7 @@
     <string name="alert_message_delete">이 메시지를 삭제하시겠습니까?</string>
     <string name="alert_message_group_delete">메시지 전체를 삭제하시겠습니까?</string>
     <string name="notification_no_items">저장된 알림이 없습니다</string>
+    <string name="permitted_apps">알림허용목록</string>
+    <string name="menu_message_collect">존재하는 알림 수집</string>
 
 </resources>
