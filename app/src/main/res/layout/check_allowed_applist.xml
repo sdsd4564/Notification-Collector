@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
 
         <variable
             name="dialog"
@@ -32,9 +32,8 @@
 
             <TextView
                 android:id="@+id/count_comfirmed_apps"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="@{confirmAdapter.itemCount == 0 ? View.INVISIBLE : View.VISIBLE}"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:background="@drawable/red_circle"
                 android:gravity="center"
                 android:paddingEnd="3dp"
@@ -42,7 +41,8 @@
                 android:text="@{String.valueOf(confirmAdapter.itemCount)}"
                 android:textColor="@color/white"
                 android:textSize="13sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="@{confirmAdapter.itemCount == 0 ? View.INVISIBLE : View.VISIBLE}" />
 
         </LinearLayout>
 

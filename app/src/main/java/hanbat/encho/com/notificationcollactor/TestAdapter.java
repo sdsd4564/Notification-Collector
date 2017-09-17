@@ -20,9 +20,6 @@ import hanbat.encho.com.notificationcollactor.Model.TestGroup;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBinding;
 import hanbat.encho.com.notificationcollactor.databinding.TestGroupBinding;
 
-/**
- * Created by Encho on 2017-09-15.
- */
 
 public class TestAdapter extends RecyclerView.Adapter<TestAdapter.GroupViewHolder> {
     private ArrayList<TestGroup> groups;
@@ -61,12 +58,11 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.GroupViewHolde
         final TestGroup group = groups.get(i);
         holder.groupBinding.setNoti(group);
 
-        TestChildAdapter mAdapter = new TestChildAdapter(group);
+        TestChildAdapter mAdapter = new TestChildAdapter(group, holder.groupBinding);
         mAdapter.setHasStableIds(true);
 
         holder.groupBinding.childListView.setLayoutManager(new LinearLayoutManager(mContext));
         holder.groupBinding.childListView.setAdapter(group.isExpand() ? mAdapter : null);
-//        holder.groupBinding.childListView.setVisibility(group.isExpand() ? View.VISIBLE : View.INVISIBLE);
         animationGroupItem(group.isExpand(), holder.groupBinding.arrow);
         holder.groupBinding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,16 +71,18 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.GroupViewHolde
                 group.setExpand(!group.isExpand());
             }
         });
+
         holder.groupBinding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext)
-                        .setTitle(group.getAppName() + " " + mContext.getResources().getText(R.string.alert_message_delete));
+                        .setTitle(group.getAppName())
+                        .setMessage(R.string.alert_message_delete);
                 builder.setPositiveButton("삭제",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                updateList(Application.getTestGroups(db.deleteGroupNotification(group.getPackageName())));
+                                setGroups(Application.getTestGroups(db.deleteGroupNotification(group.getPackageName())));
                             }
                         });
                 builder.setNegativeButton("취소",
@@ -125,9 +123,11 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.GroupViewHolde
 
     class TestChildAdapter extends RecyclerView.Adapter<ChildViewHolder> {
         TestGroup group;
+        TestGroupBinding parentBinding;
 
-        public TestChildAdapter(TestGroup group) {
+        public TestChildAdapter(TestGroup group, TestGroupBinding parentBinding) {
             this.group = group;
+            this.parentBinding = parentBinding;
         }
 
         public void setGroup(TestGroup group) {
@@ -148,8 +148,8 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.GroupViewHolde
         }
 
         @Override
-        public void onBindViewHolder(ChildViewHolder childViewHolder, int i) {
-            final NotificationObject item = group.getItems().get(i);
+        public void onBindViewHolder(final ChildViewHolder childViewHolder, final int position) {
+            final NotificationObject item = group.getItems().get(position);
             childViewHolder.childBinding.setNoti(item);
             childViewHolder.childBinding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -162,15 +162,12 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.GroupViewHolde
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     ArrayList<TestGroup> list = Application.getTestGroups(db.deleteNotification(item.getPackageName(), item.getPostTime()));
-                                    if (list.size() == groups.size()) {
-                                        for (TestGroup obj : list) {
-                                            if (obj.getPackageName().equals(group.getPackageName())) {
-                                                setGroup(obj);
-                                                break;
-                                            }
-                                        }
+                                    if (group.getCount() == 1) {
+                                        setGroups(list);
                                     } else {
-                                        updateList(list);
+                                        group.getItems().remove(position);
+                                        TestChildAdapter.this.notifyItemRemoved(position);
+                                        parentBinding.notificationCount.setText(String.valueOf(group.getCount()));
                                     }
                                 }
                             });

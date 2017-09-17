@@ -47,6 +47,7 @@
                     app:loadIcon="@{noti.packageName}" />
 
                 <TextView
+                    android:id="@+id/notification_count"
                     android:layout_width="21dp"
                     android:layout_height="21dp"
                     android:layout_alignBottom="@id/parent_iv"
