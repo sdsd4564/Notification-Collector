@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.ads.MobileAds;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -78,6 +79,7 @@ public class Application extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        MobileAds.initialize(this, getString(R.string.admod_app_id));
         Stetho.initializeWithDefaults(this);
         mContext = this;
     }

@@ -10,5 +10,7 @@
     <string name="notification_no_items">저장된 알림이 없습니다</string>
     <string name="permitted_apps">알림허용목록</string>
     <string name="menu_message_collect">존재하는 알림 수집</string>
+    <string name="banner_ad_unit_id">ca-app-pub-2392186899206299/6291101218</string>
+    <string name="admod_app_id">1173995164</string>
 
 </resources>

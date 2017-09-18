@@ -7,13 +7,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.SnapHelper;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 
