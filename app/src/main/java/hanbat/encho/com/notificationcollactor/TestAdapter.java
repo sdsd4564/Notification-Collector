@@ -52,17 +52,21 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.GroupViewHolde
         return new GroupViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(final TestAdapter.GroupViewHolder holder, final int i) {
         final TestGroup group = groups.get(i);
         holder.groupBinding.setNoti(group);
 
-        TestChildAdapter mAdapter = new TestChildAdapter(group, holder.groupBinding);
+        final TestChildAdapter mAdapter = new TestChildAdapter(group, holder.groupBinding);
         mAdapter.setHasStableIds(true);
 
-        holder.groupBinding.childListView.setLayoutManager(new LinearLayoutManager(mContext));
-        holder.groupBinding.childListView.setAdapter(group.isExpand() ? mAdapter : null);
+        final LinearLayoutManager mManager = new LinearLayoutManager(mContext);
+        mManager.setReverseLayout(true);
+        mManager.setStackFromEnd(true);
+        holder.groupBinding.childListView.setLayoutManager(mManager);
+//        holder.groupBinding.childListView.setAdapter(group.isExpand() ? mAdapter : null);
+        holder.groupBinding.childListView.setAdapter(mAdapter);
+        holder.groupBinding.childListView.setVisibility(group.isExpand() ? View.VISIBLE : View.GONE);
         animationGroupItem(group.isExpand(), holder.groupBinding.arrow);
         holder.groupBinding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,7 +190,7 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.GroupViewHolde
 
         @Override
         public int getItemCount() {
-            return group.getCount();
+            return group.getCount() > 10 ? 10 : group.getCount();
         }
     }
 

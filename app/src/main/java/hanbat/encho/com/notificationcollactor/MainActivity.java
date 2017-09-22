@@ -12,7 +12,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -61,13 +60,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
             }
 
-//            groups = Application.getGroupNotifications(db.getAllNotifications());
             testGroups = Application.getTestGroups(db.getAllNotifications());
 
             mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(MainActivity.this));
             mAdapter = new TestAdapter(testGroups, MainActivity.this);
             mAdapter.setHasStableIds(true);
             mainBinding.recyclerview.setAdapter(mAdapter);
+
+
             mainBinding.swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {

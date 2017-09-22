@@ -1,6 +1,7 @@
 package hanbat.encho.com.notificationcollactor.Model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,6 +29,11 @@ public class TestGroup {
     }
 
     public ArrayList<NotificationObject> getItems() {
+        return items;
+    }
+
+    public ArrayList<NotificationObject> setItemsReverse() {
+        Collections.reverse(items);
         return items;
     }
 
