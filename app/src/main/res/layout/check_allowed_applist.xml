@@ -20,6 +20,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/top_confirmed_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -27,8 +28,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="@string/dialog_text_message2" />
+                android:padding="24dp"
+                android:paddingEnd="16dp"
+                android:text="@string/dialog_text_message2"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/count_comfirmed_apps"
@@ -46,7 +51,13 @@
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#e0e0e0" />
+
         <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scroll_applist"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -59,18 +70,34 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/dialog_confirmed_app"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@color/back_color" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#e0e0e0" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="@string/dialog_text_message" />
+                    android:padding="24dp"
+                    android:text="@string/dialog_text_message"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/dialog_applist"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@color/back_color" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#e0e0e0" />
+
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
@@ -85,6 +112,7 @@
             android:layout_marginTop="16dp"
             android:onClick="@{(view) -> confirmAdapter.onAppCheckConfirm(view)}"
             android:text="@string/confirm"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </layout>

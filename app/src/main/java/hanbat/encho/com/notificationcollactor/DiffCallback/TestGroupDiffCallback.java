@@ -4,17 +4,17 @@ import android.support.v7.util.DiffUtil;
 
 import java.util.ArrayList;
 
-import hanbat.encho.com.notificationcollactor.Model.TestGroup;
+import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 
 /**
  * Created by Encho on 2017-09-16.
  */
 
 public class TestGroupDiffCallback extends DiffUtil.Callback {
-    private ArrayList<TestGroup> mOldList;
-    private ArrayList<TestGroup> mNewList;
+    private ArrayList<NotificationGroup> mOldList;
+    private ArrayList<NotificationGroup> mNewList;
 
-    public TestGroupDiffCallback(ArrayList<TestGroup> mOldList, ArrayList<TestGroup> mNewList) {
+    public TestGroupDiffCallback(ArrayList<NotificationGroup> mOldList, ArrayList<NotificationGroup> mNewList) {
         this.mOldList = mOldList;
         this.mNewList = mNewList;
     }
@@ -36,8 +36,8 @@ public class TestGroupDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areContentsTheSame(int i, int i1) {
-        final TestGroup mOld = mOldList.get(i);
-        final TestGroup mNew = mNewList.get(i1);
+        final NotificationGroup mOld = mOldList.get(i);
+        final NotificationGroup mNew = mNewList.get(i1);
 
         return mOld.getCount() == mNew.getCount()
                 && mOld.getAppName().equals(mNew.getAppName());

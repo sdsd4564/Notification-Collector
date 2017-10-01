@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import java.util.ArrayList;
 
 import hanbat.encho.com.notificationcollactor.DiffCallback.AppInfoDiffCallback;
@@ -57,7 +56,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
 
     @Override
     public long getItemId(int position) {
-        return items.get(position).getPackageName().hashCode();
+        return (items.get(position).getPackageName()).hashCode();
     }
 
     public void updateAppListItem(ArrayList<AppInfo> items) {

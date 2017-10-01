@@ -8,7 +8,7 @@
 
         <variable
             name="noti"
-            type="hanbat.encho.com.notificationcollactor.Model.TestGroup" />
+            type="hanbat.encho.com.notificationcollactor.Model.NotificationGroup" />
     </data>
 
     <LinearLayout
@@ -74,6 +74,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/child_list_view"
+            android:background="@color/back_color"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

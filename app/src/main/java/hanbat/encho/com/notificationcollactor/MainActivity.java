@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -22,15 +23,15 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
+import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
-import hanbat.encho.com.notificationcollactor.Model.TestGroup;
 import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding mainBinding;
     ArrayList<String> confirmedApps = new ArrayList<>();
-    ArrayList<TestGroup> testGroups;
+    ArrayList<NotificationGroup> testGroups;
     PackageManager pm;
     private NotificationAdapter mAdapter;
     private DBhelper db;
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     for (String s : PreferenceManager.getInstance().getStringArrayPref(MainActivity.this, "Packages")) {
                         confirmedApps.add(s.split(",")[0]);
                     }
-                    final ArrayList<TestGroup> groups = db.getAllNotifications();
+                    final ArrayList<NotificationGroup> groups = db.getAllNotifications();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

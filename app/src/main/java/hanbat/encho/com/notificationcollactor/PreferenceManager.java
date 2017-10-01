@@ -8,16 +8,9 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
-/**
- * Created by Enter on 2017-08-02.
- */
-
 public class PreferenceManager {
 
     private static PreferenceManager manager;
-
-    private PreferenceManager() {
-    }
 
     public static PreferenceManager getInstance() {
         if (manager == null)

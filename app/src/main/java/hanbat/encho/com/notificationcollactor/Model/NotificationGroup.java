@@ -8,14 +8,14 @@ import java.util.List;
  * Created by Encho on 2017-09-15.
  */
 
-public class TestGroup {
+public class NotificationGroup {
     private String packageName;
     private String appName;
     private ArrayList<NotificationObject> items = new ArrayList<>();
     private boolean isExpand = false;
     private int count;
 
-    public TestGroup(String title, String packageName, List<NotificationObject> items, int count) {
+    public NotificationGroup(String title, String packageName, List<NotificationObject> items, int count) {
         this.appName = title;
         this.packageName = packageName;
         this.items.addAll(items);

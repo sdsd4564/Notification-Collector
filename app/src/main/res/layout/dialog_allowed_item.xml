@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
+        android:background="@color/back_color"
         android:clickable="true"
         android:orientation="vertical"
         android:padding="8dp">
@@ -22,13 +23,16 @@
             android:id="@+id/appitem_image"
             android:layout_width="match_parent"
             android:layout_height="64dp"
+            android:background="@color/back_color"
             android:contentDescription="@string/app_name"
             app:iconImage="@{app.icon}" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/back_color"
             android:text="@{app.name}"
+            android:textColor="#202020"
             android:textAlignment="center" />
     </LinearLayout>
 </layout>

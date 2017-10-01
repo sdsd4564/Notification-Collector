@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
-import hanbat.encho.com.notificationcollactor.Model.TestGroup;
 
 class DBhelper extends SQLiteOpenHelper {
 
@@ -41,7 +41,7 @@ class DBhelper extends SQLiteOpenHelper {
         return f;
     }
 
-    public ArrayList<TestGroup> getTestGroups(ArrayList<NotificationObject> items) {
+    public ArrayList<NotificationGroup> getTestGroups(ArrayList<NotificationObject> items) {
         String query = "select packagename, count() as count from tempp GROUP BY packagename";
         Cursor cursor = getReadableDatabase().rawQuery(query, null);
         Map<String, Integer> packagesCount = new HashMap<>();
@@ -51,7 +51,7 @@ class DBhelper extends SQLiteOpenHelper {
         }
         cursor.close();
 
-        ArrayList<TestGroup> groups = new ArrayList<>();
+        ArrayList<NotificationGroup> groups = new ArrayList<>();
         for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
             String[] row = app.split(",");
             ArrayList<NotificationObject> separatedItems = new ArrayList<>();
@@ -63,7 +63,7 @@ class DBhelper extends SQLiteOpenHelper {
             if (separatedItems.size() != 0) {
                 if (packagesCount.get(row[0]) != separatedItems.size())
                     separatedItems.add(null);
-                groups.add(new TestGroup(row[1], row[0], separatedItems, packagesCount.get(row[0])));
+                groups.add(new NotificationGroup(row[1], row[0], separatedItems, packagesCount.get(row[0])));
             }
         }
 
@@ -138,24 +138,24 @@ class DBhelper extends SQLiteOpenHelper {
         }
     }
 
-    ArrayList<TestGroup> deleteNotification(String packageName, long postTime) {
+    ArrayList<NotificationGroup> deleteNotification(String packageName, long postTime) {
         String query = "DELETE FROM tempp WHERE packagename = ? AND posttime = ?";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query, new String[]{packageName, String.valueOf(postTime)});
         return getAllNotifications();
     }
 
-    ArrayList<TestGroup> deleteGroupNotification(String packageName) {
+    ArrayList<NotificationGroup> deleteGroupNotification(String packageName) {
         String query = "DELETE FROM tempp WHERE packagename = ?";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query, new String[]{packageName});
         return getAllNotifications();
     }
 
-    ArrayList<TestGroup> getAllNotifications() {
+    ArrayList<NotificationGroup> getAllNotifications() {
         ArrayList<NotificationObject> list = new ArrayList<>();
         for (String s : PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages")) {
-            String query = "SELECT * FROM tempp WHERE packagename = ? ORDER BY posttime DESC LIMIT 20";
+            String query = "SELECT * FROM tempp WHERE packagename = ? ORDER BY posttime DESC LIMIT 15";
 
             SQLiteDatabase db = getReadableDatabase();
             Cursor cursor = db.rawQuery(query, new String[]{s.split(",")[0]});
@@ -183,7 +183,7 @@ class DBhelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<NotificationObject> getNotification(String packageName, int offset) {
-        String query = "SELECT * FROM tempp WHERE packagename = ? ORDER BY posttime DESC LIMIT 20 OFFSET ?";
+        String query = "SELECT * FROM tempp WHERE packagename = ? ORDER BY posttime DESC LIMIT 15 OFFSET ?";
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(query, new String[]{packageName, String.valueOf(offset)});

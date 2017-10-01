@@ -74,7 +74,7 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
 
     @Override
     public long getItemId(int position) {
-        return confirmApps.get(position).getPackageName().hashCode();
+        return (confirmApps.get(position).getPackageName()).hashCode();
     }
 
     public void updateConfirmedAppListItem(ArrayList<AppInfo> confirmApps) {

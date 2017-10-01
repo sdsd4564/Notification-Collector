@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
 import android.view.Window;
+import android.widget.ScrollView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +59,18 @@ public class AppInfoDialog extends Activity {
 
         getWindow().getAttributes().width = (int) (Application.getAppContext().getResources().getDisplayMetrics().widthPixels * 0.9);
         getWindow().getAttributes().height = (int) (Application.getAppContext().getResources().getDisplayMetrics().heightPixels * 0.9);
+
+        binding.topConfirmedList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.scrollApplist.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        binding.scrollApplist.fullScroll(ScrollView.FOCUS_UP);
+                    }
+                });
+            }
+        });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         new Thread(new Runnable() {

@@ -56,8 +56,8 @@ public class Application extends MultiDexApplication {
         tv.setText(ago);
     }
 
-//    public static ArrayList<TestGroup> getTestGroups(ArrayList<NotificationObject> items) {
-//        ArrayList<TestGroup> groups = new ArrayList<>();
+//    public static ArrayList<NotificationGroup> getTestGroups(ArrayList<NotificationObject> items) {
+//        ArrayList<NotificationGroup> groups = new ArrayList<>();
 //        for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
 //            String[] row = app.split(",");
 //            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
@@ -68,7 +68,7 @@ public class Application extends MultiDexApplication {
 //            }
 //            if (separatedItems.size() != 0) {
 //                separatedItems.add(null);
-//                groups.add(new TestGroup(row[1], row[0], separatedItems));
+//                groups.add(new NotificationGroup(row[1], row[0], separatedItems));
 //            }
 //        }
 //

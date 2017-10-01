@@ -6,4 +6,5 @@
     <color name="magenta">#ff00ff</color>
     <color name="transparent">#00000000</color>
     <color name="white">#ffffff</color>
+    <color name="back_color">#f6f6f6</color>
 </resources>

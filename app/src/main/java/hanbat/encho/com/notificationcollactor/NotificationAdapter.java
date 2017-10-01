@@ -14,8 +14,8 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 
+import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
-import hanbat.encho.com.notificationcollactor.Model.TestGroup;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationGroupBinding;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBinding;
 
@@ -23,28 +23,23 @@ import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBindin
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.GroupViewHolder> {
     private final int VIEW_ITEM = 1;
     private final int VIEW_LOAD = 0;
-    private ArrayList<TestGroup> groups;
+    private ArrayList<NotificationGroup> groups;
     private Context mContext;
     private DBhelper db;
 
-    public NotificationAdapter(ArrayList<TestGroup> groups, Context mContext) {
+    public NotificationAdapter(ArrayList<NotificationGroup> groups, Context mContext) {
         this.groups = groups;
         this.mContext = mContext;
         db = DBhelper.getInstance();
     }
 
-    public void setGroups(ArrayList<TestGroup> groups) {
-        for (TestGroup obj : this.groups) obj.setExpand(false);
+    public void setGroups(ArrayList<NotificationGroup> groups) {
+        for (NotificationGroup obj : this.groups) obj.setExpand(false);
         this.groups.clear();
         this.groups.addAll(groups);
         notifyDataSetChanged();
     }
 
-    @Override
-    public long getItemId(int position) {
-        TestGroup forId = groups.get(position);
-        return (forId.getPackageName()).hashCode();
-    }
 
     @Override
     public NotificationAdapter.GroupViewHolder onCreateViewHolder(ViewGroup parent, int i) {
@@ -54,7 +49,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(final NotificationAdapter.GroupViewHolder holder, final int i) {
-        final TestGroup group = groups.get(i);
+        final NotificationGroup group = groups.get(i);
         holder.groupBinding.setNoti(group);
 
         final TestChildAdapter mAdapter = new TestChildAdapter(group, holder.groupBinding);
@@ -104,6 +99,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return groups == null ? 0 : groups.size();
     }
 
+    @Override
+    public long getItemId(int position) {
+        NotificationGroup forId = groups.get(position);
+        return (forId.getPackageName()).hashCode();
+    }
+
     private void animationGroupItem(boolean onExpand, View arrow) {
         RotateAnimation rotate =
                 new RotateAnimation(onExpand ? 360 : 180, onExpand ? 180 : 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -113,10 +114,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     private class TestChildAdapter extends RecyclerView.Adapter {
-        TestGroup group;
+        NotificationGroup group;
         NotificationGroupBinding parentBinding;
 
-        TestChildAdapter(TestGroup group, NotificationGroupBinding parentBinding) {
+        TestChildAdapter(NotificationGroup group, NotificationGroupBinding parentBinding) {
             this.group = group;
             this.parentBinding = parentBinding;
         }
@@ -139,7 +140,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.notification_item, viewGroup, false);
                 return new ChildViewHolder(view);
             } else {
-                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.progressbar, viewGroup, false);
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.load_more_item, viewGroup, false);
                 return new LoadingHolder(view);
             }
         }
@@ -159,7 +160,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        ArrayList<TestGroup> list = db.deleteNotification(item.getPackageName(), item.getPostTime());
+                                        ArrayList<NotificationGroup> list = db.deleteNotification(item.getPackageName(), item.getPostTime());
                                         if (group.getCount() == 1) {
                                             setGroups(list);
                                         } else {

@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -21,8 +20,6 @@ public class NotificationListener extends NotificationListenerService {
 
     public static NotificationListenerService mNotificationListenerService;
     private DBhelper db;
-    private PackageManager pm;
-    private String TAG = this.getClass().getSimpleName();
 
     @Override
     public void onCreate() {
@@ -34,7 +31,7 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         Notification mNotification = sbn.getNotification();
-        pm = Application.getAppContext().getPackageManager();
+        PackageManager pm = Application.getAppContext().getPackageManager();
 
         ArrayList<String> confirmedApps = new ArrayList<>();
         for (String str : PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages"))
