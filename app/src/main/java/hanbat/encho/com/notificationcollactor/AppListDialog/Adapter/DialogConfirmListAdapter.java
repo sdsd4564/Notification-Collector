@@ -2,8 +2,6 @@ package hanbat.encho.com.notificationcollactor.AppListDialog.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,11 +10,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -25,9 +21,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
 import hanbat.encho.com.notificationcollactor.Application;
 import hanbat.encho.com.notificationcollactor.DiffCallback.AppInfoDiffCallback;
-import hanbat.encho.com.notificationcollactor.AppListDialog.AppInfoDialog;
 import hanbat.encho.com.notificationcollactor.Model.AppInfo;
 import hanbat.encho.com.notificationcollactor.PreferenceManager;
 import hanbat.encho.com.notificationcollactor.R;
@@ -44,17 +40,13 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
     private ArrayList<AppInfo> confirmApps;
     private Context mContext;
 
-    public void setmOnMyItemCheckedChange(OnMyItemCheckedChange onMyItemCheckedChange) {
-        this.mOnMyItemCheckedChange = onMyItemCheckedChange;
-    }
-
     public DialogConfirmListAdapter(ArrayList<AppInfo> confirmApps, Context mContext) {
         this.confirmApps = confirmApps;
         this.mContext = mContext;
     }
 
-    public interface OnMyItemCheckedChange {
-        void onItemCheckedChange(AppInfo appInfo);
+    public void setmOnMyItemCheckedChange(OnMyItemCheckedChange onMyItemCheckedChange) {
+        this.mOnMyItemCheckedChange = onMyItemCheckedChange;
     }
 
     @Override
@@ -80,13 +72,9 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
         return confirmApps == null ? 0 : confirmApps.size();
     }
 
-    class DialogViewHolder extends RecyclerView.ViewHolder {
-        DialogAllowedItemBinding binding;
-
-        DialogViewHolder(View itemView) {
-            super(itemView);
-            binding = DataBindingUtil.bind(itemView);
-        }
+    @Override
+    public long getItemId(int position) {
+        return confirmApps.get(position).getPackageName().hashCode();
     }
 
     public void updateConfirmedAppListItem(ArrayList<AppInfo> confirmApps) {
@@ -153,6 +141,19 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
             fos.close();
         } catch (IOException e) {
             Toast.makeText(Application.getAppContext(), "알림 아이콘의 이미지 처리를 실패했습니다", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public interface OnMyItemCheckedChange {
+        void onItemCheckedChange(AppInfo appInfo);
+    }
+
+    class DialogViewHolder extends RecyclerView.ViewHolder {
+        DialogAllowedItemBinding binding;
+
+        DialogViewHolder(View itemView) {
+            super(itemView);
+            binding = DataBindingUtil.bind(itemView);
         }
     }
 }

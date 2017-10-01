@@ -13,11 +13,13 @@ public class TestGroup {
     private String appName;
     private ArrayList<NotificationObject> items = new ArrayList<>();
     private boolean isExpand = false;
+    private int count;
 
-    public TestGroup(String title, String packageName, List<NotificationObject> items) {
+    public TestGroup(String title, String packageName, List<NotificationObject> items, int count) {
         this.appName = title;
         this.packageName = packageName;
         this.items.addAll(items);
+        this.count = count;
     }
 
     public String getPackageName() {
@@ -32,11 +34,6 @@ public class TestGroup {
         return items;
     }
 
-    public ArrayList<NotificationObject> setItemsReverse() {
-        Collections.reverse(items);
-        return items;
-    }
-
     public boolean isExpand() {
         return isExpand;
     }
@@ -46,6 +43,10 @@ public class TestGroup {
     }
 
     public int getCount() {
-        return items.size();
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

@@ -11,6 +11,7 @@
             type="hanbat.encho.com.notificationcollactor.MainActivity" />
     </data>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,21 +37,22 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <com.google.android.gms.ads.AdView
-            android:background="@android:color/black"
-            android:id="@+id/ad_view"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id"/>
+            android:background="@android:color/black"
+            android:paddingBottom="6dp"
+            android:paddingTop="6dp">
 
-        <!--<com.google.android.gms.ads.AdView-->
-            <!--android:id="@+id/ad_view"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="top|center"-->
-            <!--ads:adSize="BANNER"-->
-            <!--ads:adUnitId="@string/banner_ad_unit_id" />-->
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/ad_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/banner_ad_unit_id" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 

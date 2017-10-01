@@ -57,7 +57,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Di
 
     @Override
     public long getItemId(int position) {
-        return items.get(position).hashCode();
+        return items.get(position).getPackageName().hashCode();
     }
 
     public void updateAppListItem(ArrayList<AppInfo> items) {

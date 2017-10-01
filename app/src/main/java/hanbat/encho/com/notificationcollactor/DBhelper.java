@@ -15,12 +15,11 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
-
-/**
- * Created by Encho on 2017-07-20.
- */
+import hanbat.encho.com.notificationcollactor.Model.TestGroup;
 
 class DBhelper extends SQLiteOpenHelper {
 
@@ -28,9 +27,11 @@ class DBhelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "tempp";
     private static final int VERSION = 1;
     private static DBhelper f = null;
+    private Context mContext;
 
     private DBhelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
+        mContext = context;
     }
 
     static DBhelper getInstance() {
@@ -38,6 +39,35 @@ class DBhelper extends SQLiteOpenHelper {
             f = new DBhelper(Application.getAppContext());
         }
         return f;
+    }
+
+    public ArrayList<TestGroup> getTestGroups(ArrayList<NotificationObject> items) {
+        String query = "select packagename, count() as count from tempp GROUP BY packagename";
+        Cursor cursor = getReadableDatabase().rawQuery(query, null);
+        Map<String, Integer> packagesCount = new HashMap<>();
+
+        while (cursor.moveToNext()) {
+            packagesCount.put(cursor.getString(0), cursor.getInt(1));
+        }
+        cursor.close();
+
+        ArrayList<TestGroup> groups = new ArrayList<>();
+        for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
+            String[] row = app.split(",");
+            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
+            for (NotificationObject object : items) {
+                if (row[0].equals(object.getPackageName())) {
+                    separatedItems.add(object);
+                }
+            }
+            if (separatedItems.size() != 0) {
+                if (packagesCount.get(row[0]) != separatedItems.size())
+                    separatedItems.add(null);
+                groups.add(new TestGroup(row[1], row[0], separatedItems, packagesCount.get(row[0])));
+            }
+        }
+
+        return groups;
     }
 
     @Override
@@ -108,35 +138,58 @@ class DBhelper extends SQLiteOpenHelper {
         }
     }
 
-    ArrayList<NotificationObject> dropAllNotifications() {
-        String query = "DELETE FROM tempp";
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL(query);
-        return getAllNotifications();
-    }
-
-    ArrayList<NotificationObject> deleteNotification(String packageName, long postTime) {
+    ArrayList<TestGroup> deleteNotification(String packageName, long postTime) {
         String query = "DELETE FROM tempp WHERE packagename = ? AND posttime = ?";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query, new String[]{packageName, String.valueOf(postTime)});
         return getAllNotifications();
     }
 
-    ArrayList<NotificationObject> deleteGroupNotification(String packageName) {
+    ArrayList<TestGroup> deleteGroupNotification(String packageName) {
         String query = "DELETE FROM tempp WHERE packagename = ?";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query, new String[]{packageName});
         return getAllNotifications();
     }
 
-    ArrayList<NotificationObject> getAllNotifications() {
-        String query = "SELECT * FROM tempp";
+    ArrayList<TestGroup> getAllNotifications() {
+        ArrayList<NotificationObject> list = new ArrayList<>();
+        for (String s : PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages")) {
+            String query = "SELECT * FROM tempp WHERE packagename = ? ORDER BY posttime DESC LIMIT 20";
+
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.rawQuery(query, new String[]{s.split(",")[0]});
+
+            NotificationObject obj;
+
+            while (cursor.moveToNext()) {
+                byte[] largeIcon = cursor.getBlob(3);
+                obj = new NotificationObject();
+                obj.setTitle(cursor.getString(0));
+                obj.setText(cursor.getString(1));
+                obj.setSubText(cursor.getString(2));
+                obj.setLargeIcon(getImage(largeIcon));
+                obj.setPostTime(cursor.getLong(4));
+                obj.setPackageName(cursor.getString(5));
+                obj.setAppName(cursor.getString(6));
+
+                list.add(obj);
+            }
+
+            cursor.close();
+        }
+
+        return getTestGroups(list);
+    }
+
+    public ArrayList<NotificationObject> getNotification(String packageName, int offset) {
+        String query = "SELECT * FROM tempp WHERE packagename = ? ORDER BY posttime DESC LIMIT 20 OFFSET ?";
 
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{packageName, String.valueOf(offset)});
 
-        ArrayList<NotificationObject> list = new ArrayList<>();
         NotificationObject obj;
+        ArrayList<NotificationObject> list = new ArrayList<>();
 
         while (cursor.moveToNext()) {
             byte[] largeIcon = cursor.getBlob(3);
@@ -153,7 +206,6 @@ class DBhelper extends SQLiteOpenHelper {
         }
 
         cursor.close();
-
 
         return list;
     }

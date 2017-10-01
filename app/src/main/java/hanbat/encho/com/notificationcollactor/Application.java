@@ -5,6 +5,7 @@ import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.support.multidex.MultiDexApplication;
 import android.text.format.DateUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,14 +15,10 @@ import com.google.android.gms.ads.MobileAds;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
-import hanbat.encho.com.notificationcollactor.Model.TestGroup;
-
-public class Application extends android.app.Application {
+public class Application extends MultiDexApplication {
     private static Context mContext;
 
     public static Context getAppContext() {
@@ -59,22 +56,25 @@ public class Application extends android.app.Application {
         tv.setText(ago);
     }
 
-    public static ArrayList<TestGroup> getTestGroups(ArrayList<NotificationObject> items) {
-        ArrayList<TestGroup> groups = new ArrayList<>();
-        for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
-            String[] row = app.split(",");
-            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
-            for (NotificationObject object : items) {
-                if (row[0].equals(object.getPackageName())) {
-                    separatedItems.add(object);
-                }
-            }
-            if (separatedItems.size() != 0)
-                groups.add(new TestGroup(row[1], row[0], separatedItems));
-        }
+//    public static ArrayList<TestGroup> getTestGroups(ArrayList<NotificationObject> items) {
+//        ArrayList<TestGroup> groups = new ArrayList<>();
+//        for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
+//            String[] row = app.split(",");
+//            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
+//            for (NotificationObject object : items) {
+//                if (row[0].equals(object.getPackageName())) {
+//                    separatedItems.add(object);
+//                }
+//            }
+//            if (separatedItems.size() != 0) {
+//                separatedItems.add(null);
+//                groups.add(new TestGroup(row[1], row[0], separatedItems));
+//            }
+//        }
+//
+//        return groups;
+//    }
 
-        return groups;
-    }
 
     @Override
     public void onCreate() {

@@ -6,5 +6,5 @@
 
     <item
         android:id="@+id/collect_notification"
-        android:title="@string/menu_message_collect"/>
+        android:title="@string/menu_message_collect" />
 </menu>

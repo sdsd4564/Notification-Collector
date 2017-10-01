@@ -29,10 +29,10 @@ import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding mainBinding;
-    TestAdapter mAdapter;
     ArrayList<String> confirmedApps = new ArrayList<>();
     ArrayList<TestGroup> testGroups;
     PackageManager pm;
+    private NotificationAdapter mAdapter;
     private DBhelper db;
 
     @Override
@@ -60,13 +60,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
             }
 
-            testGroups = Application.getTestGroups(db.getAllNotifications());
+            testGroups = db.getAllNotifications();
 
             mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-            mAdapter = new TestAdapter(testGroups, MainActivity.this);
+            mAdapter = new NotificationAdapter(testGroups, MainActivity.this);
             mAdapter.setHasStableIds(true);
             mainBinding.recyclerview.setAdapter(mAdapter);
-
 
             mainBinding.swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            testGroups = Application.getTestGroups(db.getAllNotifications());
+                            testGroups = db.getAllNotifications();
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -95,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                testGroups = Application.getTestGroups(db.getAllNotifications());
+                testGroups = db.getAllNotifications();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -116,14 +115,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.permitted_apps: {
+            // 허용 앱 설정
+            case R.id.permitted_apps:
                 onCheckConfirmedApps();
                 break;
-            }
-            case R.id.collect_notification: {
+
+            // 현재 알림 수집
+            case R.id.collect_notification:
                 onCheckActiveNotification();
                 break;
-            }
         }
         return true;
     }
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     for (String s : PreferenceManager.getInstance().getStringArrayPref(MainActivity.this, "Packages")) {
                         confirmedApps.add(s.split(",")[0]);
                     }
-                    final ArrayList<TestGroup> groups = Application.getTestGroups(db.getAllNotifications());
+                    final ArrayList<TestGroup> groups = db.getAllNotifications();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        mAdapter.setGroups(Application.getTestGroups(db.getAllNotifications()));
+        mAdapter.setGroups(db.getAllNotifications());
         Toast.makeText(this, "현재 띄워져있는 알림을 수집했습니다", Toast.LENGTH_SHORT).show();
     }
 

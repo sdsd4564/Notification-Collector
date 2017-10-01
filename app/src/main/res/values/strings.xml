@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Notification Collactor</string>
+    <string name="app_name">Notif Cat</string>
     <string name="permission_check_message">스마트폰의 알림 접근을 허용해주셔야 앱이 알림 수집이 가능합니다</string>
     <string name="confirm">확인</string>
     <string name="loading_package_message">기기에 설치된 앱 목록 불러오는 중…</string>
@@ -12,5 +12,6 @@
     <string name="menu_message_collect">존재하는 알림 수집</string>
     <string name="banner_ad_unit_id">ca-app-pub-2392186899206299/6291101218</string>
     <string name="admod_app_id">1173995164</string>
+    <string name="load_more">기록 더 불러오기</string>
 
 </resources>

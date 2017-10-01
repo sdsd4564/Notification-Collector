@@ -4,111 +4,121 @@
 
     <data>
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
 
         <variable
             name="noti"
             type="hanbat.encho.com.notificationcollactor.Model.NotificationObject" />
-
     </data>
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:background="?attr/selectableItemBackground">
 
         <View
-            android:layout_width="match_parent"
+            android:id="@+id/view2"
+            android:layout_width="0dp"
             android:layout_height="0.25dp"
-            android:layout_marginBottom="8dp"
-            android:background="#ACACAC"/>
+            android:background="#ACACAC"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2"
+            app:loadIcon="@{noti.packageName}" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="8dp"
+            android:text="@{noti.appName}"
+            android:textSize="13sp"
+            app:layout_constraintLeft_toRightOf="@+id/imageView3"
+            app:layout_constraintTop_toBottomOf="@+id/view2" />
 
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginEnd="8dp"
-                android:contentDescription="@string/app_name"
-                app:loadIcon="@{noti.packageName}"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:text="@{noti.appName}"
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="12dp"
-                android:text="@{noti.subText}"
-                android:textSize="12sp"
-                android:visibility="@{noti.subText.length > 0 ? View.VISIBLE : View.GONE }"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="12dp"
-                android:textSize="12sp"
-                app:longToDate="@{noti.postTime}" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginStart="12dp"
+            android:text="@{noti.subText}"
+            android:textSize="12sp"
+            android:visibility="@{noti.subText.length() > 0 ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView6"
+            app:layout_constraintLeft_toRightOf="@+id/textView6" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView6"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toRightOf="@+id/textView7"
+            app:layout_constraintRight_toRightOf="parent"
+            app:longToDate="@{noti.postTime}" />
 
-                <TextView
-                    android:id="@+id/tvText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="4dp"
-                    android:text="@{noti.title}"
-                    android:textSize="17sp" />
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="312dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{noti.title}"
+            android:textSize="17sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
-                <TextView
-                    android:id="@+id/tvSubText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="@{noti.text}"
-                    android:textSize="14sp" />
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:imageBitmap="@{noti.largeIcon}"
+            app:layout_constraintBottom_toTopOf="@+id/view3"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView8"
+            app:layout_constraintVertical_bias="0.0" />
 
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/ivIcon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription="@string/app_name"
-                app:imageBitmap="@{noti.largeIcon}" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="312dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="@{noti.text}"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/view3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView9"
+            app:layout_constraintVertical_bias="0.0" />
 
         <View
-            android:layout_width="match_parent"
+            android:id="@+id/view3"
+            android:layout_width="0dp"
             android:layout_height="0.25dp"
-            android:layout_marginTop="8dp"
-            android:background="#ACACAC"/>
+            android:background="#ACACAC"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
-    </LinearLayout>
 </layout>

@@ -91,6 +91,10 @@ public class AppInfoDialog extends Activity {
 
                         mAdapter = new DialogListAdapter(items);
                         mConfirmedAdapter = new DialogConfirmListAdapter(confirmedApps, AppInfoDialog.this);
+
+                        mAdapter.setHasStableIds(true);
+                        mConfirmedAdapter.setHasStableIds(true);
+
                         binding.setConfirmAdapter(mConfirmedAdapter);
                         binding.dialogConfirmedApp.setLayoutManager(new GridLayoutManager(AppInfoDialog.this, 4));
                         binding.dialogConfirmedApp.setAdapter(mConfirmedAdapter);

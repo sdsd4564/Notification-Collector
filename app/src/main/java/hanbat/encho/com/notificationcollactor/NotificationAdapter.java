@@ -1,0 +1,233 @@
+package hanbat.encho.com.notificationcollactor;
+
+import android.content.Context;
+import android.content.DialogInterface;
+import android.databinding.DataBindingUtil;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
+
+import java.util.ArrayList;
+
+import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
+import hanbat.encho.com.notificationcollactor.Model.TestGroup;
+import hanbat.encho.com.notificationcollactor.databinding.NotificationGroupBinding;
+import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBinding;
+
+
+public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.GroupViewHolder> {
+    private final int VIEW_ITEM = 1;
+    private final int VIEW_LOAD = 0;
+    private ArrayList<TestGroup> groups;
+    private Context mContext;
+    private DBhelper db;
+
+    public NotificationAdapter(ArrayList<TestGroup> groups, Context mContext) {
+        this.groups = groups;
+        this.mContext = mContext;
+        db = DBhelper.getInstance();
+    }
+
+    public void setGroups(ArrayList<TestGroup> groups) {
+        for (TestGroup obj : this.groups) obj.setExpand(false);
+        this.groups.clear();
+        this.groups.addAll(groups);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        TestGroup forId = groups.get(position);
+        return (forId.getPackageName()).hashCode();
+    }
+
+    @Override
+    public NotificationAdapter.GroupViewHolder onCreateViewHolder(ViewGroup parent, int i) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_group, parent, false);
+        return new GroupViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(final NotificationAdapter.GroupViewHolder holder, final int i) {
+        final TestGroup group = groups.get(i);
+        holder.groupBinding.setNoti(group);
+
+        final TestChildAdapter mAdapter = new TestChildAdapter(group, holder.groupBinding);
+        mAdapter.setHasStableIds(true);
+
+        final LinearLayoutManager mManager = new LinearLayoutManager(mContext);
+        holder.groupBinding.childListView.setLayoutManager(mManager);
+        holder.groupBinding.childListView.setAdapter(mAdapter);
+        holder.groupBinding.childListView.setVisibility(group.isExpand() ? View.VISIBLE : View.GONE);
+        animationGroupItem(group.isExpand(), holder.groupBinding.arrow);
+        holder.groupBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                notifyItemChanged(i);
+                group.setExpand(!group.isExpand());
+            }
+        });
+
+        holder.groupBinding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext)
+                        .setTitle(group.getAppName())
+                        .setMessage(R.string.alert_message_delete);
+                builder.setPositiveButton("삭제",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                setGroups(db.deleteGroupNotification(group.getPackageName()));
+                            }
+                        });
+                builder.setNegativeButton("취소",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                builder.show();
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return groups == null ? 0 : groups.size();
+    }
+
+    private void animationGroupItem(boolean onExpand, View arrow) {
+        RotateAnimation rotate =
+                new RotateAnimation(onExpand ? 360 : 180, onExpand ? 180 : 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(300);
+        rotate.setFillAfter(true);
+        arrow.setAnimation(rotate);
+    }
+
+    private class TestChildAdapter extends RecyclerView.Adapter {
+        TestGroup group;
+        NotificationGroupBinding parentBinding;
+
+        TestChildAdapter(TestGroup group, NotificationGroupBinding parentBinding) {
+            this.group = group;
+            this.parentBinding = parentBinding;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return group.getItems().get(position) != null ? group.getItems().get(position).getPostTime() : 0;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return group.getItems().get(position) != null ? VIEW_ITEM : VIEW_LOAD;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View view;
+            if (i == VIEW_ITEM) {
+//                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.notification_item, viewGroup, false);
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.notification_item, viewGroup, false);
+                return new ChildViewHolder(view);
+            } else {
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.progressbar, viewGroup, false);
+                return new LoadingHolder(view);
+            }
+        }
+
+        @Override
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+            if (holder instanceof ChildViewHolder) {
+                final NotificationObject item = group.getItems().get(position);
+                ((ChildViewHolder) holder).childBinding.setNoti(item);
+                ((ChildViewHolder) holder).childBinding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext)
+                                .setTitle(R.string.alert_message_delete);
+
+                        builder.setPositiveButton("삭제",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        ArrayList<TestGroup> list = db.deleteNotification(item.getPackageName(), item.getPostTime());
+                                        if (group.getCount() == 1) {
+                                            setGroups(list);
+                                        } else {
+                                            group.getItems().remove(position);
+                                            TestChildAdapter.this.notifyItemRemoved(position);
+                                            parentBinding.notificationCount.setText(String.valueOf(group.getCount()));
+                                        }
+                                    }
+                                });
+                        builder.setNegativeButton("취소",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.cancel();
+                                    }
+                                });
+                        builder.show();
+                        return false;
+                    }
+                });
+            } else {
+                ((LoadingHolder) holder).mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int beforeLoadedSize = group.getItems().size() - 1;
+                        group.getItems().addAll(db.getNotification(group.getPackageName(), beforeLoadedSize));
+                        group.getItems().remove(beforeLoadedSize);
+                        if (group.getCount() != group.getItems().size())
+                            group.getItems().add(null);
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return group.getItems().size();
+        }
+    }
+
+    class GroupViewHolder extends RecyclerView.ViewHolder {
+        NotificationGroupBinding groupBinding;
+
+        GroupViewHolder(View itemView) {
+            super(itemView);
+            groupBinding = DataBindingUtil.bind(itemView);
+        }
+    }
+
+    private class ChildViewHolder extends RecyclerView.ViewHolder {
+        NotificationItemBinding childBinding;
+
+        ChildViewHolder(View itemView) {
+            super(itemView);
+            childBinding = DataBindingUtil.bind(itemView);
+        }
+    }
+
+    private class LoadingHolder extends RecyclerView.ViewHolder {
+        View mView;
+        ImageView loadingImage;
+
+        LoadingHolder(View itemView) {
+            super(itemView);
+            mView = itemView;
+            loadingImage = (ImageView) mView.findViewById(R.id.load_item);
+        }
+    }
+}
+
