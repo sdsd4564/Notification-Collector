@@ -14,9 +14,12 @@ import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
@@ -41,7 +44,7 @@ class DBhelper extends SQLiteOpenHelper {
         return f;
     }
 
-    public ArrayList<NotificationGroup> getTestGroups(ArrayList<NotificationObject> items) {
+    public ArrayList<NotificationGroup> getGroups(ArrayList<NotificationObject> items) {
         String query = "select packagename, count() as count from tempp GROUP BY packagename";
         Cursor cursor = getReadableDatabase().rawQuery(query, null);
         Map<String, Integer> packagesCount = new HashMap<>();
@@ -152,6 +155,14 @@ class DBhelper extends SQLiteOpenHelper {
         return getAllNotifications();
     }
 
+    ArrayList<NotificationGroup> deleteNotificationsExceededValidate(int validateTile) {
+        String query = "DELETE FROM tempp WHERE posttime < ?";
+        Date date = new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(validateTile));
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(query, new String[]{String.valueOf(date.getTime())});
+        return getAllNotifications();
+    }
+
     ArrayList<NotificationGroup> getAllNotifications() {
         ArrayList<NotificationObject> list = new ArrayList<>();
         for (String s : PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages")) {
@@ -179,7 +190,7 @@ class DBhelper extends SQLiteOpenHelper {
             cursor.close();
         }
 
-        return getTestGroups(list);
+        return getGroups(list);
     }
 
     public ArrayList<NotificationObject> getNotification(String packageName, int offset) {

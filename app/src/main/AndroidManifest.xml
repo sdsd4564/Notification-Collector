@@ -43,8 +43,8 @@
 
         <activity
             android:name=".AppListDialog.AppInfoDialog"
-            android:theme="@style/dialog_light"
-            />
+            android:theme="@style/dialog_light" />
+        <activity android:name=".SettingActivity"></activity>
     </application>
 
 </manifest>

@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -61,7 +60,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(this, AppInfoDialog.class), 123);
             }
 
-            testGroups = db.getAllNotifications();
+            int validatedNumber = PreferenceManager.getInstance().getIntegerPref(this, "Validate");
+            testGroups = validatedNumber == 61
+                    ? db.getAllNotifications()
+                    : db.deleteNotificationsExceededValidate(validatedNumber);
 
             mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(MainActivity.this));
             mAdapter = new NotificationAdapter(testGroups, MainActivity.this);
@@ -125,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.collect_notification:
                 onCheckActiveNotification();
                 break;
+
+            // 설정
+            case R.id.setting_menu:
+                startActivityForResult(new Intent(this, SettingActivity.class), SettingActivity.SETTING_FINISHED);
+                break;
         }
         return true;
     }
@@ -133,23 +140,45 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 123 && resultCode == RESULT_OK) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    confirmedApps.clear();
-                    for (String s : PreferenceManager.getInstance().getStringArrayPref(MainActivity.this, "Packages")) {
-                        confirmedApps.add(s.split(",")[0]);
-                    }
-                    final ArrayList<NotificationGroup> groups = db.getAllNotifications();
-                    runOnUiThread(new Runnable() {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case AppInfoDialog.APP_LIST_CONFIRMED:
+                    new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            mAdapter.setGroups(groups);
+                            confirmedApps.clear();
+                            for (String s : PreferenceManager.getInstance().getStringArrayPref(MainActivity.this, "Packages")) {
+                                confirmedApps.add(s.split(",")[0]);
+                            }
+                            final ArrayList<NotificationGroup> groups = db.getAllNotifications();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAdapter.setGroups(groups);
+                                }
+                            });
                         }
-                    });
-                }
-            }).start();
+                    }).start();
+                    break;
+                case SettingActivity.SETTING_FINISHED:
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int validatedNumber = PreferenceManager.getInstance().getIntegerPref(MainActivity.this, "Validate");
+                            final ArrayList<NotificationGroup> groups = validatedNumber == 61
+                                    ? db.getAllNotifications()
+                                    : db.deleteNotificationsExceededValidate(validatedNumber);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAdapter.setGroups(groups);
+                                }
+                            });
+                        }
+                    }).start();
+                    Toast.makeText(this, R.string.delete_message_when_validate_expired, Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
     }
 
@@ -203,6 +232,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCheckConfirmedApps() {
         Intent toDialog = new Intent(this, AppInfoDialog.class);
-        startActivityForResult(toDialog, 123);
+        startActivityForResult(toDialog, AppInfoDialog.APP_LIST_CONFIRMED);
     }
 }

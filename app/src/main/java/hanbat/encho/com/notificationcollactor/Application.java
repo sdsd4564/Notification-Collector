@@ -1,5 +1,6 @@
 package hanbat.encho.com.notificationcollactor;
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
@@ -35,8 +36,6 @@ public class Application extends MultiDexApplication {
         File imgFile = new File(mContext.getFilesDir(), packageName);
         if (imgFile.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-
-
             iv.setImageBitmap(bitmap);
         }
     }
@@ -55,26 +54,6 @@ public class Application extends MultiDexApplication {
         CharSequence ago = DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS);
         tv.setText(ago);
     }
-
-//    public static ArrayList<NotificationGroup> getTestGroups(ArrayList<NotificationObject> items) {
-//        ArrayList<NotificationGroup> groups = new ArrayList<>();
-//        for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
-//            String[] row = app.split(",");
-//            ArrayList<NotificationObject> separatedItems = new ArrayList<>();
-//            for (NotificationObject object : items) {
-//                if (row[0].equals(object.getPackageName())) {
-//                    separatedItems.add(object);
-//                }
-//            }
-//            if (separatedItems.size() != 0) {
-//                separatedItems.add(null);
-//                groups.add(new NotificationGroup(row[1], row[0], separatedItems));
-//            }
-//        }
-//
-//        return groups;
-//    }
-
 
     @Override
     public void onCreate() {

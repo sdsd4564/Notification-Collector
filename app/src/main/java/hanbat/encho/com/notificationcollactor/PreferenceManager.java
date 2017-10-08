@@ -19,6 +19,20 @@ public class PreferenceManager {
         return manager;
     }
 
+    public void setIntegerPref(Context context, String key, int value) {
+        SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putInt(key, value);
+        editor.apply();
+    }
+
+    public int getIntegerPref(Context context, String key) {
+        SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
+
+        return prefs.getInt(key, 10);
+    }
+
     public void setStringArrayPref(Context context, String key, ArrayList<String> values) {
         SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();

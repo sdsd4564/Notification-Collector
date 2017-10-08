@@ -13,5 +13,9 @@
     <string name="banner_ad_unit_id">ca-app-pub-2392186899206299/6291101218</string>
     <string name="admod_app_id">1173995164</string>
     <string name="load_more">기록 더 불러오기</string>
-
+    <string name="setting">설정</string>
+    <string name="validate_day">유효일 설정</string>
+    <string name="validate_day_message">설정한 유효일 경과 시, 데이터를 삭제합니다.\n최소 10일로 설정 가능하며\n최우측으로 이동 시 유효기간이 해제됩니다.\n설정 후, 유효일이 지난 알림은 비로 삭제됩니다.</string>
+    <string name="delete_message_when_validate_expired">유효일이 지난 알림은 삭제됩니다.</string>
+    <string name="validate_unlock">유효기간 해제됨</string>
 </resources>

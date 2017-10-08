@@ -32,6 +32,7 @@ import hanbat.encho.com.notificationcollactor.databinding.CheckAllowedApplistBin
 
 public class AppInfoDialog extends Activity {
 
+    public final static int APP_LIST_CONFIRMED = 123;
     CheckAllowedApplistBinding binding;
     PackageManager pm;
     ArrayList<AppInfo> items, itemsClone;
