@@ -194,39 +194,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onCheckActiveNotification() {
-        for (StatusBarNotification sbn : NotificationListener.mNotificationListenerService.getActiveNotifications()) {
-            Notification mNotification = sbn.getNotification();
-            Bundle extras = mNotification.extras;
+        try {
+            for (StatusBarNotification sbn : NotificationListener.mNotificationListenerService.getActiveNotifications()) {
+                Notification mNotification = sbn.getNotification();
+                Bundle extras = mNotification.extras;
 
-            ApplicationInfo app = null;
+                ApplicationInfo app = null;
 
 
-            if (confirmedApps.contains(sbn.getPackageName())) {
-                for (String _key : extras.keySet()) {
-                    if (extras.get(_key) instanceof ApplicationInfo) {
-                        app = (ApplicationInfo) extras.get(_key);
-                        break;
+                if (confirmedApps.contains(sbn.getPackageName())) {
+                    for (String _key : extras.keySet()) {
+                        if (extras.get(_key) instanceof ApplicationInfo) {
+                            app = (ApplicationInfo) extras.get(_key);
+                            break;
+                        }
+                    }
+
+                    String title = String.valueOf(extras.get(Notification.EXTRA_TITLE));
+                    CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
+                    CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
+                    Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
+                    long postTime = sbn.getPostTime();
+                    String packageName = sbn.getPackageName();
+
+                    CharSequence appName = pm.getApplicationLabel(app);
+
+                    NotificationObject obj = new NotificationObject(title, largeIcon, text, subText, postTime, packageName, appName);
+
+                    if (text.length() > 0 && title.length() > 0) {
+                        db.addNotification(obj);
                     }
                 }
-
-                String title = String.valueOf(extras.get(Notification.EXTRA_TITLE));
-                CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
-                CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
-                Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
-                long postTime = sbn.getPostTime();
-                String packageName = sbn.getPackageName();
-
-                CharSequence appName = pm.getApplicationLabel(app);
-
-                NotificationObject obj = new NotificationObject(title, largeIcon, text, subText, postTime, packageName, appName);
-
-                if (text.length() > 0 && title.length() > 0) {
-                    db.addNotification(obj);
-                }
             }
+            mAdapter.setGroups(db.getAllNotifications());
+            Toast.makeText(this, "현재 띄워져있는 알림을 수집했습니다", Toast.LENGTH_SHORT).show();
+        } catch (NullPointerException e) {
+            Toast.makeText(this, "수집 가능한 알림이 없습니다.", Toast.LENGTH_SHORT).show();
         }
-        mAdapter.setGroups(db.getAllNotifications());
-        Toast.makeText(this, "현재 띄워져있는 알림을 수집했습니다", Toast.LENGTH_SHORT).show();
+
     }
 
     public void onCheckConfirmedApps() {
