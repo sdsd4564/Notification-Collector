@@ -176,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
                             });
                         }
                     }).start();
-                    Toast.makeText(this, R.string.delete_message_when_validate_expired, Toast.LENGTH_SHORT).show();
                     break;
             }
         }
