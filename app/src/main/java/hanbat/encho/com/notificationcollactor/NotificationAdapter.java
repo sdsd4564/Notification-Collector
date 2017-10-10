@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
+import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationGroupBinding;
 import hanbat.encho.com.notificationcollactor.databinding.NotificationItemBinding;
 
@@ -25,11 +26,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private final int VIEW_LOAD = 0;
     private ArrayList<NotificationGroup> groups;
     private Context mContext;
+    private ActivityMainBinding binding;
     private DBhelper db;
 
-    public NotificationAdapter(ArrayList<NotificationGroup> groups, Context mContext) {
+    public NotificationAdapter(ArrayList<NotificationGroup> groups, Context mContext, ActivityMainBinding binding) {
         this.groups = groups;
         this.mContext = mContext;
+        this.binding = binding;
         db = DBhelper.getInstance();
     }
 
@@ -96,6 +99,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public int getItemCount() {
+        binding.noItem.setVisibility(groups.isEmpty() ? View.VISIBLE : View.GONE);
         return groups == null ? 0 : groups.size();
     }
 
@@ -231,4 +235,5 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
     }
 }
+
 

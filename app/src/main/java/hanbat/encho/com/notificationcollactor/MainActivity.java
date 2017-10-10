@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                     : db.deleteNotificationsExceededValidate(validatedNumber);
 
             mainBinding.recyclerview.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-            mAdapter = new NotificationAdapter(testGroups, MainActivity.this);
+            mAdapter = new NotificationAdapter(testGroups, MainActivity.this, mainBinding);
             mAdapter.setHasStableIds(true);
             mainBinding.recyclerview.setAdapter(mAdapter);
 

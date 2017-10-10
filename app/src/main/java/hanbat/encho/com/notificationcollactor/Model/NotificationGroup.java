@@ -14,12 +14,14 @@ public class NotificationGroup {
     private ArrayList<NotificationObject> items = new ArrayList<>();
     private boolean isExpand = false;
     private int count;
+    private int averageColor;
 
-    public NotificationGroup(String title, String packageName, List<NotificationObject> items, int count) {
+    public NotificationGroup(String title, String packageName, List<NotificationObject> items, int count, int averageColor) {
         this.appName = title;
         this.packageName = packageName;
         this.items.addAll(items);
         this.count = count;
+        this.averageColor = averageColor;
     }
 
     public String getPackageName() {
@@ -49,4 +51,6 @@ public class NotificationGroup {
     public void setCount(int count) {
         this.count = count;
     }
+
+    public int getAverageColor() {return averageColor;}
 }

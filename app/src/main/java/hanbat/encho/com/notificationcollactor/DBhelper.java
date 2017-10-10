@@ -66,7 +66,7 @@ class DBhelper extends SQLiteOpenHelper {
             if (separatedItems.size() != 0) {
                 if (packagesCount.get(row[0]) != separatedItems.size())
                     separatedItems.add(null);
-                groups.add(new NotificationGroup(row[1], row[0], separatedItems, packagesCount.get(row[0])));
+                groups.add(new NotificationGroup(row[1], row[0], separatedItems, packagesCount.get(row[0]), Integer.parseInt(row[2])));
             }
         }
 
