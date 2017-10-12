@@ -140,7 +140,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View view;
             if (i == VIEW_ITEM) {
-//                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.notification_item, viewGroup, false);
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.notification_item, viewGroup, false);
                 return new ChildViewHolder(view);
             } else {
@@ -165,12 +164,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         ArrayList<NotificationGroup> list = db.deleteNotification(item.getPackageName(), item.getPostTime());
-                                        if (group.getCount() == 1) {
+                                        if (TestChildAdapter.this.getItemCount() == 1) {
                                             setGroups(list);
                                         } else {
                                             group.getItems().remove(position);
                                             TestChildAdapter.this.notifyItemRemoved(position);
-                                            parentBinding.notificationCount.setText(String.valueOf(group.getCount()));
+                                            parentBinding.notificationCount.setText(String.valueOf(TestChildAdapter.this.getItemCount()));
                                         }
                                     }
                                 });
@@ -202,7 +201,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         @Override
         public int getItemCount() {
-            return group.getItems().size();
+            return group != null ? group.getItems().size() : 0;
         }
     }
 
