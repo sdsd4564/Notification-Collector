@@ -28,22 +28,24 @@
 
         <ImageView
             android:id="@+id/imageView3"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view2"
-            app:loadIcon="@{noti.packageName}" />
+            app:loadPackageName="@{noti.packageName}"
+            app:loadSmallIcon="@{noti.smallIcon}" />
 
         <TextView
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:text="@{noti.appName}"
             android:textSize="13sp"
+            android:textColor="#5C7480"
             app:layout_constraintLeft_toRightOf="@+id/imageView3"
             app:layout_constraintTop_toBottomOf="@+id/view2" />
 
@@ -54,6 +56,7 @@
             android:layout_marginStart="12dp"
             android:text="@{noti.subText}"
             android:textSize="12sp"
+            android:textColor="#8c8c8c"
             android:visibility="@{noti.subText.length() > 0 ? View.VISIBLE : View.GONE}"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView6"
             app:layout_constraintLeft_toRightOf="@+id/textView6" />
@@ -67,6 +70,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:textSize="12sp"
+            android:textColor="#8c8c8c"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView6"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toRightOf="@+id/textView7"
@@ -80,6 +84,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@{noti.title}"
+            android:textColor="#252525"
             android:textSize="17sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView3" />
@@ -106,6 +111,7 @@
             android:layout_marginTop="4dp"
             android:text="@{noti.text}"
             android:textSize="14sp"
+            android:textColor="#515151"
             app:layout_constraintBottom_toTopOf="@+id/view3"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView9"

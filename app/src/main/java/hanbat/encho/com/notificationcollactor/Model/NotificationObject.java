@@ -11,7 +11,19 @@ import java.io.ByteArrayOutputStream;
  */
 
 public class NotificationObject implements Parcelable {
+    public static final Creator<NotificationObject> CREATOR = new Creator<NotificationObject>() {
+        @Override
+        public NotificationObject createFromParcel(Parcel in) {
+            return new NotificationObject(in);
+        }
+
+        @Override
+        public NotificationObject[] newArray(int size) {
+            return new NotificationObject[size];
+        }
+    };
     private String title;
+    private int smallIcon;
     private Bitmap largeIcon;
     private CharSequence text;
     private CharSequence subText;
@@ -22,8 +34,10 @@ public class NotificationObject implements Parcelable {
     public NotificationObject() {
     }
 
-    public NotificationObject(String title, Bitmap largeIcon, CharSequence text, CharSequence subText, long postTime, String packageName, CharSequence appName) {
+
+    public NotificationObject(String title, int smallIcon, Bitmap largeIcon, CharSequence text, CharSequence subText, long postTime, String packageName, CharSequence appName) {
         this.title = title;
+        this.smallIcon = smallIcon;
         this.largeIcon = largeIcon;
         this.text = text;
         this.subText = subText;
@@ -32,17 +46,25 @@ public class NotificationObject implements Parcelable {
         this.appName = appName;
     }
 
-    public NotificationObject(Parcel in) {
+    protected NotificationObject(Parcel in) {
         title = in.readString();
+        smallIcon = in.readInt();
         largeIcon = in.readParcelable(Bitmap.class.getClassLoader());
-        text = in.readString();
-        subText = in.readString();
         postTime = in.readLong();
         packageName = in.readString();
-        appName = in.readString();
     }
 
+    public static Creator<NotificationObject> getCREATOR() {
+        return CREATOR;
+    }
 
+    public int getSmallIcon() {
+        return smallIcon;
+    }
+
+    public void setSmallIcon(int smallIcon) {
+        this.smallIcon = smallIcon;
+    }
 
     public Bitmap getLargeIcon() {
         return largeIcon;
@@ -118,16 +140,4 @@ public class NotificationObject implements Parcelable {
         parcel.writeString(packageName);
         parcel.writeString(appName.toString());
     }
-
-    public static final Creator<NotificationObject> CREATOR = new Creator<NotificationObject>() {
-        @Override
-        public NotificationObject createFromParcel(Parcel in) {
-            return new NotificationObject(in);
-        }
-
-        @Override
-        public NotificationObject[] newArray(int size) {
-            return new NotificationObject[size];
-        }
-    };
 }

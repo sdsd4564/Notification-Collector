@@ -14,7 +14,6 @@ import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,8 +25,8 @@ import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 
 class DBhelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "NC";
-    private static final String TABLE_NAME = "tempp";
+    private static final String DATABASE_NAME = "NOTIFICATION_COLLECTOR";
+    private static final String TABLE_NAME = "notification_store";
     private static final int VERSION = 1;
     private static DBhelper f = null;
     private Context mContext;
@@ -45,7 +44,9 @@ class DBhelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<NotificationGroup> getGroups(ArrayList<NotificationObject> items) {
-        String query = "select packagename, count() as count from tempp GROUP BY packagename";
+        String query = "SELECT packagename, count() as count FROM "
+                + TABLE_NAME
+                + " GROUP BY packagename";
         Cursor cursor = getReadableDatabase().rawQuery(query, null);
         Map<String, Integer> packagesCount = new HashMap<>();
 
@@ -75,16 +76,17 @@ class DBhelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sb = "CREATE TABLE tempp ( " +
+        String sb = "CREATE TABLE " + TABLE_NAME + " ( " +
                 "title TEXT , " +
                 "text TEXT," +
                 "subtext TEXT," +
+                "smallicon INTEGER," +
                 "largeicon BLOB," +
                 "posttime INTEGER," +
                 "packagename TEXT," +
                 "appname TEXT) ";
 
-        db.execSQL("DROP TABLE IF EXISTS tempp");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         db.execSQL(sb);
 
         Toast.makeText(Application.getAppContext(), "데이터베이스 생성 완료", Toast.LENGTH_SHORT).show();
@@ -98,11 +100,11 @@ class DBhelper extends SQLiteOpenHelper {
     void addNotification(NotificationObject object) {
         SQLiteDatabase db = getWritableDatabase();
 
-        String noDuplicated = "SELECT title, text, posttime, packagename FROM tempp " +
-                "WHERE title=? AND " +
-                "text=? AND " +
-                "posttime=? AND " +
-                "packagename=?;";
+        String noDuplicated = "SELECT title, text, posttime, packagename FROM " + TABLE_NAME +
+                " WHERE title = ? AND" +
+                " text = ? AND" +
+                " posttime = ? AND" +
+                " packagename = ?;";
 
         Cursor cursor = db.rawQuery(noDuplicated,
                 new String[]{
@@ -120,9 +122,9 @@ class DBhelper extends SQLiteOpenHelper {
         cursor.close();
 
         if (!isDuplicated) {
-            String sb = "INSERT INTO tempp " +
-                    "(title, text, subtext, largeicon, posttime, packagename, appname) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String sb = "INSERT INTO " + TABLE_NAME +
+                    " (title, text, subtext, smallicon, largeicon, posttime, packagename, appname)" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             SQLiteStatement st = db.compileStatement(sb);
             st.bindString(1, object.getTitle() == null ? "" : object.getTitle());
@@ -132,31 +134,32 @@ class DBhelper extends SQLiteOpenHelper {
             Bitmap emptyImage = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(emptyImage);
             canvas.drawColor(Color.TRANSPARENT);
-            st.bindBlob(4, object.getLargeIcon() == null ? getByteArrayFromBitmap(emptyImage) : getByteArrayFromBitmap(object.getLargeIcon()));
-            st.bindLong(5, object.getPostTime());
-            st.bindString(6, object.getPackageName());
-            st.bindString(7, String.valueOf(object.getAppName()));
+            st.bindLong(4, object.getSmallIcon());
+            st.bindBlob(5, object.getLargeIcon() == null ? getByteArrayFromBitmap(emptyImage) : getByteArrayFromBitmap(object.getLargeIcon()));
+            st.bindLong(6, object.getPostTime());
+            st.bindString(7, object.getPackageName());
+            st.bindString(8, String.valueOf(object.getAppName()));
 
             st.execute();
         }
     }
 
     ArrayList<NotificationGroup> deleteNotification(String packageName, long postTime) {
-        String query = "DELETE FROM tempp WHERE packagename = ? AND posttime = ?";
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE packagename = ? AND posttime = ?";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query, new String[]{packageName, String.valueOf(postTime)});
         return getAllNotifications();
     }
 
     ArrayList<NotificationGroup> deleteGroupNotification(String packageName) {
-        String query = "DELETE FROM tempp WHERE packagename = ?";
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE packagename = ?";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query, new String[]{packageName});
         return getAllNotifications();
     }
 
     ArrayList<NotificationGroup> deleteNotificationsExceededValidate(int validateTile) {
-        String query = "DELETE FROM tempp WHERE posttime < ?";
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE posttime < ?";
         Date date = new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(validateTile));
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(query, new String[]{String.valueOf(date.getTime())});
@@ -166,7 +169,7 @@ class DBhelper extends SQLiteOpenHelper {
     ArrayList<NotificationGroup> getAllNotifications() {
         ArrayList<NotificationObject> list = new ArrayList<>();
         for (String s : PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages")) {
-            String query = "SELECT * FROM tempp WHERE packagename = ? ORDER BY posttime DESC LIMIT 15";
+            String query = "SELECT * FROM " + TABLE_NAME + " WHERE packagename = ? ORDER BY posttime DESC LIMIT 15";
 
             SQLiteDatabase db = getReadableDatabase();
             Cursor cursor = db.rawQuery(query, new String[]{s.split(",")[0]});
@@ -174,15 +177,16 @@ class DBhelper extends SQLiteOpenHelper {
             NotificationObject obj;
 
             while (cursor.moveToNext()) {
-                byte[] largeIcon = cursor.getBlob(3);
                 obj = new NotificationObject();
                 obj.setTitle(cursor.getString(0));
                 obj.setText(cursor.getString(1));
                 obj.setSubText(cursor.getString(2));
+                obj.setSmallIcon(cursor.getInt(3));
+                byte[] largeIcon = cursor.getBlob(4);
                 obj.setLargeIcon(getImage(largeIcon));
-                obj.setPostTime(cursor.getLong(4));
-                obj.setPackageName(cursor.getString(5));
-                obj.setAppName(cursor.getString(6));
+                obj.setPostTime(cursor.getLong(5));
+                obj.setPackageName(cursor.getString(6));
+                obj.setAppName(cursor.getString(7));
 
                 list.add(obj);
             }
@@ -194,7 +198,7 @@ class DBhelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<NotificationObject> getNotification(String packageName, int offset) {
-        String query = "SELECT * FROM tempp WHERE packagename = ? ORDER BY posttime DESC LIMIT 15 OFFSET ?";
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE packagename = ? ORDER BY posttime DESC LIMIT 15 OFFSET ?";
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(query, new String[]{packageName, String.valueOf(offset)});
@@ -203,15 +207,16 @@ class DBhelper extends SQLiteOpenHelper {
         ArrayList<NotificationObject> list = new ArrayList<>();
 
         while (cursor.moveToNext()) {
-            byte[] largeIcon = cursor.getBlob(3);
             obj = new NotificationObject();
             obj.setTitle(cursor.getString(0));
             obj.setText(cursor.getString(1));
             obj.setSubText(cursor.getString(2));
+            obj.setSmallIcon(cursor.getInt(3));
+            byte[] largeIcon = cursor.getBlob(4);
             obj.setLargeIcon(getImage(largeIcon));
-            obj.setPostTime(cursor.getLong(4));
-            obj.setPackageName(cursor.getString(5));
-            obj.setAppName(cursor.getString(6));
+            obj.setPostTime(cursor.getLong(5));
+            obj.setPackageName(cursor.getString(6));
+            obj.setAppName(cursor.getString(7));
 
             list.add(obj);
         }

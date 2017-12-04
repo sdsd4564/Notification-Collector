@@ -1,10 +1,12 @@
 package hanbat.encho.com.notificationcollactor;
 
-import android.app.AlarmManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.multidex.MultiDexApplication;
 import android.text.format.DateUtils;
@@ -31,8 +33,28 @@ public class Application extends MultiDexApplication {
         iv.setImageBitmap(b);
     }
 
+    @BindingAdapter({"loadSmallIcon", "loadPackageName"})
+    public static void setSmallIcon(ImageView iv, int smallIcon, String packageName) {
+        try {
+            PackageManager pm = mContext.getPackageManager();
+            Drawable icon = pm.getResourcesForApplication(packageName).getDrawable(smallIcon);
+            icon.setColorFilter(Color.parseColor("#5C7480"), PorterDuff.Mode.SRC_ATOP);
+            iv.setImageDrawable(icon);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     @BindingAdapter({"loadIcon"})
     public static void resourceToDrawable(ImageView iv, String packageName) {
+
+//        try {
+//            PackageManager pm = mContext.getPackageManager();
+//            Drawable icon = pm.getResourcesForApplication(packageName).getDrawable(smallIcon);
+//            iv.setImageDrawable(icon);
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        }
         File imgFile = new File(mContext.getFilesDir(), packageName);
         if (imgFile.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
