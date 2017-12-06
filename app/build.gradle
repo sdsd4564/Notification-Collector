@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "hanbat.encho.com.notificationcollactor"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 26
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
@@ -33,10 +33,10 @@ android {
         androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
             exclude group: 'com.android.support', module: 'support-annotations'
         })
-        compile 'com.android.support:appcompat-v7:25.4.0'
-        compile 'com.android.support:design:25.4.0'
+        compile 'com.android.support:appcompat-v7:26.1.0'
+        compile 'com.android.support:design:26.1.0'
         compile 'com.android.support.constraint:constraint-layout:1.0.2'
-        compile 'com.android.support:recyclerview-v7:25.4.0'
+        compile 'com.android.support:recyclerview-v7:26.1.0'
         // https://github.com/ParkSangGwon/TedPermission 퍼미션 요청 라이브러리
         compile 'gun0912.ted:tedpermission:1.0.3'
         // https://github.com/facebook/stetho 페이스북 Stetho 디버깅 라이브러리
