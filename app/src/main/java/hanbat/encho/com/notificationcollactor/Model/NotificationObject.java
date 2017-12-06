@@ -17,7 +17,7 @@ public class NotificationObject implements Parcelable {
 
     private String title;
     private int smallIcon;
-    private int color = 1;
+    private int color = -1;
     private Bitmap largeIcon;
     private CharSequence text;
     private CharSequence subText;

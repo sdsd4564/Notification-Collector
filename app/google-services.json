@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "1051688067076",
+    "firebase_url": "https://admob-app-id-1173995164.firebaseio.com",
+    "project_id": "admob-app-id-1173995164",
+    "storage_bucket": "admob-app-id-1173995164.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051688067076:android:defe87d378cbad93",
+        "android_client_info": {
+          "package_name": "hanbat.encho.com.clipboardmake"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1051688067076-hllpnst2eagbl19154bk0olsqdvrmln0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8oBpxfflgUfZhrNr0JbYJnJD7235mEdc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051688067076:android:11c573a788a992a9",
+        "android_client_info": {
+          "package_name": "hanbat.encho.com.notificationcollactor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1051688067076-hllpnst2eagbl19154bk0olsqdvrmln0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8oBpxfflgUfZhrNr0JbYJnJD7235mEdc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

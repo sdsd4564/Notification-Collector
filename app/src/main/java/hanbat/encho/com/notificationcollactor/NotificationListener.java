@@ -4,20 +4,16 @@ import android.app.Notification;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
+
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 
 /*
 * Created by USER on 2017-07-19.
@@ -61,8 +57,11 @@ public class NotificationListener extends NotificationListenerService {
             CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
             CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
             int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);
+            int color =
+                    SDK_INT >= LOLLIPOP
+                            ? mNotification.color
+                            : -1;
 
-            int color = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP ? mNotification.color : -1;
             Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
             long postTime = sbn.getPostTime();
             String packageName = sbn.getPackageName();

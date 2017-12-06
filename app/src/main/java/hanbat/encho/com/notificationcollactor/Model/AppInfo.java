@@ -1,12 +1,7 @@
 package hanbat.encho.com.notificationcollactor.Model;
 
 import android.content.pm.ApplicationInfo;
-import android.databinding.BindingAdapter;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
 
 public class AppInfo extends ApplicationInfo {
     private Drawable icon;

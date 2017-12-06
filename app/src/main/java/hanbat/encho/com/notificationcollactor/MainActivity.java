@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -230,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
                     int color = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP
                             ? mNotification.color
                             : -1;
+
                     Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
                     long postTime = sbn.getPostTime();
                     String packageName = sbn.getPackageName();

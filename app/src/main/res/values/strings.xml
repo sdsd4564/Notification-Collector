@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Notif Cat</string>
+    <string name="app_name">알림 캣</string>
     <string name="permission_check_message">스마트폰의 알림 접근을 허용해주셔야 앱이 알림 수집이 가능합니다</string>
     <string name="confirm">확인</string>
     <string name="loading_package_message">기기에 설치된 앱 목록 불러오는 중…</string>

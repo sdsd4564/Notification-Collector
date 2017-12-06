@@ -29,6 +29,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private Context mContext;
     private ActivityMainBinding binding;
     private DBhelper db;
+    private TestChildAdapter mAdapter;
 
     public NotificationAdapter(ArrayList<NotificationGroup> groups, Context mContext, ActivityMainBinding binding) {
         this.groups = groups;
@@ -38,9 +39,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     public void setGroups(ArrayList<NotificationGroup> groups) {
-        for (NotificationGroup obj : this.groups) obj.setExpand(false);
         this.groups.clear();
         this.groups.addAll(groups);
+        for (NotificationGroup obj : this.groups)
+            obj.setExpand(false);
         notifyDataSetChanged();
     }
 
@@ -52,22 +54,26 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     @Override
-    public void onBindViewHolder(final NotificationAdapter.GroupViewHolder holder, final int i) {
+    public void onBindViewHolder(final NotificationAdapter.GroupViewHolder holder, int i) {
         final NotificationGroup group = groups.get(i);
         holder.groupBinding.setNoti(group);
 
-        final TestChildAdapter mAdapter = new TestChildAdapter(group, holder.groupBinding);
-        mAdapter.setHasStableIds(true);
-
         final LinearLayoutManager mManager = new LinearLayoutManager(mContext);
-        holder.groupBinding.childListView.setLayoutManager(mManager);
-        holder.groupBinding.childListView.setAdapter(mAdapter);
+
+        if (group.isExpand()) {
+            mAdapter = new TestChildAdapter(group, holder.groupBinding);
+            mAdapter.setHasStableIds(true);
+            holder.groupBinding.childListView.setLayoutManager(mManager);
+            holder.groupBinding.childListView.setAdapter(mAdapter);
+        } else
+            mAdapter = null;
+
         holder.groupBinding.childListView.setVisibility(group.isExpand() ? View.VISIBLE : View.GONE);
         animationGroupItem(group.isExpand(), holder.groupBinding.arrow);
         holder.groupBinding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                notifyItemChanged(i);
+                notifyItemChanged(holder.getAdapterPosition());
                 group.setExpand(!group.isExpand());
             }
         });
@@ -116,9 +122,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         rotate.setDuration(300);
         rotate.setFillAfter(true);
         arrow.setAnimation(rotate);
-//        ObjectAnimator anim = ObjectAnimator.ofFloat(arrow, "rotation", onExpand ? 0 : 180, onExpand ? 180: 0);
-//        anim.setDuration(300);
-//        anim.start();
     }
 
     private class TestChildAdapter extends RecyclerView.Adapter {
@@ -153,16 +156,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
         @Override
-        public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
             if (holder instanceof ChildViewHolder) {
                 final NotificationObject item = group.getItems().get(position);
                 ((ChildViewHolder) holder).childBinding.setNoti(item);
-                ((ChildViewHolder) holder).childBinding.getRoot().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(mContext, "" + group.getItems().get(position).getColor(), Toast.LENGTH_SHORT).show();
-                    }
-                });
                 ((ChildViewHolder) holder).childBinding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
@@ -177,8 +174,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                                         if (TestChildAdapter.this.getItemCount() == 1) {
                                             setGroups(list);
                                         } else {
-                                            group.getItems().remove(position);
-                                            TestChildAdapter.this.notifyItemRemoved(position);
+                                            group.getItems().remove(holder.getAdapterPosition());
+                                            TestChildAdapter.this.notifyItemRemoved(holder.getAdapterPosition());
                                             parentBinding.notificationCount.setText(String.valueOf(TestChildAdapter.this.getItemCount()));
                                         }
                                     }
@@ -240,7 +237,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         LoadingHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            loadingImage = (ImageView) mView.findViewById(R.id.load_item);
+            loadingImage = mView.findViewById(R.id.load_item);
         }
     }
 }

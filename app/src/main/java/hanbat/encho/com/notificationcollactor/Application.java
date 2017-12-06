@@ -42,10 +42,10 @@ public class Application extends MultiDexApplication {
         try {
             PackageManager pm = mContext.getPackageManager();
             Drawable icon = pm.getResourcesForApplication(packageName).getDrawable(smallIcon);
-            if (color != -1 && color != 0) {
-                icon.setColorFilter(Color.parseColor(String.format("#%06X", (0xFFFFFF & color))), PorterDuff.Mode.SRC_ATOP);
-            } else {
+            if (color == 0) {
                 icon.setColorFilter(Color.parseColor("#5C7480"), PorterDuff.Mode.SRC_ATOP);
+            } else if (color != -1){
+                icon.setColorFilter(Color.parseColor(String.format("#%06X", (0xFFFFFF & color))), PorterDuff.Mode.SRC_ATOP);
             }
             iv.setImageDrawable(icon);
         } catch (PackageManager.NameNotFoundException e) {
