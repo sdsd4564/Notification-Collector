@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -60,11 +61,13 @@ public class NotificationListener extends NotificationListenerService {
             CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
             CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
             int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);
+
+            int color = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP ? mNotification.color : -1;
             Bitmap largeIcon = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
             long postTime = sbn.getPostTime();
             String packageName = sbn.getPackageName();
 
-            NotificationObject obj = new NotificationObject(title, smallIcon, largeIcon, text, subText, postTime, packageName, appName);
+            NotificationObject obj = new NotificationObject(title, smallIcon, color, largeIcon, text, subText, postTime, packageName, appName);
 
             if (text.length() > 0 && title.length() > 0) {
                 db.addNotification(obj);

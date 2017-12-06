@@ -40,17 +40,31 @@
 
             </android.support.v4.widget.SwipeRefreshLayout>
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/no_item"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:drawableTop="@drawable/ic_do_not_disturb_black_48dp"
-                android:text="NO ITEM\n기록된 알림이 없습니다"
-                android:textColor="#8f8f8f"
-                android:textSize="40sp"
-                android:textStyle="italic|bold"/>
+                android:layout_height="match_parent"
+                android:padding="64dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:padding="50dp"
+                    android:src="@drawable/noitem"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:text="NO ITEM"
+                    android:textColor="#8f8f8f"
+                    android:textSize="24sp"
+                    android:textStyle="italic|bold"/>
+
+            </LinearLayout>
         </FrameLayout>
 
 

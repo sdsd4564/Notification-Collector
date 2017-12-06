@@ -81,6 +81,7 @@ class DBhelper extends SQLiteOpenHelper {
                 "text TEXT," +
                 "subtext TEXT," +
                 "smallicon INTEGER," +
+                "color INTEGER," +
                 "largeicon BLOB," +
                 "posttime INTEGER," +
                 "packagename TEXT," +
@@ -123,22 +124,24 @@ class DBhelper extends SQLiteOpenHelper {
 
         if (!isDuplicated) {
             String sb = "INSERT INTO " + TABLE_NAME +
-                    " (title, text, subtext, smallicon, largeicon, posttime, packagename, appname)" +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    " (title, text, subtext, smallicon, color, largeicon, posttime, packagename, appname)" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             SQLiteStatement st = db.compileStatement(sb);
             st.bindString(1, object.getTitle() == null ? "" : object.getTitle());
             st.bindString(2, String.valueOf(object.getText()));
             st.bindString(3, String.valueOf(object.getSubText() == null ? "" : object.getSubText()));
+            st.bindLong(4, object.getSmallIcon());
+            st.bindLong(5, object.getColor());
             Drawable d = new ColorDrawable(Color.TRANSPARENT);
             Bitmap emptyImage = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(emptyImage);
             canvas.drawColor(Color.TRANSPARENT);
-            st.bindLong(4, object.getSmallIcon());
-            st.bindBlob(5, object.getLargeIcon() == null ? getByteArrayFromBitmap(emptyImage) : getByteArrayFromBitmap(object.getLargeIcon()));
-            st.bindLong(6, object.getPostTime());
-            st.bindString(7, object.getPackageName());
-            st.bindString(8, String.valueOf(object.getAppName()));
+//            st.bindBlob(5, object.getLargeIcon() == null ? getByteArrayFromBitmap(emptyImage) : getByteArrayFromBitmap(object.getLargeIcon()));
+            st.bindBlob(6, object.getLargeIcon() == null ? new byte[0] : getByteArrayFromBitmap(object.getLargeIcon()));
+            st.bindLong(7, object.getPostTime());
+            st.bindString(8, object.getPackageName());
+            st.bindString(9, String.valueOf(object.getAppName()));
 
             st.execute();
         }
@@ -182,11 +185,12 @@ class DBhelper extends SQLiteOpenHelper {
                 obj.setText(cursor.getString(1));
                 obj.setSubText(cursor.getString(2));
                 obj.setSmallIcon(cursor.getInt(3));
-                byte[] largeIcon = cursor.getBlob(4);
+                obj.setColor(cursor.getInt(4));
+                byte[] largeIcon = cursor.getBlob(5);
                 obj.setLargeIcon(getImage(largeIcon));
-                obj.setPostTime(cursor.getLong(5));
-                obj.setPackageName(cursor.getString(6));
-                obj.setAppName(cursor.getString(7));
+                obj.setPostTime(cursor.getLong(6));
+                obj.setPackageName(cursor.getString(7));
+                obj.setAppName(cursor.getString(8));
 
                 list.add(obj);
             }
@@ -212,11 +216,12 @@ class DBhelper extends SQLiteOpenHelper {
             obj.setText(cursor.getString(1));
             obj.setSubText(cursor.getString(2));
             obj.setSmallIcon(cursor.getInt(3));
-            byte[] largeIcon = cursor.getBlob(4);
+            obj.setColor(cursor.getInt(4));
+            byte[] largeIcon = cursor.getBlob(5);
             obj.setLargeIcon(getImage(largeIcon));
-            obj.setPostTime(cursor.getLong(5));
-            obj.setPackageName(cursor.getString(6));
-            obj.setAppName(cursor.getString(7));
+            obj.setPostTime(cursor.getLong(6));
+            obj.setPackageName(cursor.getString(7));
+            obj.setAppName(cursor.getString(8));
 
             list.add(obj);
         }

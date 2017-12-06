@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -111,10 +112,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private void animationGroupItem(boolean onExpand, View arrow) {
         RotateAnimation rotate =
-                new RotateAnimation(onExpand ? 360 : 180, onExpand ? 180 : 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                new RotateAnimation(onExpand ? 0 : 180, onExpand ? 180 : 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(300);
         rotate.setFillAfter(true);
         arrow.setAnimation(rotate);
+//        ObjectAnimator anim = ObjectAnimator.ofFloat(arrow, "rotation", onExpand ? 0 : 180, onExpand ? 180: 0);
+//        anim.setDuration(300);
+//        anim.start();
     }
 
     private class TestChildAdapter extends RecyclerView.Adapter {
@@ -153,6 +157,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             if (holder instanceof ChildViewHolder) {
                 final NotificationObject item = group.getItems().get(position);
                 ((ChildViewHolder) holder).childBinding.setNoti(item);
+                ((ChildViewHolder) holder).childBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(mContext, "" + group.getItems().get(position).getColor(), Toast.LENGTH_SHORT).show();
+                    }
+                });
                 ((ChildViewHolder) holder).childBinding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {

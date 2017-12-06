@@ -1,29 +1,23 @@
 package hanbat.encho.com.notificationcollactor.Model;
 
+import android.databinding.Bindable;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.ByteArrayOutputStream;
 
+import hanbat.encho.com.notificationcollactor.BR;
+
 /**
  * Created by Encho on 2017-07-19.
  */
 
 public class NotificationObject implements Parcelable {
-    public static final Creator<NotificationObject> CREATOR = new Creator<NotificationObject>() {
-        @Override
-        public NotificationObject createFromParcel(Parcel in) {
-            return new NotificationObject(in);
-        }
 
-        @Override
-        public NotificationObject[] newArray(int size) {
-            return new NotificationObject[size];
-        }
-    };
     private String title;
     private int smallIcon;
+    private int color = 1;
     private Bitmap largeIcon;
     private CharSequence text;
     private CharSequence subText;
@@ -35,9 +29,10 @@ public class NotificationObject implements Parcelable {
     }
 
 
-    public NotificationObject(String title, int smallIcon, Bitmap largeIcon, CharSequence text, CharSequence subText, long postTime, String packageName, CharSequence appName) {
+    public NotificationObject(String title, int smallIcon, int color, Bitmap largeIcon, CharSequence text, CharSequence subText, long postTime, String packageName, CharSequence appName) {
         this.title = title;
         this.smallIcon = smallIcon;
+        this.color = color;
         this.largeIcon = largeIcon;
         this.text = text;
         this.subText = subText;
@@ -46,17 +41,27 @@ public class NotificationObject implements Parcelable {
         this.appName = appName;
     }
 
+
     protected NotificationObject(Parcel in) {
         title = in.readString();
         smallIcon = in.readInt();
+        color = in.readInt();
         largeIcon = in.readParcelable(Bitmap.class.getClassLoader());
         postTime = in.readLong();
         packageName = in.readString();
     }
 
-    public static Creator<NotificationObject> getCREATOR() {
-        return CREATOR;
-    }
+    public static final Creator<NotificationObject> CREATOR = new Creator<NotificationObject>() {
+        @Override
+        public NotificationObject createFromParcel(Parcel in) {
+            return new NotificationObject(in);
+        }
+
+        @Override
+        public NotificationObject[] newArray(int size) {
+            return new NotificationObject[size];
+        }
+    };
 
     public int getSmallIcon() {
         return smallIcon;
@@ -76,6 +81,18 @@ public class NotificationObject implements Parcelable {
 
     public String getTitle() {
         return title;
+    }
+
+    public static Creator<NotificationObject> getCREATOR() {
+        return CREATOR;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
     public void setTitle(String title) {
@@ -133,6 +150,8 @@ public class NotificationObject implements Parcelable {
         largeIcon.compress(Bitmap.CompressFormat.PNG, 0, stream);
         byte[] largeIconArray = stream.toByteArray();
         parcel.writeString(title);
+        parcel.writeInt(smallIcon);
+        parcel.writeInt(color);
         parcel.writeByteArray(largeIconArray);
         parcel.writeString(text.toString());
         parcel.writeString(subText.toString());

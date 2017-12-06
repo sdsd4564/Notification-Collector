@@ -30,7 +30,7 @@ public class PreferenceManager {
     public int getIntegerPref(Context context, String key) {
         SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
 
-        return prefs.getInt(key, 10);
+        return prefs.getInt(key, 61);
     }
 
     public void setStringArrayPref(Context context, String key, ArrayList<String> values) {

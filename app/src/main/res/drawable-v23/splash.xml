@@ -2,10 +2,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/white" />
 
-    <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/splash_icon" />
+    <item
+        android:width="91dp"
+        android:height="96dp"
+        android:gravity="center">
+        <bitmap android:src="@mipmap/ic_launcher" />
     </item>
 
 

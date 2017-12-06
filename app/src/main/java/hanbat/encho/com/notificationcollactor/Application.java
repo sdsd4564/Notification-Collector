@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.multidex.MultiDexApplication;
 import android.text.format.DateUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,31 +31,35 @@ public class Application extends MultiDexApplication {
 
     @BindingAdapter({"imageBitmap"})
     public static void loadImage(ImageView iv, Bitmap b) {
-        iv.setImageBitmap(b);
+        if (b != null)
+            iv.setImageBitmap(b);
+        else
+            iv.setVisibility(View.GONE);
     }
 
-    @BindingAdapter({"loadSmallIcon", "loadPackageName"})
-    public static void setSmallIcon(ImageView iv, int smallIcon, String packageName) {
+    @BindingAdapter({"loadSmallIcon", "loadPackageName", "loadColor"})
+    public static void setSmallIcon(ImageView iv, int smallIcon, String packageName, int color) {
         try {
             PackageManager pm = mContext.getPackageManager();
             Drawable icon = pm.getResourcesForApplication(packageName).getDrawable(smallIcon);
-            icon.setColorFilter(Color.parseColor("#5C7480"), PorterDuff.Mode.SRC_ATOP);
+            if (color != -1 && color != 0) {
+                icon.setColorFilter(Color.parseColor(String.format("#%06X", (0xFFFFFF & color))), PorterDuff.Mode.SRC_ATOP);
+            } else {
+                icon.setColorFilter(Color.parseColor("#5C7480"), PorterDuff.Mode.SRC_ATOP);
+            }
             iv.setImageDrawable(icon);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
     }
 
+    @BindingAdapter({"colorString"})
+    public static void setTextColor(TextView tv, int color) {
+        tv.setTextColor(Color.parseColor(color != 0 && color != -1 ? String.format("#%06X", (0xFFFFFF & color)) : "#5C7480"));
+    }
+
     @BindingAdapter({"loadIcon"})
     public static void resourceToDrawable(ImageView iv, String packageName) {
-
-//        try {
-//            PackageManager pm = mContext.getPackageManager();
-//            Drawable icon = pm.getResourcesForApplication(packageName).getDrawable(smallIcon);
-//            iv.setImageDrawable(icon);
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//        }
         File imgFile = new File(mContext.getFilesDir(), packageName);
         if (imgFile.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());

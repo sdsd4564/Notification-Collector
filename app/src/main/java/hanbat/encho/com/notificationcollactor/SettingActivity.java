@@ -18,6 +18,9 @@ public class SettingActivity extends AppCompatActivity {
         setResult(RESULT_OK);
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_setting);
+        setTitle(R.string.setting);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         validate = PreferenceManager.getInstance().getIntegerPref(this, "Validate");
         binding.textValidateDay.setText(validate == 61
@@ -47,6 +50,12 @@ public class SettingActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override
