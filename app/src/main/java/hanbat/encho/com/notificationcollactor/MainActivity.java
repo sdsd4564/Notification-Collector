@@ -1,6 +1,7 @@
 package hanbat.encho.com.notificationcollactor;
 
 import android.app.Notification;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -9,11 +10,15 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -42,7 +47,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (!isPermissionAllowed()) {
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-            Toast.makeText(this, R.string.permission_check_message, Toast.LENGTH_LONG).show();
+            Toast mToast = new Toast(Application.getAppContext());
+            mToast.setDuration(Toast.LENGTH_LONG);
+            mToast.setGravity(Gravity.CENTER, 0, 0);
+            LayoutInflater mInflater = (LayoutInflater) Application.getAppContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = mInflater.inflate(R.layout.permission_notice_toast, null);
+            mToast.setView(view);
+            mToast.show();
             this.finishAffinity();
         } else {
             mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
