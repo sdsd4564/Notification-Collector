@@ -37,11 +37,9 @@ android {
         compile 'com.android.support:design:26.1.0'
         compile 'com.android.support.constraint:constraint-layout:1.0.2'
         compile 'com.android.support:recyclerview-v7:26.1.0'
-        // https://github.com/ParkSangGwon/TedPermission 퍼미션 요청 라이브러리
-        compile 'gun0912.ted:tedpermission:1.0.3'
-        // https://github.com/facebook/stetho 페이스북 Stetho 디버깅 라이브러리
-        compile 'com.facebook.stetho:stetho:1.5.0'
         compile 'com.android.support:multidex:1.0.2'
+        /* https://github.com/facebook/stetho 페이스북 Stetho 디버깅 라이브러리 */
+        compile 'com.facebook.stetho:stetho:1.5.0'
 
         testCompile 'junit:junit:4.12'
     }
