@@ -11,7 +11,7 @@ import hanbat.encho.com.notificationcollactor.BR;
 
 /**
  * Created by Encho on 2017-07-19.
- */
+ **/
 
 public class NotificationObject implements Parcelable {
 
@@ -42,7 +42,7 @@ public class NotificationObject implements Parcelable {
     }
 
 
-    protected NotificationObject(Parcel in) {
+    private NotificationObject(Parcel in) {
         title = in.readString();
         smallIcon = in.readInt();
         color = in.readInt();
@@ -51,7 +51,7 @@ public class NotificationObject implements Parcelable {
         packageName = in.readString();
     }
 
-    public static final Creator<NotificationObject> CREATOR = new Creator<NotificationObject>() {
+    private static final Creator<NotificationObject> CREATOR = new Creator<NotificationObject>() {
         @Override
         public NotificationObject createFromParcel(Parcel in) {
             return new NotificationObject(in);

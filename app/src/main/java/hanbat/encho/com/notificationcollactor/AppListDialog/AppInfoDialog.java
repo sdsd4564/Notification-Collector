@@ -26,10 +26,6 @@ import hanbat.encho.com.notificationcollactor.PreferenceManager;
 import hanbat.encho.com.notificationcollactor.R;
 import hanbat.encho.com.notificationcollactor.databinding.CheckAllowedApplistBinding;
 
-/**
- * Created by Encho on 2017-07-25.
- */
-
 public class AppInfoDialog extends Activity {
 
     public final static int APP_LIST_CONFIRMED = 123;
@@ -86,7 +82,7 @@ public class AppInfoDialog extends Activity {
                         confirmedApps = new ArrayList<>();
                         itemsClone = new ArrayList<>();
                         confirmedAppsClone = new ArrayList<>();
-                        ArrayList<String> packages = new ArrayList<String>();
+                        ArrayList<String> packages = new ArrayList<>();
                         for (String str : PreferenceManager.getInstance().getStringArrayPref(AppInfoDialog.this, "Packages"))
                             packages.add(str.split(",")[0]);
 
@@ -95,9 +91,10 @@ public class AppInfoDialog extends Activity {
                         for (AppInfo appInfo : items)
                             if (packages.contains(appInfo.getPackageName()))
                                 confirmedApps.add(appInfo);
+
+
                         //설치된 앱 리스트에서 승인앱 제외////////////////////////
-                        for (AppInfo app : confirmedApps)
-                            items.remove(app);
+                        items.removeAll(confirmedApps);
                         ////////////////////////////////////////////////////
 
                         itemsClone.addAll(items);

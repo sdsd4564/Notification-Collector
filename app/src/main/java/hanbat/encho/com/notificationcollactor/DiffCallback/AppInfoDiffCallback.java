@@ -6,9 +6,6 @@ import java.util.List;
 
 import hanbat.encho.com.notificationcollactor.Model.AppInfo;
 
-/**
- * Created by USER on 2017-08-14.
- */
 
 public class AppInfoDiffCallback extends DiffUtil.Callback {
 

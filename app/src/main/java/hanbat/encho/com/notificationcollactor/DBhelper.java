@@ -28,7 +28,7 @@ class DBhelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "NOTIFICATION_COLLECTOR";
     private static final String TABLE_NAME = "notification_store";
     private static final int VERSION = 1;
-    private static DBhelper f = null;
+    private DBhelper f = null;
     private Context mContext;
 
     private DBhelper(Context context) {
@@ -36,14 +36,14 @@ class DBhelper extends SQLiteOpenHelper {
         mContext = context;
     }
 
-    static DBhelper getInstance() {
+    DBhelper getInstance() {
         if (f == null) {
-            f = new DBhelper(Application.getAppContext());
+            f = new DBhelper(mContext);
         }
         return f;
     }
 
-    public ArrayList<NotificationGroup> getGroups(ArrayList<NotificationObject> items) {
+    private ArrayList<NotificationGroup> getGroups(ArrayList<NotificationObject> items) {
         String query = "SELECT packagename, count() as count FROM "
                 + TABLE_NAME
                 + " GROUP BY packagename";
@@ -67,7 +67,7 @@ class DBhelper extends SQLiteOpenHelper {
             if (separatedItems.size() != 0) {
                 if (packagesCount.get(row[0]) != separatedItems.size())
                     separatedItems.add(null);
-                groups.add(new NotificationGroup(row[1], row[0], separatedItems, packagesCount.get(row[0]), Integer.parseInt(row[2])));
+                groups.add(new NotificationGroup(row[1], row[0], separatedItems, packagesCount.get(row[0])/*, Integer.parseInt(row[2])*/));
             }
         }
 
@@ -133,11 +133,9 @@ class DBhelper extends SQLiteOpenHelper {
             st.bindString(3, String.valueOf(object.getSubText() == null ? "" : object.getSubText()));
             st.bindLong(4, object.getSmallIcon());
             st.bindLong(5, object.getColor());
-            Drawable d = new ColorDrawable(Color.TRANSPARENT);
             Bitmap emptyImage = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(emptyImage);
             canvas.drawColor(Color.TRANSPARENT);
-//            st.bindBlob(5, object.getLargeIcon() == null ? getByteArrayFromBitmap(emptyImage) : getByteArrayFromBitmap(object.getLargeIcon()));
             st.bindBlob(6, object.getLargeIcon() == null ? new byte[0] : getByteArrayFromBitmap(object.getLargeIcon()));
             st.bindLong(7, object.getPostTime());
             st.bindString(8, object.getPackageName());
@@ -201,7 +199,7 @@ class DBhelper extends SQLiteOpenHelper {
         return getGroups(list);
     }
 
-    public ArrayList<NotificationObject> getNotification(String packageName, int offset) {
+    ArrayList<NotificationObject> getNotification(String packageName, int offset) {
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE packagename = ? ORDER BY posttime DESC LIMIT 15 OFFSET ?";
 
         SQLiteDatabase db = getReadableDatabase();

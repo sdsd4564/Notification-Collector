@@ -29,10 +29,6 @@ import hanbat.encho.com.notificationcollactor.PreferenceManager;
 import hanbat.encho.com.notificationcollactor.R;
 import hanbat.encho.com.notificationcollactor.databinding.DialogAllowedItemBinding;
 
-/**
- * Created by Encho on 2017-08-10.
- */
-
 public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirmListAdapter.DialogViewHolder> {
 
     private OnMyItemCheckedChange mOnMyItemCheckedChange;
@@ -90,22 +86,7 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
         for (AppInfo app : confirmApps) {
             Bitmap bitmap = convertDrawableToBitmap(app.getIcon());
 
-            int redBucket = 0;
-            int greenBucket = 0;
-            int blueBucket = 0;
-            int pixelCount = 0;
-            for (int y = 0; y < bitmap.getHeight(); ++y) {
-                for (int x = 0; x < bitmap.getWidth(); ++x) {
-                    int c = bitmap.getPixel(x, y);
-                    pixelCount++;
-                    redBucket += Color.red(c);
-                    greenBucket += Color.green(c);
-                    blueBucket += Color.blue(c);
-                }
-            }
-            int averageColor = Color.rgb(redBucket / pixelCount, greenBucket / pixelCount, blueBucket / pixelCount);
-
-            apps.add(app.getPackageName() + "," + app.getName() + "," + averageColor);
+            apps.add(app.getPackageName() + "," + app.getName());
             saveBitmapToFile(bitmap, app.getPackageName());
         }
 
@@ -130,7 +111,10 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
     private void saveBitmapToFile(Bitmap bm, String filePath) {
         File iconImage = new File(Application.getAppContext().getFilesDir(), filePath);
         try {
-            iconImage.createNewFile();
+            if (!iconImage.createNewFile()) {
+                throw new IOException();
+            }
+
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.PNG, 0, bos);
             byte[] bitmapData = bos.toByteArray();

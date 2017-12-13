@@ -14,10 +14,6 @@ import hanbat.encho.com.notificationcollactor.Model.AppInfo;
 import hanbat.encho.com.notificationcollactor.R;
 import hanbat.encho.com.notificationcollactor.databinding.DialogAllowedItemBinding;
 
-/**
- * Created by USER on 2017-07-27.
- */
-
 public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.DialogViewHolder> {
 
     private OnMyItemCheckedChanged mOnMyItemCheckedChanged;

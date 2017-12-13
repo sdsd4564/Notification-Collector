@@ -23,7 +23,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class Application extends MultiDexApplication {
-    static Context mContext;
+    private static Application mContext;
 
     public static Context getAppContext() {
         return mContext;
