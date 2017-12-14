@@ -99,7 +99,7 @@ class DBhelper extends SQLiteOpenHelper {
     void addNotification(NotificationObject object) {
         SQLiteDatabase db = getWritableDatabase();
 
-        String noDuplicated = "SELECT title, text, posttime, packagename FROM " + TABLE_NAME +
+        String noDuplicated = "SELECT title, text, subtext, posttime, packagename FROM " + TABLE_NAME +
                 " WHERE title = ? AND" +
                 " text = ? AND" +
                 " posttime = ? AND" +
@@ -118,14 +118,12 @@ class DBhelper extends SQLiteOpenHelper {
             * 중복 체크 조건, 조건 만족시 true
             * 1. title, text, packageName이 같을 경우
             * 2. 위 조건을 만족한 상태에서 postTime까지 같을경우
-            * 중복으로 확인*/
+            * 중복으로 확인
+            **/
             isDuplicated = (cursor.getString(0).equals(object.getTitle())
                     && cursor.getString(1).equals(String.valueOf(object.getText()))
                     && cursor.getString(3).equals(object.getPackageName()))
-                    || (cursor.getLong(2) == object.getPostTime()
-                    && cursor.getString(0).equals(object.getTitle())
-                    && cursor.getString(1).equals(String.valueOf(object.getText()))
-                    && cursor.getString(3).equals(object.getPackageName()));
+                    && (cursor.getLong(2) == object.getPostTime());
         }
         cursor.close();
 
