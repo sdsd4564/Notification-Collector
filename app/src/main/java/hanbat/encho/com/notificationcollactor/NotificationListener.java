@@ -68,7 +68,7 @@ public class NotificationListener extends NotificationListenerService {
 
             NotificationObject obj = new NotificationObject(title, smallIcon, color, largeIcon, text, subText, postTime, packageName, appName);
 
-            if (text.length() > 0 && title.length() > 0) {
+            if ((text != null ? text.length() : 0) > 0 && title.length() > 0) {
                 db.addNotification(obj);
             }
         }

@@ -28,17 +28,15 @@ class DBhelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "NOTIFICATION_COLLECTOR";
     private static final String TABLE_NAME = "notification_store";
     private static final int VERSION = 1;
-    private DBhelper f = null;
-    private Context mContext;
+    private static DBhelper f = null;
 
     private DBhelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
-        mContext = context;
     }
 
-    DBhelper getInstance() {
+    static synchronized DBhelper getInstance() {
         if (f == null) {
-            f = new DBhelper(mContext);
+            f = new DBhelper(Application.getAppContext());
         }
         return f;
     }
@@ -56,7 +54,7 @@ class DBhelper extends SQLiteOpenHelper {
         cursor.close();
 
         ArrayList<NotificationGroup> groups = new ArrayList<>();
-        for (String app : PreferenceManager.getInstance().getStringArrayPref(mContext, "Packages")) {
+        for (String app : PreferenceManager.getInstance().getStringArrayPref(Application.getAppContext(), "Packages")) {
             String[] row = app.split(",");
             ArrayList<NotificationObject> separatedItems = new ArrayList<>();
             for (NotificationObject object : items) {
@@ -115,11 +113,20 @@ class DBhelper extends SQLiteOpenHelper {
                         object.getPackageName()});
 
         boolean isDuplicated = false;
-        if (cursor.moveToNext())
-            isDuplicated = cursor.getString(0).equals(object.getTitle())
+        if (cursor.moveToNext()) {
+            /*
+            * 중복 체크 조건, 조건 만족시 true
+            * 1. title, text, packageName이 같을 경우
+            * 2. 위 조건을 만족한 상태에서 postTime까지 같을경우
+            * 중복으로 확인*/
+            isDuplicated = (cursor.getString(0).equals(object.getTitle())
                     && cursor.getString(1).equals(String.valueOf(object.getText()))
-                    && cursor.getLong(2) == object.getPostTime()
-                    && cursor.getString(3).equals(object.getPackageName());
+                    && cursor.getString(3).equals(object.getPackageName()))
+                    || (cursor.getLong(2) == object.getPostTime()
+                    && cursor.getString(0).equals(object.getTitle())
+                    && cursor.getString(1).equals(String.valueOf(object.getText()))
+                    && cursor.getString(3).equals(object.getPackageName()));
+        }
         cursor.close();
 
         if (!isDuplicated) {

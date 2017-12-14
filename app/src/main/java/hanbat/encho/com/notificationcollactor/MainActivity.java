@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationManagerCompat;
@@ -30,6 +31,8 @@ import hanbat.encho.com.notificationcollactor.Model.NotificationGroup;
 import hanbat.encho.com.notificationcollactor.Model.NotificationObject;
 import hanbat.encho.com.notificationcollactor.databinding.ActivityMainBinding;
 
+import static android.os.Build.*;
+
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding mainBinding;
@@ -50,10 +53,14 @@ public class MainActivity extends AppCompatActivity {
             mToast.setDuration(Toast.LENGTH_LONG);
             mToast.setGravity(Gravity.CENTER, 0, 0);
             LayoutInflater mInflater = (LayoutInflater) Application.getAppContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = mInflater.inflate(R.layout.permission_notice_toast, null);
-            mToast.setView(view);
-            mToast.show();
-            this.finishAffinity();
+
+            if (mInflater != null) {
+                View view = mInflater.inflate(R.layout.permission_notice_toast, null);
+                mToast.setView(view);
+                mToast.show();
+                this.finishAffinity();
+            }
+
         } else {
             mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
             mainBinding.setMain(this);
@@ -214,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                 if (confirmedApps.contains(sbn.getPackageName())) {
-
                     for (String _key : extras.keySet()) {
                         if (extras.get(_key) instanceof ApplicationInfo) {
                             app = (ApplicationInfo) extras.get(_key);
@@ -226,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                     CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT) != null ? extras.getCharSequence(Notification.EXTRA_TEXT) : "";
                     CharSequence subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
                     int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON);
-                    int color = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP
+                    int color = VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP
                             ? mNotification.color
                             : -1;
 
@@ -238,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
 
                     NotificationObject obj = new NotificationObject(title, smallIcon, color, largeIcon, text, subText, postTime, packageName, appName);
 
-                    if (text.length() > 0 && title.length() > 0) {
+                    if ((text != null ? text.length() : 0) > 0 && title.length() > 0) {
                         db.addNotification(obj);
                     }
                 }

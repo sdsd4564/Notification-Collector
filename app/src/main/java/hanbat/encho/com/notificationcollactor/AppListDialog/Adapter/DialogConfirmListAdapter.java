@@ -111,10 +111,10 @@ public class DialogConfirmListAdapter extends RecyclerView.Adapter<DialogConfirm
     private void saveBitmapToFile(Bitmap bm, String filePath) {
         File iconImage = new File(Application.getAppContext().getFilesDir(), filePath);
         try {
-            if (!iconImage.createNewFile()) {
-                throw new IOException();
+            if (!iconImage.exists()) {
+                /* 아이콘의 이미지가 존재하지 않을 경우만 파일 생성 */
+                iconImage.createNewFile();
             }
-
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.PNG, 0, bos);
             byte[] bitmapData = bos.toByteArray();
